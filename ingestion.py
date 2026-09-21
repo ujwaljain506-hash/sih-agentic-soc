@@ -1,33 +1,37 @@
 import os
+import parser
+import sysmon_parser
+import database  # Bring in our database powers
 
 LOG_DIR = "sample_logs"
 
 def process_directory(directory_path):
-    normalized_events = []
-    
-    # Loop through every file in the directory
     for filename in os.listdir(directory_path):
         file_path = os.path.join(directory_path, filename)
         
-        # Skip if it's a directory (we only want files)
         if not os.path.isfile(file_path):
             continue
             
-        print(f"Reading file: {filename}")
+        print(f"\n--- Reading {filename} ---")
         
-        # Open and read the file
         with open(file_path, "r") as file:
-            # Here is where we route the file to the parsers we built
-            if filename.endswith(".json"):
-                print(" -> Routing to Sysmon Parser")
-                # (We will connect sysmon_parser.py here later)
-            elif filename.endswith(".log"):
-                print(" -> Routing to Linux Auth Parser")
-                # (We will connect parser.py here later)
-            else:
-                print(" -> Unknown log type, skipping.")
-                
-    return normalized_events
+            for line in file:
+                line = line.strip()
+                if not line:
+                    continue 
+                    
+                if filename.endswith(".json"):
+                    event = sysmon_parser.parse_sysmon(line)
+                    if event:
+                        database.insert_log(event) # Writing to disk!
+                        print(f"Saved Sysmon event to DB from host: {event.get('host')}")
+                        
+                elif filename.endswith(".log"):
+                    event = parser.parse_linux_auth(line)
+                    if event:
+                        database.insert_log(event) # Writing to disk!
+                        print(f"Saved Linux event to DB for user: {event.get('user')}")
 
-# Run the batch ingestion
+# Run the engine
 process_directory(LOG_DIR)
+print("\n=== Batch Ingestion to Database Complete ===")
