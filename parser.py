@@ -2,11 +2,15 @@ import re
 
 def parse_linux_auth(raw_log):
     """Takes a single raw log line and returns a normalized dictionary."""
+    # TRICK: Grab exactly the first 15 characters of the string
+    extracted_time = raw_log[:15]
+    
     pattern = r"Failed password for (?P<user>\w+) from (?P<source_ip>\d+\.\d+\.\d+\.\d+)"
     
     match = re.search(pattern, raw_log)
     if match:
         normalized_event = {
+            "timestamp": extracted_time,  # <--- Now mapping our extracted time!
             "log_source": "linux-auth",
             "event_type": "authentication",
             "source_ip": match.group("source_ip"),
@@ -17,4 +21,4 @@ def parse_linux_auth(raw_log):
         }
         return normalized_event
         
-    return None # Return nothing if the regex doesn't match
+    return None
