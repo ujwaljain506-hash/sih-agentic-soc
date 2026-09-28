@@ -5,3 +5,5 @@ venv/
 .venv/
 __pycache__/
 *.db
+soc_events.db
+__pycache__/

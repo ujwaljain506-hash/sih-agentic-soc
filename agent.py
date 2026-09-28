@@ -1,14 +1,15 @@
 import os
+import sqlite3
 from typing import TypedDict, Optional
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 from langgraph.graph import StateGraph, START, END
 
-# Load environment variables from .env
+# 1. Load Environment Variables
 load_dotenv()
 
-# 1. Define the Shared State Schema
+# 2. Define Shared State Schema
 class AgentState(TypedDict):
     log_id: int
     raw_log: str
@@ -18,16 +19,16 @@ class AgentState(TypedDict):
     is_suspicious: bool
     threat_level: str  # LOW, MEDIUM, HIGH, CRITICAL
     analysis_reasoning: str
+    response_actions: str
 
-# 2. Initialize the Groq LLM
+# 3. Initialize Groq LLM
 llm = ChatGroq(
     temperature=0,
     model_name="openai/gpt-oss-120b"
 )
 
-# 3. Define Agent Node 1: Log Analyzer
+# 4. Agent Node 1: Log Analyzer
 def log_analyzer_node(state: AgentState) -> dict:
-    """Analyzes a security log entry to determine if it represents malicious activity."""
     prompt = f"""
 You are an expert Security Operations Center (SOC) Tier-1 Analyst.
 Analyze the following security event log and determine if it indicates suspicious or malicious activity.
@@ -49,8 +50,6 @@ REASON: [Brief 1-2 sentence explanation]
     ])
 
     content = response.content.strip()
-
-    # Simple parsing logic from LLM response
     is_suspicious = "SUSPICIOUS: YES" in content.upper()
     
     threat_level = "LOW"
@@ -68,31 +67,99 @@ REASON: [Brief 1-2 sentence explanation]
         "analysis_reasoning": content
     }
 
-# 4. Build the Graph
+# 5. Agent Node 2: Incident Responder
+def incident_responder_node(state: AgentState) -> dict:
+    prompt = f"""
+You are an automated Incident Response Agent in a Security Operations Center.
+A suspicious security event has been identified:
+
+Log Source: {state.get('log_source')}
+User: {state.get('user', 'Unknown')}
+Source IP: {state.get('source_ip', 'Unknown')}
+Threat Level: {state.get('threat_level')}
+Analysis: {state.get('analysis_reasoning')}
+
+Provide 3 concrete, immediate remediation actions for the system administrator in this exact format:
+1. [Action 1]
+2. [Action 2]
+3. [Action 3]
+"""
+
+    response = llm.invoke([
+        SystemMessage(content="You are an automated SIEM incident response agent."),
+        HumanMessage(content=prompt)
+    ])
+
+    content = response.content.strip()
+    print(f"\n[Agent 2: Incident Responder Output]")
+    print(content)
+
+    return {"response_actions": content}
+
+# 6. Conditional Router Logic
+def route_threat(state: AgentState) -> str:
+    if state.get("is_suspicious"):
+        return "responder"
+    return END
+
+# 7. Construct & Compile Graph
 workflow = StateGraph(AgentState)
-
-# Add our Analyzer Node
 workflow.add_node("analyzer", log_analyzer_node)
+workflow.add_node("responder", incident_responder_node)
 
-# Set Graph Entry and Exit Points
 workflow.add_edge(START, "analyzer")
-workflow.add_edge("analyzer", END)
+workflow.add_conditional_edges(
+    "analyzer",
+    route_threat,
+    {
+        "responder": "responder",
+        END: END
+    }
+)
+workflow.add_edge("responder", END)
 
-# Compile Graph
 app = workflow.compile()
 
-# 5. Local Test Execution
-if __name__ == "__main__":
-    test_state: AgentState = {
-        "log_id": 1,
-        "raw_log": "Failed password for root from 192.168.1.105 port 22 ssh2",
-        "log_source": "linux-auth",
-        "user": "root",
-        "source_ip": "192.168.1.105",
-        "is_suspicious": False,
-        "threat_level": "UNKNOWN",
-        "analysis_reasoning": ""
-    }
+# 8. Fetch Logs from SQLite
+def fetch_logs_from_db(db_path: str = "soc_events.db", limit: int = 5):
+    """Retrieves stored logs from soc_events.db."""
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id, log_source, user, source_ip, raw_log 
+        FROM logs 
+        LIMIT ?
+    """, (limit,))
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
 
-    print("--- Testing LangGraph Log Analyzer Node ---")
-    app.invoke(test_state)
+# 9. Main Pipeline Execution Loop
+if __name__ == "__main__":
+    print("--- Starting Day 12: DB-Integrated LangGraph SOC Pipeline ---")
+    
+    # 1. Populates database with sample logs if empty
+    os.system("python3 ingestion.py")
+    
+    # 2. Fetch logs from database
+    logs = fetch_logs_from_db(limit=5)
+    print(f"Loaded {len(logs)} logs from database for multi-agent evaluation.\n")
+
+    # 3. Process logs through the agent network
+    for row in logs:
+        log_id, log_source, user, source_ip, raw_log = row
+        print(f"\n==================== Processing Log ID #{log_id} ====================")
+        
+        initial_state: AgentState = {
+            "log_id": log_id,
+            "raw_log": raw_log or "",
+            "log_source": log_source or "unknown",
+            "user": user or "Unknown",
+            "source_ip": source_ip or "Unknown",
+            "is_suspicious": False,
+            "threat_level": "UNKNOWN",
+            "analysis_reasoning": "",
+            "response_actions": ""
+        }
+
+        app.invoke(initial_state)
