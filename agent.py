@@ -1,4 +1,5 @@
 import os
+import time
 import sqlite3
 from typing import TypedDict, Optional
 from dotenv import load_dotenv
@@ -10,7 +11,7 @@ import database
 # 1. Load Environment Variables
 load_dotenv()
 
-# Ensure database table and columns exist
+# Initialize database schema if not already set up
 database.setup_database()
 
 # 2. Define Shared State Schema
@@ -124,56 +125,77 @@ workflow.add_edge("responder", END)
 
 app = workflow.compile()
 
-# 8. Fetch Logs from SQLite
-def fetch_logs_from_db(db_path: str = "soc_events.db", limit: int = 5):
-    """Retrieves stored logs from soc_events.db."""
+# 8. Query Unanalyzed Logs
+def fetch_unanalyzed_logs(db_path: str = "soc_events.db", batch_size: int = 5):
+    """Retrieves logs where AI evaluation is pending (threat_level IS NULL)."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT id, log_source, user, source_ip, raw_log 
         FROM logs 
+        WHERE threat_level IS NULL OR threat_level = 'UNKNOWN'
+        ORDER BY id ASC
         LIMIT ?
-    """, (limit,))
+    """, (batch_size,))
     rows = cursor.fetchall()
     conn.close()
     return rows
 
-# 9. Main Pipeline Execution Loop
+# 9. Continuous Monitoring Loop
+def run_continuous_agent_loop(poll_interval: int = 3):
+    print("==================================================")
+    print("🤖 Continuous Autonomous SOC Engine Started")
+    print("Target DB        : soc_events.db")
+    print(f"Polling Interval : Every {poll_interval} seconds")
+    print("Press Ctrl+C to stop execution")
+    print("==================================================\n")
+
+    try:
+        while True:
+            # Parse any fresh raw logs from sample_logs/ into DB
+            os.system("python3 ingestion.py > /dev/null 2>&1")
+
+            # Fetch up to 5 unanalyzed records
+            pending_logs = fetch_unanalyzed_logs(batch_size=5)
+
+            if pending_logs:
+                print(f"\n⚡ Found {len(pending_logs)} pending log(s). Running AI Evaluation...")
+                
+                for row in pending_logs:
+                    log_id, log_source, user, source_ip, raw_log = row
+                    print(f"\n==================== Evaluating Log ID #{log_id} ====================")
+                    
+                    initial_state: AgentState = {
+                        "log_id": log_id,
+                        "raw_log": raw_log or "",
+                        "log_source": log_source or "unknown",
+                        "user": user or "Unknown",
+                        "source_ip": source_ip or "Unknown",
+                        "is_suspicious": False,
+                        "threat_level": "UNKNOWN",
+                        "analysis_reasoning": "",
+                        "response_actions": ""
+                    }
+
+                    # Execute multi-agent graph
+                    final_state = app.invoke(initial_state)
+
+                    # Persist findings to SQLite
+                    database.update_agent_results(
+                        log_id=log_id,
+                        threat_level=final_state.get("threat_level", "LOW"),
+                        analysis_reasoning=final_state.get("analysis_reasoning", ""),
+                        response_actions=final_state.get("response_actions", "N/A - Event evaluated as non-suspicious.")
+                    )
+                    print(f"✅ Saved Agent Verdict for Log #{log_id} to soc_events.db")
+            else:
+                # Pulse indicator while idle
+                print(".", end="", flush=True)
+
+            time.sleep(poll_interval)
+
+    except KeyboardInterrupt:
+        print("\n[!] Agent Loop stopped by user.")
+
 if __name__ == "__main__":
-    print("--- Starting DB-Integrated LangGraph SOC Pipeline with Persistence ---")
-    
-    # Populates database with sample logs if empty
-    os.system("python3 ingestion.py")
-    
-    # Fetch logs from database
-    logs = fetch_logs_from_db(limit=5)
-    print(f"Loaded {len(logs)} logs from database for multi-agent evaluation.\n")
-
-    # Process logs through the agent network and persist results
-    for row in logs:
-        log_id, log_source, user, source_ip, raw_log = row
-        print(f"\n==================== Processing Log ID #{log_id} ====================")
-        
-        initial_state: AgentState = {
-            "log_id": log_id,
-            "raw_log": raw_log or "",
-            "log_source": log_source or "unknown",
-            "user": user or "Unknown",
-            "source_ip": source_ip or "Unknown",
-            "is_suspicious": False,
-            "threat_level": "UNKNOWN",
-            "analysis_reasoning": "",
-            "response_actions": ""
-        }
-
-        # Run multi-agent graph
-        final_state = app.invoke(initial_state)
-
-        # Persist findings back into SQLite
-        database.update_agent_results(
-            log_id=log_id,
-            threat_level=final_state.get("threat_level", "LOW"),
-            analysis_reasoning=final_state.get("analysis_reasoning", ""),
-            response_actions=final_state.get("response_actions", "N/A - Event evaluated as non-suspicious.")
-        )
-        print(f"✅ Saved Agent Verdict for Log #{log_id} back to soc_events.db")
+    run_continuous_agent_loop(poll_interval=3)

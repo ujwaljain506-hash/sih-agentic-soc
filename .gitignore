@@ -7,3 +7,6 @@ __pycache__/
 *.db
 soc_events.db
 __pycache__/
+__pycache__/
+*.db
+.env
