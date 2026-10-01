@@ -1,15 +1,20 @@
 import os
 import time
+import json
 import sqlite3
+import requests
 from typing import TypedDict, Optional
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 from langgraph.graph import StateGraph, START, END
+from groq import RateLimitError
 import database
 
 # 1. Load Environment Variables
 load_dotenv()
+
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
 # Initialize database schema if not already set up
 database.setup_database()
@@ -26,13 +31,62 @@ class AgentState(TypedDict):
     analysis_reasoning: str
     response_actions: str
 
-# 3. Initialize Groq LLM
-llm = ChatGroq(
-    temperature=0,
-    model_name="openai/gpt-oss-120b"
-)
+# 3. Initialize Primary & Fallback Groq LLMs
+PRIMARY_MODEL = "openai/gpt-oss-120b"
+FALLBACK_MODEL = "llama-3.3-70b-versatile"
 
-# 4. Agent Node 1: Log Analyzer
+def get_llm(model_name: str = PRIMARY_MODEL):
+    return ChatGroq(temperature=0, model_name=model_name)
+
+llm = get_llm(PRIMARY_MODEL)
+
+# 4. Webhook Notification Alert Function
+def send_webhook_alert(state: AgentState):
+    """Sends a rich alert notification to Discord or Slack for HIGH/CRITICAL threats."""
+    if not WEBHOOK_URL:
+        return
+
+    threat_level = state.get("threat_level", "UNKNOWN").upper()
+    log_id = state.get("log_id")
+    log_source = state.get("log_source", "Unknown")
+    user = state.get("user", "Unknown")
+    source_ip = state.get("source_ip", "Unknown")
+    reasoning = state.get("analysis_reasoning", "No detailed reasoning provided.")
+    actions = state.get("response_actions", "No remediation actions specified.")
+
+    color = 16711680 if threat_level == "CRITICAL" else 16747520
+
+    payload = {
+        "username": "SIEM Agentic SOC Alert Bot",
+        "avatar_url": "https://cdn-icons-png.flaticon.com/512/1063/1063376.png",
+        "embeds": [
+            {
+                "title": f"🚨 {threat_level} THREAT DETECTED — Log #{log_id}",
+                "description": f"An automated threat has been flagged by the **LangGraph AI SOC Pipeline**.",
+                "color": color,
+                "fields": [
+                    {"name": "Log Source", "value": f"`{log_source}`", "inline": True},
+                    {"name": "Target User", "value": f"`{user}`", "inline": True},
+                    {"name": "Source IP", "value": f"`{source_ip}`", "inline": True},
+                    {"name": "AI Analysis", "value": reasoning[:1000]},
+                    {"name": "Remediation Actions", "value": actions[:1000]}
+                ],
+                "footer": {"text": "Autonomous Agentic SOC SIEM • Live Protection"}
+            }
+        ]
+    }
+
+    try:
+        requests.post(
+            WEBHOOK_URL,
+            data=json.dumps(payload),
+            headers={"Content-Type": "application/json"},
+            timeout=5
+        )
+    except Exception as e:
+        print(f"❌ Error dispatching webhook alert: {e}")
+
+# 5. Agent Node 1: Log Analyzer
 def log_analyzer_node(state: AgentState) -> dict:
     prompt = f"""
 You are an expert Security Operations Center (SOC) Tier-1 Analyst.
@@ -72,7 +126,7 @@ REASON: [Brief 1-2 sentence explanation]
         "analysis_reasoning": content
     }
 
-# 5. Agent Node 2: Incident Responder
+# 6. Agent Node 2: Incident Responder
 def incident_responder_node(state: AgentState) -> dict:
     prompt = f"""
 You are an automated Incident Response Agent in a Security Operations Center.
@@ -101,13 +155,13 @@ Provide 3 concrete, immediate remediation actions for the system administrator i
 
     return {"response_actions": content}
 
-# 6. Conditional Router Logic
+# 7. Conditional Router Logic
 def route_threat(state: AgentState) -> str:
     if state.get("is_suspicious"):
         return "responder"
     return END
 
-# 7. Construct & Compile Graph
+# 8. Construct & Compile Graph
 workflow = StateGraph(AgentState)
 workflow.add_node("analyzer", log_analyzer_node)
 workflow.add_node("responder", incident_responder_node)
@@ -125,9 +179,9 @@ workflow.add_edge("responder", END)
 
 app = workflow.compile()
 
-# 8. Query Unanalyzed Logs
+# 9. Query Unanalyzed Logs
 def fetch_unanalyzed_logs(db_path: str = "soc_events.db", batch_size: int = 5):
-    """Retrieves logs where AI evaluation is pending (threat_level IS NULL)."""
+    """Retrieves logs where AI evaluation is pending."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("""
@@ -141,21 +195,19 @@ def fetch_unanalyzed_logs(db_path: str = "soc_events.db", batch_size: int = 5):
     conn.close()
     return rows
 
-# 9. Continuous Monitoring Loop
+# 10. Continuous Monitoring Loop with Exception Recovery
 def run_continuous_agent_loop(poll_interval: int = 3):
+    global llm
     print("==================================================")
     print("🤖 Continuous Autonomous SOC Engine Started")
     print("Target DB        : soc_events.db")
-    print(f"Polling Interval : Every {poll_interval} seconds")
-    print("Press Ctrl+C to stop execution")
+    print(f"Primary Model    : {PRIMARY_MODEL}")
+    print(f"Fallback Model   : {FALLBACK_MODEL}")
     print("==================================================\n")
 
     try:
         while True:
-            # Parse any fresh raw logs from sample_logs/ into DB
             os.system("python3 ingestion.py > /dev/null 2>&1")
-
-            # Fetch up to 5 unanalyzed records
             pending_logs = fetch_unanalyzed_logs(batch_size=5)
 
             if pending_logs:
@@ -177,19 +229,48 @@ def run_continuous_agent_loop(poll_interval: int = 3):
                         "response_actions": ""
                     }
 
-                    # Execute multi-agent graph
-                    final_state = app.invoke(initial_state)
+                    try:
+                        # Execute graph
+                        final_state = app.invoke(initial_state)
 
-                    # Persist findings to SQLite
-                    database.update_agent_results(
-                        log_id=log_id,
-                        threat_level=final_state.get("threat_level", "LOW"),
-                        analysis_reasoning=final_state.get("analysis_reasoning", ""),
-                        response_actions=final_state.get("response_actions", "N/A - Event evaluated as non-suspicious.")
-                    )
-                    print(f"✅ Saved Agent Verdict for Log #{log_id} to soc_events.db")
+                        threat_level = final_state.get("threat_level", "LOW").upper()
+
+                        # Persist findings
+                        database.update_agent_results(
+                            log_id=log_id,
+                            threat_level=threat_level,
+                            analysis_reasoning=final_state.get("analysis_reasoning", ""),
+                            response_actions=final_state.get("response_actions", "N/A - Event evaluated as non-suspicious.")
+                        )
+                        print(f"✅ Saved Agent Verdict for Log #{log_id} to soc_events.db")
+
+                        if threat_level in ["HIGH", "CRITICAL"]:
+                            send_webhook_alert(final_state)
+
+                    except RateLimitError as rle:
+                        print(f"\n⚠️️ Groq Rate Limit Reached for current model. Attempting fallback model ({FALLBACK_MODEL})...")
+                        try:
+                            # Switch LLM instance to fallback model
+                            llm = get_llm(FALLBACK_MODEL)
+                            final_state = app.invoke(initial_state)
+                            
+                            threat_level = final_state.get("threat_level", "LOW").upper()
+                            database.update_agent_results(
+                                log_id=log_id,
+                                threat_level=threat_level,
+                                analysis_reasoning=final_state.get("analysis_reasoning", ""),
+                                response_actions=final_state.get("response_actions", "N/A")
+                            )
+                            print(f"✅ [Fallback Model] Saved Agent Verdict for Log #{log_id}")
+                        except Exception as inner_err:
+                            print(f"⏳ Rate limit active across models. Pausing engine for 180 seconds before retry...\n")
+                            time.sleep(180)
+                            break
+                    except Exception as err:
+                        print(f"❌ Unexpected error processing log #{log_id}: {err}")
+                        time.sleep(5)
+
             else:
-                # Pulse indicator while idle
                 print(".", end="", flush=True)
 
             time.sleep(poll_interval)
