@@ -5,9 +5,13 @@ from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 from langgraph.graph import StateGraph, START, END
+import database
 
 # 1. Load Environment Variables
 load_dotenv()
+
+# Ensure database table and columns exist
+database.setup_database()
 
 # 2. Define Shared State Schema
 class AgentState(TypedDict):
@@ -136,16 +140,16 @@ def fetch_logs_from_db(db_path: str = "soc_events.db", limit: int = 5):
 
 # 9. Main Pipeline Execution Loop
 if __name__ == "__main__":
-    print("--- Starting Day 12: DB-Integrated LangGraph SOC Pipeline ---")
+    print("--- Starting DB-Integrated LangGraph SOC Pipeline with Persistence ---")
     
-    # 1. Populates database with sample logs if empty
+    # Populates database with sample logs if empty
     os.system("python3 ingestion.py")
     
-    # 2. Fetch logs from database
+    # Fetch logs from database
     logs = fetch_logs_from_db(limit=5)
     print(f"Loaded {len(logs)} logs from database for multi-agent evaluation.\n")
 
-    # 3. Process logs through the agent network
+    # Process logs through the agent network and persist results
     for row in logs:
         log_id, log_source, user, source_ip, raw_log = row
         print(f"\n==================== Processing Log ID #{log_id} ====================")
@@ -162,4 +166,14 @@ if __name__ == "__main__":
             "response_actions": ""
         }
 
-        app.invoke(initial_state)
+        # Run multi-agent graph
+        final_state = app.invoke(initial_state)
+
+        # Persist findings back into SQLite
+        database.update_agent_results(
+            log_id=log_id,
+            threat_level=final_state.get("threat_level", "LOW"),
+            analysis_reasoning=final_state.get("analysis_reasoning", ""),
+            response_actions=final_state.get("response_actions", "N/A - Event evaluated as non-suspicious.")
+        )
+        print(f"✅ Saved Agent Verdict for Log #{log_id} back to soc_events.db")
