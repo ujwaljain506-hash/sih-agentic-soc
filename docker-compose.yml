@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # 1. FastAPI REST Backend
+  api:
+    build: .
+    container_name: soc_api
+    command: uvicorn api:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8001:8000"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+
+  # 2. Streamlit Dashboard
+  dashboard:
+    build: .
+    container_name: soc_dashboard
+    command: streamlit run dashboard.py --server.port 8501 --server.address 0.0.0.0
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+
+  # 3. Continuous AI Engine (Set to profile so it doesn't run automatically)
+  agent:
+    build: .
+    container_name: soc_agent
+    command: python agent.py
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    profiles:
+      - active_engine
+
+  # 4. Attack Simulator (Set to profile so it doesn't run automatically)
+  simulator:
+    build: .
+    container_name: soc_simulator
+    command: python simulate_attacks.py
+    volumes:
+      - .:/app
+    profiles:
+      - active_engine
