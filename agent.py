@@ -40,6 +40,15 @@ def get_llm(model_name: str = PRIMARY_MODEL):
 
 llm = get_llm(PRIMARY_MODEL)
 
+SOC_SYSTEM_PROMPT = """You are an elite, autonomous Level 3 SOC Analyst.
+Your objective is to analyze incoming security logs and immediately output strict, actionable terminal commands to neutralize the threat.
+
+CRITICAL RULES:
+1. NEVER provide generic advice (e.g., "You should block this IP").
+2. ALWAYS provide the exact, copy-pasteable terminal command.
+3. If the log source is 'linux-auth', generate standard Linux commands (e.g., iptables, ufw, or kill).
+4. If the log source is 'windows-sysmon', generate strict PowerShell commands (e.g., New-NetFirewallRule or Stop-Process)."""
+
 # 4. Webhook Notification Alert Function
 def send_webhook_alert(state: AgentState):
     """Sends a rich alert notification to Discord or Slack for HIGH/CRITICAL threats."""
@@ -103,14 +112,16 @@ SEVERITY: [LOW, MEDIUM, HIGH, or CRITICAL]
 REASON: [Brief 1-2 sentence explanation]
 """
 
-    response = llm.invoke([
-        SystemMessage(content="You are an automated SIEM threat analysis agent."),
+    messages = [
+        SystemMessage(content=SOC_SYSTEM_PROMPT),
         HumanMessage(content=prompt)
-    ])
+    ]
+
+    response = llm.invoke(messages)
 
     content = response.content.strip()
     is_suspicious = "SUSPICIOUS: YES" in content.upper()
-    
+
     threat_level = "LOW"
     for level in ["CRITICAL", "HIGH", "MEDIUM", "LOW"]:
         if f"SEVERITY: {level}" in content.upper():
@@ -138,16 +149,21 @@ Source IP: {state.get('source_ip', 'Unknown')}
 Threat Level: {state.get('threat_level')}
 Analysis: {state.get('analysis_reasoning')}
 
-Provide 3 concrete, immediate remediation actions for the system administrator in this exact format:
-1. [Action 1]
-2. [Action 2]
-3. [Action 3]
+Based on the OS of the log source, provide the strict remediation steps.
+FORMAT YOUR RESPONSE EXACTLY AS FOLLOWS:
+**Analysis:** [1-2 sentences explaining the exact attack vector]
+**Remediation Command:**
+```bash
+[Executable Command Here]
+```
 """
 
-    response = llm.invoke([
-        SystemMessage(content="You are an automated SIEM incident response agent."),
+    messages = [
+        SystemMessage(content=SOC_SYSTEM_PROMPT),
         HumanMessage(content=prompt)
-    ])
+    ]
+
+    response = llm.invoke(messages)
 
     content = response.content.strip()
     print(f"\n[Agent 2: Incident Responder Output]")
@@ -185,8 +201,8 @@ def fetch_unanalyzed_logs(db_path: str = "soc_events.db", batch_size: int = 5):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT id, log_source, user, source_ip, raw_log 
-        FROM logs 
+        SELECT id, log_source, user, source_ip, raw_log
+        FROM logs
         WHERE threat_level IS NULL OR threat_level = 'UNKNOWN'
         ORDER BY id ASC
         LIMIT ?
@@ -198,12 +214,12 @@ def fetch_unanalyzed_logs(db_path: str = "soc_events.db", batch_size: int = 5):
 # 10. Continuous Monitoring Loop with Exception Recovery
 def run_continuous_agent_loop(poll_interval: int = 3):
     global llm
-    print("==================================================")
+    print("==")
     print("🤖 Continuous Autonomous SOC Engine Started")
     print("Target DB        : soc_events.db")
     print(f"Primary Model    : {PRIMARY_MODEL}")
     print(f"Fallback Model   : {FALLBACK_MODEL}")
-    print("==================================================\n")
+    print("==\n")
 
     try:
         while True:
@@ -212,11 +228,11 @@ def run_continuous_agent_loop(poll_interval: int = 3):
 
             if pending_logs:
                 print(f"\n⚡ Found {len(pending_logs)} pending log(s). Running AI Evaluation...")
-                
+
                 for row in pending_logs:
                     log_id, log_source, user, source_ip, raw_log = row
                     print(f"\n==================== Evaluating Log ID #{log_id} ====================")
-                    
+
                     initial_state: AgentState = {
                         "log_id": log_id,
                         "raw_log": raw_log or "",
@@ -248,12 +264,12 @@ def run_continuous_agent_loop(poll_interval: int = 3):
                             send_webhook_alert(final_state)
 
                     except RateLimitError as rle:
-                        print(f"\n⚠️️ Groq Rate Limit Reached for current model. Attempting fallback model ({FALLBACK_MODEL})...")
+                        print(f"\n⚠ Groq Rate Limit Reached for current model. Attempting fallback model ({FALLBACK_MODEL})...")
                         try:
                             # Switch LLM instance to fallback model
                             llm = get_llm(FALLBACK_MODEL)
                             final_state = app.invoke(initial_state)
-                            
+
                             threat_level = final_state.get("threat_level", "LOW").upper()
                             database.update_agent_results(
                                 log_id=log_id,
