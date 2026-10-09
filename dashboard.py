@@ -48,13 +48,9 @@ def render_severity_badge(severity):
     
     st.markdown(f"""
         <div style="background-color: {color}; padding: 10px; border-radius: 5px; color: black; font-weight: bold; text-align: center; margin-bottom: 10px;">
-            🚨 MITRE ATT&CK THREAT LEVEL: {severity.upper()}
+            🤖 AI ASSESSED THREAT LEVEL: {severity.upper()}
         </div>
     """, unsafe_allow_html=True)
-
-# Example usage:
-
-
 # 4. Load Data
 df = load_data()
 
@@ -71,15 +67,24 @@ if log_source_filter:
 else:
     df_filtered = df
 
-df_filtered['display_severity'] = df_filtered['threat_level'].where(
-    df_filtered['threat_level'].notna(), df_filtered['severity']
-).str.lower()
+# Unified severity: prefer the AI verdict (threat_level), fall back to the
+# parser's baseline severity for events the agent hasn't evaluated yet.
+df_filtered['display_severity'] = (
+    df_filtered['threat_level']
+    .where(
+        df_filtered['threat_level'].notna()
+        & (df_filtered['threat_level'].fillna('').str.upper() != 'UNKNOWN'),
+        df_filtered['severity'],
+    )
+    .fillna('low')
+    .str.lower()
+)
 
 # 5. Top KPI Summary Metrics
 m1, m2, m3, m4 = st.columns(4)
 
 total_logs = len(df_filtered)
-suspicious_count = len(df_filtered[df_filtered['severity'].str.lower().isin(['medium', 'high', 'critical'])])
+suspicious_count = len(df_filtered[df_filtered['display_severity'].isin(['medium', 'high', 'critical'])])
 top_ip = df_filtered['source_ip'].value_counts().index[0] if 'source_ip' in df_filtered and not df_filtered['source_ip'].dropna().empty else "N/A"
 top_user = df_filtered['user'].value_counts().index[0] if 'user' in df_filtered and not df_filtered['user'].dropna().empty else "N/A"
 
@@ -94,8 +99,8 @@ st.markdown("---")
 col_chart1, col_chart2 = st.columns(2)
 
 with col_chart1:
-    st.subheader("Severity Breakdown")
-    severity_counts = df_filtered['severity'].value_counts().reset_index()
+    st.subheader("AI Threat Level Breakdown")
+    severity_counts = df_filtered['display_severity'].value_counts().reset_index()
     severity_counts.columns = ['Severity', 'Count']
     fig_sev = px.pie(
         severity_counts, 
@@ -125,12 +130,13 @@ st.markdown("---")
 # 7. Live Log Event Table & Detailed Inspection
 st.subheader("📋 Ingested Security Events")
 
-display_cols = [c for c in ['id', 'timestamp', 'log_source', 'event_type', 'user', 'source_ip', 'severity'] if c in df_filtered.columns]
-st.dataframe(df_filtered[display_cols], use_container_width=True, height=220)
+display_cols = [c for c in ['id', 'timestamp', 'log_source', 'event_type', 'user', 'source_ip'] if c in df_filtered.columns]
+table_df = df_filtered[display_cols].copy()
+table_df['ai_threat_level'] = df_filtered['display_severity'].str.upper()
+st.dataframe(table_df, use_container_width=True, height=220)
 
-# Assuming your data is stored in a DataFrame called 'df'
 st.markdown("### 📥 Generate Incident Report")
-csv = df.to_csv(index=False).encode('utf-8')
+csv = df_filtered.to_csv(index=False).encode('utf-8')
 
 st.download_button(
     label="Download Threat Logs as CSV",
@@ -164,8 +170,8 @@ if selected_id:
     with col_agent:
         st.markdown("**🤖 LangGraph AI Multi-Agent Verdict**")
         
-        # Grab the actual severity of the selected log event
-        sev = str(selected_row.get('severity', 'low')).upper()
+        # Show the AI-assessed threat level (falls back to parser baseline if unanalyzed)
+        sev = str(selected_row.get('display_severity', 'low')).upper()
         
         # Render the dynamic colored badge!
         render_severity_badge(sev)
