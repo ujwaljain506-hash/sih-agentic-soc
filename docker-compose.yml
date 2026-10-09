@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # 1. FastAPI REST Backend
   api:
@@ -10,8 +8,11 @@ services:
       - "8001:8000"
     volumes:
       - .:/app
-    env_file:
-      - .env
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - WEBHOOK_URL=${WEBHOOK_URL:-}
+      - API_KEY=${API_KEY:-}
+    restart: unless-stopped
 
   # 2. Streamlit Dashboard
   dashboard:
@@ -22,27 +23,31 @@ services:
       - "8501:8501"
     volumes:
       - .:/app
-    env_file:
-      - .env
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - WEBHOOK_URL=${WEBHOOK_URL:-}
+      - API_KEY=${API_KEY:-}
+    restart: unless-stopped
 
-  # 3. Continuous AI Engine (Set to profile so it doesn't run automatically)
+  # 3. Continuous AI Engine (starts by default so the demo is fully autonomous)
   agent:
     build: .
     container_name: soc_agent
     command: python agent.py
     volumes:
       - .:/app
-    env_file:
-      - .env
-    profiles:
-      - active_engine
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - WEBHOOK_URL=${WEBHOOK_URL:-}
+      - API_KEY=${API_KEY:-}
+    restart: unless-stopped
 
-  # 4. Attack Simulator (Set to profile so it doesn't run automatically)
+  # 4. Attack Simulator (live attack traffic for demos — stop it with:
+  #    docker compose stop simulator)
   simulator:
     build: .
     container_name: soc_simulator
     command: python simulate_attacks.py
     volumes:
       - .:/app
-    profiles:
-      - active_engine
+    restart: unless-stopped

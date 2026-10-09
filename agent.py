@@ -11,6 +11,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from langgraph.graph import StateGraph, START, END
 from groq import RateLimitError
 import database
+import ingestion
 
 load_dotenv()
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
@@ -243,7 +244,12 @@ def run_continuous_agent_loop(poll_interval: int = 3):
 
     try:
         while True:
-            os.system("python3 ingestion.py > /dev/null 2>&1")
+            # Ingest new log lines in-process (errors are surfaced, not swallowed)
+            try:
+                ingestion.process_directory(ingestion.LOG_DIR)
+            except Exception as ingest_err:
+                print(f"❌ Ingestion error (will retry next cycle): {ingest_err}")
+
             pending_logs = fetch_unanalyzed_logs(batch_size=5)
 
             if pending_logs:
@@ -293,6 +299,8 @@ def run_continuous_agent_loop(poll_interval: int = 3):
                                 correlated_event_count=final_state.get("correlated_event_count")
                             )
                             print(f"✅ [Fallback Model] Saved Agent Verdict for Log #{log_id}")
+                            if threat_level in ["HIGH", "CRITICAL"]:
+                                send_webhook_alert(final_state)
                         except Exception:
                             print("⏳ Rate limit active across models. Pausing engine for 180 seconds...\n")
                             time.sleep(180)
