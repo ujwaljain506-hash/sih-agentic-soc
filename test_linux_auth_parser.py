@@ -89,6 +89,16 @@ class TestLinuxAuthParser(unittest.TestCase):
         ev = p.parse_linux_auth(line)
         self.assertEqual(ev["timestamp"], line[:15])
 
+    def test_hostname_extracted_as_the_actual_machine(self):
+        ev = p.parse_linux_auth(
+            "Oct  2 03:00:00 web-prod-01 sshd[9999]: Failed password for root from 10.0.0.1 port 22 ssh2"
+        )
+        self.assertEqual(ev["host"], "web-prod-01")
+        ev2 = p.parse_linux_auth(
+            "Oct  2 03:00:00 jump-gateway sudo:     deploy : TTY=pts/1 ; PWD=/ ; USER=root ; COMMAND=/bin/bash"
+        )
+        self.assertEqual(ev2["host"], "jump-gateway")
+
     def test_event_id_is_unique_per_parse(self):
         line = "Nov 17 15:08:39 localhost sshd[1]: Failed password for nemo from 192.168.0.7 port 22 ssh2"
         self.assertNotEqual(p.parse_linux_auth(line)["event_id"], p.parse_linux_auth(line)["event_id"])

@@ -33,7 +33,7 @@ langgraph-sdk==0.4.5
 langsmith==0.14.1
 MarkupSafe==3.0.3
 narwhals==2.26.0
-numpy==2.5.3
+numpy==2.4.6
 opentelemetry-api==1.45.0
 orjson==3.12.0
 ormsgpack==1.12.2
