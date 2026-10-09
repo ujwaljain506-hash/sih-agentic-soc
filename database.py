@@ -14,11 +14,13 @@ def setup_database():
             threat_level TEXT, analysis_reasoning TEXT, response_actions TEXT
         )
     ''')
+    conn.execute("PRAGMA journal_mode=WAL;")
     conn.commit()
     conn.close()
     
     # Safely migrate existing tables if columns are missing
     upgrade_schema()
+    setup_ingestion_state_table()
 
 def upgrade_schema():
     """Ensures existing tables have the agent result columns added."""
@@ -28,7 +30,8 @@ def upgrade_schema():
     cursor.execute("PRAGMA table_info(logs)")
     existing_columns = [column[1] for column in cursor.fetchall()]
     
-    new_columns = ["threat_level", "analysis_reasoning", "response_actions"]
+    new_columns = ["threat_level", "analysis_reasoning", "response_actions",
+                   "mitre_technique", "risk_score", "correlated_event_count"]
     for col in new_columns:
         if col not in existing_columns:
             cursor.execute(f"ALTER TABLE logs ADD COLUMN {col} TEXT")
@@ -36,6 +39,44 @@ def upgrade_schema():
             
     conn.commit()
     conn.close()
+
+
+def setup_ingestion_state_table():
+    """Tracks how many lines of each log file have already been ingested."""
+    conn = sqlite3.connect("soc_events.db")
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS ingestion_state (
+            filename TEXT PRIMARY KEY,
+            last_line_read INTEGER NOT NULL DEFAULT 0
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+
+def get_last_line_read(filename: str) -> int:
+    """Returns how many lines of this file were already processed (0 if never seen)."""
+    conn = sqlite3.connect("soc_events.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT last_line_read FROM ingestion_state WHERE filename = ?", (filename,))
+    row = cursor.fetchone()
+    conn.close()
+    return row[0] if row else 0
+
+
+def update_last_line_read(filename: str, line_number: int):
+    """Records that we've now processed up to line_number for this file."""
+    conn = sqlite3.connect("soc_events.db")
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO ingestion_state (filename, last_line_read)
+        VALUES (?, ?)
+        ON CONFLICT(filename) DO UPDATE SET last_line_read = excluded.last_line_read
+    ''', (filename, line_number))
+    conn.commit()
+    conn.close()
+
 
 def insert_log(event):
     """Inserts normalized log dictionary into SQLite using parameterized query."""
@@ -59,16 +100,18 @@ def insert_log(event):
     conn.commit()
     conn.close()
 
-def update_agent_results(log_id: int, threat_level: str, analysis_reasoning: str, response_actions: str):
-    """Saves AI Agent evaluation output back to the log entry in SQLite."""
+def update_agent_results(log_id: int, threat_level: str, analysis_reasoning: str, response_actions: str,
+                          mitre_technique: str = None, risk_score: int = None, correlated_event_count: int = None):
     conn = sqlite3.connect("soc_events.db")
     cursor = conn.cursor()
     sql = '''
         UPDATE logs 
-        SET threat_level = ?, analysis_reasoning = ?, response_actions = ?
+        SET threat_level = ?, analysis_reasoning = ?, response_actions = ?,
+            mitre_technique = ?, risk_score = ?, correlated_event_count = ?
         WHERE id = ?
     '''
-    cursor.execute(sql, (threat_level, analysis_reasoning, response_actions, log_id))
+    cursor.execute(sql, (threat_level, analysis_reasoning, response_actions,
+                          mitre_technique, risk_score, correlated_event_count, log_id))
     conn.commit()
     conn.close()
 

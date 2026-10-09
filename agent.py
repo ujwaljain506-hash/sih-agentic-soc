@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import json
 import sqlite3
@@ -11,27 +12,25 @@ from langgraph.graph import StateGraph, START, END
 from groq import RateLimitError
 import database
 
-# 1. Load Environment Variables
 load_dotenv()
-
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
-
-# Initialize database schema if not already set up
 database.setup_database()
 
-# 2. Define Shared State Schema
 class AgentState(TypedDict):
     log_id: int
     raw_log: str
     log_source: str
     user: Optional[str]
     source_ip: Optional[str]
+    process_name: Optional[str]
     is_suspicious: bool
-    threat_level: str  # LOW, MEDIUM, HIGH, CRITICAL
+    threat_level: str
     analysis_reasoning: str
+    mitre_technique: str
+    risk_score: int
+    correlated_event_count: int
     response_actions: str
 
-# 3. Initialize Primary & Fallback Groq LLMs
 PRIMARY_MODEL = "openai/gpt-oss-120b"
 FALLBACK_MODEL = "llama-3.3-70b-versatile"
 
@@ -49,9 +48,33 @@ CRITICAL RULES:
 3. If the log source is 'linux-auth', generate standard Linux commands (e.g., iptables, ufw, or kill).
 4. If the log source is 'windows-sysmon', generate strict PowerShell commands (e.g., New-NetFirewallRule or Stop-Process)."""
 
-# 4. Webhook Notification Alert Function
+MITRE_TECHNIQUE_MAP = {
+    "linux-auth": {"id": "T1110", "name": "Brute Force"},
+    "windows-sysmon": {"id": "T1059", "name": "Command and Scripting Interpreter"},
+}
+
+def map_mitre_technique(log_source: str, process_name: Optional[str] = None) -> dict:
+    if log_source == "windows-sysmon" and process_name and "powershell" in process_name.lower():
+        return {"id": "T1059.001", "name": "Command and Scripting Interpreter: PowerShell"}
+    return MITRE_TECHNIQUE_MAP.get(log_source, {"id": "T1078", "name": "Valid Accounts"})
+
+SEVERITY_WEIGHTS = {"LOW": 1, "MEDIUM": 2, "HIGH": 3, "CRITICAL": 4}
+
+def calculate_risk_score(threat_level: str, correlated_count: int) -> int:
+    severity_weight = SEVERITY_WEIGHTS.get((threat_level or "LOW").upper(), 1)
+    correlation_factor = min(correlated_count * 10, 40)
+    return min(severity_weight * 15 + correlation_factor, 100)
+
+DANGEROUS_COMMAND_PATTERNS = [
+    r"rm\s+-rf\s+/(?!\S)", r"rm\s+-rf\s+/\*", r"mkfs\.",
+    r"dd\s+if=.*of=/dev/", r":\(\)\{.*\};:", r"shutdown", r"format\s+[cC]:",
+]
+
+
+def contains_dangerous_command(text: str) -> bool:
+    return any(re.search(p, text, re.IGNORECASE) for p in DANGEROUS_COMMAND_PATTERNS)
+
 def send_webhook_alert(state: AgentState):
-    """Sends a rich alert notification to Discord or Slack for HIGH/CRITICAL threats."""
     if not WEBHOOK_URL:
         return
 
@@ -62,6 +85,9 @@ def send_webhook_alert(state: AgentState):
     source_ip = state.get("source_ip", "Unknown")
     reasoning = state.get("analysis_reasoning", "No detailed reasoning provided.")
     actions = state.get("response_actions", "No remediation actions specified.")
+    mitre = state.get("mitre_technique", "N/A")
+    risk_score = state.get("risk_score", 0)
+    correlated = state.get("correlated_event_count", 0)
 
     color = 16711680 if threat_level == "CRITICAL" else 16747520
 
@@ -71,12 +97,15 @@ def send_webhook_alert(state: AgentState):
         "embeds": [
             {
                 "title": f"🚨 {threat_level} THREAT DETECTED — Log #{log_id}",
-                "description": f"An automated threat has been flagged by the **LangGraph AI SOC Pipeline**.",
+                "description": "An automated threat has been flagged by the **LangGraph AI SOC Pipeline**.",
                 "color": color,
                 "fields": [
                     {"name": "Log Source", "value": f"`{log_source}`", "inline": True},
                     {"name": "Target User", "value": f"`{user}`", "inline": True},
                     {"name": "Source IP", "value": f"`{source_ip}`", "inline": True},
+                    {"name": "MITRE ATT&CK", "value": f"`{mitre}`", "inline": True},
+                    {"name": "Risk Score", "value": f"`{risk_score}/100`", "inline": True},
+                    {"name": "Correlated Events", "value": f"`{correlated}`", "inline": True},
                     {"name": "AI Analysis", "value": reasoning[:1000]},
                     {"name": "Remediation Actions", "value": actions[:1000]}
                 ],
@@ -86,16 +115,11 @@ def send_webhook_alert(state: AgentState):
     }
 
     try:
-        requests.post(
-            WEBHOOK_URL,
-            data=json.dumps(payload),
-            headers={"Content-Type": "application/json"},
-            timeout=5
-        )
+        requests.post(WEBHOOK_URL, data=json.dumps(payload),
+                       headers={"Content-Type": "application/json"}, timeout=5)
     except Exception as e:
         print(f"❌ Error dispatching webhook alert: {e}")
 
-# 5. Agent Node 1: Log Analyzer
 def log_analyzer_node(state: AgentState) -> dict:
     prompt = f"""
 You are an expert Security Operations Center (SOC) Tier-1 Analyst.
@@ -111,14 +135,8 @@ SUSPICIOUS: [YES or NO]
 SEVERITY: [LOW, MEDIUM, HIGH, or CRITICAL]
 REASON: [Brief 1-2 sentence explanation]
 """
-
-    messages = [
-        SystemMessage(content=SOC_SYSTEM_PROMPT),
-        HumanMessage(content=prompt)
-    ]
-
+    messages = [SystemMessage(content=SOC_SYSTEM_PROMPT), HumanMessage(content=prompt)]
     response = llm.invoke(messages)
-
     content = response.content.strip()
     is_suspicious = "SUSPICIOUS: YES" in content.upper()
 
@@ -131,13 +149,23 @@ REASON: [Brief 1-2 sentence explanation]
     print(f"\n[Agent 1: Log Analyzer Output]")
     print(content)
 
-    return {
-        "is_suspicious": is_suspicious,
-        "threat_level": threat_level,
-        "analysis_reasoning": content
-    }
+    return {"is_suspicious": is_suspicious, "threat_level": threat_level, "analysis_reasoning": content}
 
-# 6. Agent Node 2: Incident Responder
+def threat_investigator_node(state: AgentState) -> dict:
+    correlated_count = database.get_recent_related_count(
+        source_ip=state.get("source_ip"), user=state.get("user"), exclude_log_id=state.get("log_id")
+    )
+    mitre = map_mitre_technique(state.get("log_source"), state.get("process_name"))
+    mitre_label = f"{mitre['id']} - {mitre['name']}"
+    risk_score = calculate_risk_score(state.get("threat_level", "LOW"), correlated_count)
+
+    print(f"\n[Agent 2: Threat Investigator Output]")
+    print(f"Correlated related events (recent window): {correlated_count}")
+    print(f"MITRE ATT&CK Technique: {mitre_label}")
+    print(f"Calculated Risk Score: {risk_score}/100")
+
+    return {"correlated_event_count": correlated_count, "mitre_technique": mitre_label, "risk_score": risk_score}
+
 def incident_responder_node(state: AgentState) -> dict:
     prompt = f"""
 You are an automated Incident Response Agent in a Security Operations Center.
@@ -147,6 +175,9 @@ Log Source: {state.get('log_source')}
 User: {state.get('user', 'Unknown')}
 Source IP: {state.get('source_ip', 'Unknown')}
 Threat Level: {state.get('threat_level')}
+MITRE ATT&CK Technique: {state.get('mitre_technique', 'N/A')}
+Correlated Related Events: {state.get('correlated_event_count', 0)}
+Risk Score: {state.get('risk_score', 0)}/100
 Analysis: {state.get('analysis_reasoning')}
 
 Based on the OS of the log source, provide the strict remediation steps.
@@ -157,51 +188,41 @@ FORMAT YOUR RESPONSE EXACTLY AS FOLLOWS:
 [Executable Command Here]
 ```
 """
-
-    messages = [
-        SystemMessage(content=SOC_SYSTEM_PROMPT),
-        HumanMessage(content=prompt)
-    ]
-
+    messages = [SystemMessage(content=SOC_SYSTEM_PROMPT), HumanMessage(content=prompt)]
     response = llm.invoke(messages)
-
     content = response.content.strip()
-    print(f"\n[Agent 2: Incident Responder Output]")
+    if contains_dangerous_command(content):
+        content = (
+            "⚠️ SAFETY OVERRIDE: AI-generated command blocked — contained a potentially "
+            "destructive pattern. Manual analyst review required.\n\nOriginal (blocked) suggestion:\n"
+            f"{content}"
+        )
+    print(f"\n[Agent 3: Incident Responder Output]")
     print(content)
-
     return {"response_actions": content}
 
-# 7. Conditional Router Logic
 def route_threat(state: AgentState) -> str:
     if state.get("is_suspicious"):
-        return "responder"
+        return "investigator"
     return END
 
-# 8. Construct & Compile Graph
 workflow = StateGraph(AgentState)
 workflow.add_node("analyzer", log_analyzer_node)
+workflow.add_node("investigator", threat_investigator_node)
 workflow.add_node("responder", incident_responder_node)
 
 workflow.add_edge(START, "analyzer")
-workflow.add_conditional_edges(
-    "analyzer",
-    route_threat,
-    {
-        "responder": "responder",
-        END: END
-    }
-)
+workflow.add_conditional_edges("analyzer", route_threat, {"investigator": "investigator", END: END})
+workflow.add_edge("investigator", "responder")
 workflow.add_edge("responder", END)
 
 app = workflow.compile()
 
-# 9. Query Unanalyzed Logs
 def fetch_unanalyzed_logs(db_path: str = "soc_events.db", batch_size: int = 5):
-    """Retrieves logs where AI evaluation is pending."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT id, log_source, user, source_ip, raw_log
+        SELECT id, log_source, user, source_ip, process_name, raw_log
         FROM logs
         WHERE threat_level IS NULL OR threat_level = 'UNKNOWN'
         ORDER BY id ASC
@@ -211,7 +232,6 @@ def fetch_unanalyzed_logs(db_path: str = "soc_events.db", batch_size: int = 5):
     conn.close()
     return rows
 
-# 10. Continuous Monitoring Loop with Exception Recovery
 def run_continuous_agent_loop(poll_interval: int = 3):
     global llm
     print("==")
@@ -230,62 +250,56 @@ def run_continuous_agent_loop(poll_interval: int = 3):
                 print(f"\n⚡ Found {len(pending_logs)} pending log(s). Running AI Evaluation...")
 
                 for row in pending_logs:
-                    log_id, log_source, user, source_ip, raw_log = row
+                    log_id, log_source, user, source_ip, process_name, raw_log = row
                     print(f"\n==================== Evaluating Log ID #{log_id} ====================")
 
                     initial_state: AgentState = {
-                        "log_id": log_id,
-                        "raw_log": raw_log or "",
-                        "log_source": log_source or "unknown",
-                        "user": user or "Unknown",
-                        "source_ip": source_ip or "Unknown",
-                        "is_suspicious": False,
-                        "threat_level": "UNKNOWN",
-                        "analysis_reasoning": "",
-                        "response_actions": ""
+                        "log_id": log_id, "raw_log": raw_log or "", "log_source": log_source or "unknown",
+                        "user": user or "Unknown", "source_ip": source_ip or "Unknown",
+                        "process_name": process_name, "is_suspicious": False, "threat_level": "UNKNOWN",
+                        "analysis_reasoning": "", "mitre_technique": "", "risk_score": 0,
+                        "correlated_event_count": 0, "response_actions": ""
                     }
 
                     try:
-                        # Execute graph
                         final_state = app.invoke(initial_state)
-
                         threat_level = final_state.get("threat_level", "LOW").upper()
 
-                        # Persist findings
                         database.update_agent_results(
-                            log_id=log_id,
-                            threat_level=threat_level,
+                            log_id=log_id, threat_level=threat_level,
                             analysis_reasoning=final_state.get("analysis_reasoning", ""),
-                            response_actions=final_state.get("response_actions", "N/A - Event evaluated as non-suspicious.")
+                            response_actions=final_state.get("response_actions", "N/A - Event evaluated as non-suspicious."),
+                            mitre_technique=final_state.get("mitre_technique"),
+                            risk_score=final_state.get("risk_score"),
+                            correlated_event_count=final_state.get("correlated_event_count")
                         )
                         print(f"✅ Saved Agent Verdict for Log #{log_id} to soc_events.db")
 
                         if threat_level in ["HIGH", "CRITICAL"]:
                             send_webhook_alert(final_state)
 
-                    except RateLimitError as rle:
-                        print(f"\n⚠ Groq Rate Limit Reached for current model. Attempting fallback model ({FALLBACK_MODEL})...")
+                    except RateLimitError:
+                        print(f"\n⚠ Groq Rate Limit Reached. Attempting fallback model ({FALLBACK_MODEL})...")
                         try:
-                            # Switch LLM instance to fallback model
                             llm = get_llm(FALLBACK_MODEL)
                             final_state = app.invoke(initial_state)
-
                             threat_level = final_state.get("threat_level", "LOW").upper()
                             database.update_agent_results(
-                                log_id=log_id,
-                                threat_level=threat_level,
+                                log_id=log_id, threat_level=threat_level,
                                 analysis_reasoning=final_state.get("analysis_reasoning", ""),
-                                response_actions=final_state.get("response_actions", "N/A")
+                                response_actions=final_state.get("response_actions", "N/A"),
+                                mitre_technique=final_state.get("mitre_technique"),
+                                risk_score=final_state.get("risk_score"),
+                                correlated_event_count=final_state.get("correlated_event_count")
                             )
                             print(f"✅ [Fallback Model] Saved Agent Verdict for Log #{log_id}")
-                        except Exception as inner_err:
-                            print(f"⏳ Rate limit active across models. Pausing engine for 180 seconds before retry...\n")
+                        except Exception:
+                            print("⏳ Rate limit active across models. Pausing engine for 180 seconds...\n")
                             time.sleep(180)
                             break
                     except Exception as err:
                         print(f"❌ Unexpected error processing log #{log_id}: {err}")
                         time.sleep(5)
-
             else:
                 print(".", end="", flush=True)
 

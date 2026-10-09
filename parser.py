@@ -1,4 +1,5 @@
 import re
+import uuid
 
 def parse_linux_auth(raw_log):
     """Takes a single raw log line and returns a normalized dictionary."""
@@ -17,7 +18,8 @@ def parse_linux_auth(raw_log):
             "user": match.group("user"),
             "action": "failure",
             "severity": "medium",
-            "raw_log": raw_log.strip()
+            "raw_log": raw_log.strip(),
+            "event_id": str(uuid.uuid4())
         }
         return normalized_event
         

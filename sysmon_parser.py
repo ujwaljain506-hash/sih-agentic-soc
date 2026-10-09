@@ -1,4 +1,5 @@
 import json
+import uuid
 
 def parse_sysmon(raw_json_string):
     """Takes a raw JSON string and returns a normalized dictionary."""
@@ -14,7 +15,8 @@ def parse_sysmon(raw_json_string):
             "process_name": log_data.get("Image"),
             "action": "execute",
             "severity": "low",
-            "raw_log": raw_json_string.strip()
+            "raw_log": raw_json_string.strip(),
+            "event_id": str(uuid.uuid4())
         }
         return normalized_event
     except json.JSONDecodeError:

@@ -37,6 +37,23 @@ log_source_filter = st.sidebar.multiselect(
     options=["linux-auth", "windows-sysmon"],
     default=["linux-auth", "windows-sysmon"]
 )
+def render_severity_badge(severity):
+    colors = {
+        "CRITICAL": "#ff4b4b", # Red
+        "HIGH": "#ffa421",     # Orange
+        "MEDIUM": "#ffe312",   # Yellow
+        "LOW": "#00d46a"       # Green
+    }
+    color = colors.get(severity.upper(), "#808080")
+    
+    st.markdown(f"""
+        <div style="background-color: {color}; padding: 10px; border-radius: 5px; color: black; font-weight: bold; text-align: center; margin-bottom: 10px;">
+            🚨 MITRE ATT&CK THREAT LEVEL: {severity.upper()}
+        </div>
+    """, unsafe_allow_html=True)
+
+# Example usage:
+
 
 # 4. Load Data
 df = load_data()
@@ -53,6 +70,10 @@ if log_source_filter:
     df_filtered = df[df['log_source'].isin(log_source_filter)]
 else:
     df_filtered = df
+
+df_filtered['display_severity'] = df_filtered['threat_level'].where(
+    df_filtered['threat_level'].notna(), df_filtered['severity']
+).str.lower()
 
 # 5. Top KPI Summary Metrics
 m1, m2, m3, m4 = st.columns(4)
@@ -107,6 +128,18 @@ st.subheader("📋 Ingested Security Events")
 display_cols = [c for c in ['id', 'timestamp', 'log_source', 'event_type', 'user', 'source_ip', 'severity'] if c in df_filtered.columns]
 st.dataframe(df_filtered[display_cols], use_container_width=True, height=220)
 
+# Assuming your data is stored in a DataFrame called 'df'
+st.markdown("### 📥 Generate Incident Report")
+csv = df.to_csv(index=False).encode('utf-8')
+
+st.download_button(
+    label="Download Threat Logs as CSV",
+    data=csv,
+    file_name='sih_agentic_soc_report.csv',
+    mime='text/csv',
+    use_container_width=True
+)
+
 st.markdown("### 🔍 Threat Deep Dive & Agent Remediation Steps")
 selected_id = st.selectbox("Select Event ID to Inspect:", df_filtered['id'].tolist())
 
@@ -130,19 +163,27 @@ if selected_id:
 
     with col_agent:
         st.markdown("**🤖 LangGraph AI Multi-Agent Verdict**")
-        sev = str(selected_row.get('severity', 'low')).lower()
         
-        if sev in ['medium', 'high', 'critical']:
-            st.error(f"Threat Detected — Severity Level: {sev.upper()}")
-        else:
-            st.success("Event Evaluated — Benign / Low Risk")
-            
+        # Grab the actual severity of the selected log event
+        sev = str(selected_row.get('severity', 'low')).upper()
+        
+        # Render the dynamic colored badge!
+        render_severity_badge(sev)
+        
         if 'analysis_reasoning' in selected_row and pd.notna(selected_row['analysis_reasoning']):
             st.markdown("**Analysis Reasoning:**")
             st.info(selected_row['analysis_reasoning'])
         else:
-            st.markdown("*Run `python3 agent.py` to trigger LangGraph evaluation for missing agent outputs.*")
+            st.markdown("*Run `python3 agent.py` to trigger LangGraph evaluation.*")
             
         if 'response_actions' in selected_row and pd.notna(selected_row['response_actions']):
             st.markdown("**Automated Remediation Plan:**")
             st.warning(selected_row['response_actions'])
+
+        if 'mitre_technique' in selected_row and pd.notna(selected_row['mitre_technique']):
+            st.markdown("**MITRE ATT&CK Technique:**")
+            st.code(selected_row['mitre_technique'])
+        if 'risk_score' in selected_row and pd.notna(selected_row['risk_score']):
+            st.metric("Risk Score", f"{int(selected_row['risk_score'])}/100")
+        if 'correlated_event_count' in selected_row and pd.notna(selected_row['correlated_event_count']):
+            st.caption(f"Correlated with {int(selected_row['correlated_event_count'])} other recent event(s)")

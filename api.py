@@ -1,9 +1,20 @@
+import os
 import sqlite3
 from typing import Optional, List
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Header, Depends
 from pydantic import BaseModel
+from dotenv import load_dotenv
 import database
 from agent import app as langgraph_app, AgentState
+
+load_dotenv()
+
+API_KEY = os.getenv("API_KEY")
+
+
+def verify_api_key(x_api_key: str = Header(None)):
+    if API_KEY and x_api_key != API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid or missing API key.")
 
 # 1. Initialize FastAPI App
 app = FastAPI(
@@ -49,7 +60,7 @@ def read_root():
     }
 
 # 4. GET /logs — List Logs with Pagination and Filtering
-@app.get("/logs", response_model=List[LogItem])
+@app.get("/logs", response_model=List[LogItem], dependencies=[Depends(verify_api_key)])
 def get_logs(
     limit: int = Query(20, ge=1, le=100, description="Number of logs to return"),
     offset: int = Query(0, ge=0, description="Offset for pagination"),
@@ -80,7 +91,7 @@ def get_logs(
     return [dict(row) for row in rows]
 
 # 5. GET /logs/{log_id} — Fetch Single Log Entry
-@app.get("/logs/{log_id}", response_model=LogItem)
+@app.get("/logs/{log_id}", response_model=LogItem, dependencies=[Depends(verify_api_key)])
 def get_log_by_id(log_id: int):
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -95,7 +106,7 @@ def get_log_by_id(log_id: int):
     return dict(row)
 
 # 6. GET /stats — SIEM Threat Metrics Summary
-@app.get("/stats", response_model=StatsResponse)
+@app.get("/stats", response_model=StatsResponse, dependencies=[Depends(verify_api_key)])
 def get_threat_stats():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -134,7 +145,7 @@ def get_threat_stats():
     }
 
 # 7. POST /analyze/{log_id} — Trigger Manual AI Re-Analysis
-@app.post("/analyze/{log_id}")
+@app.post("/analyze/{log_id}", dependencies=[Depends(verify_api_key)])
 def reanalyze_log(log_id: int):
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -154,14 +165,17 @@ def reanalyze_log(log_id: int):
         "log_source": log_dict.get("log_source") or "unknown",
         "user": log_dict.get("user") or "Unknown",
         "source_ip": log_dict.get("source_ip") or "Unknown",
+        "process_name": log_dict.get("process_name"),
         "is_suspicious": False,
         "threat_level": "UNKNOWN",
         "analysis_reasoning": "",
+        "mitre_technique": "",
+        "risk_score": 0,
+        "correlated_event_count": 0,
         "response_actions": ""
     }
 
     try:
-        # Run state through LangGraph pipeline
         final_state = langgraph_app.invoke(initial_state)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"AI Agent evaluation failed: {str(e)}")
@@ -169,13 +183,14 @@ def reanalyze_log(log_id: int):
     threat_level = final_state.get("threat_level", "LOW").upper()
     reasoning = final_state.get("analysis_reasoning", "")
     actions = final_state.get("response_actions", "N/A - Event evaluated as non-suspicious.")
+    mitre = final_state.get("mitre_technique")
+    risk_score = final_state.get("risk_score")
+    correlated = final_state.get("correlated_event_count")
 
-    # Save findings back to SQLite
     database.update_agent_results(
-        log_id=log_id,
-        threat_level=threat_level,
-        analysis_reasoning=reasoning,
-        response_actions=actions
+        log_id=log_id, threat_level=threat_level, analysis_reasoning=reasoning,
+        response_actions=actions, mitre_technique=mitre, risk_score=risk_score,
+        correlated_event_count=correlated
     )
 
     return {
@@ -184,5 +199,8 @@ def reanalyze_log(log_id: int):
         "log_id": log_id,
         "threat_level": threat_level,
         "analysis_reasoning": reasoning,
-        "response_actions": actions
+        "response_actions": actions,
+        "mitre_technique": mitre,
+        "risk_score": risk_score,
+        "correlated_event_count": correlated
     }
