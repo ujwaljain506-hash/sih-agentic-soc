@@ -90,30 +90,64 @@ def send_webhook_alert(state: AgentState):
     risk_score = state.get("risk_score", 0)
     correlated = state.get("correlated_event_count", 0)
 
-    color = 16711680 if threat_level == "CRITICAL" else 16747520
+    # Slack blocks use *bold* mrkdwn; Discord embeds use **bold** markdown —
+    # detect the target platform and build a native payload for each.
+    is_slack = "hooks.slack.com" in (WEBHOOK_URL or "")
 
-    payload = {
-        "username": "SIEM Agentic SOC Alert Bot",
-        "avatar_url": "https://cdn-icons-png.flaticon.com/512/1063/1063376.png",
-        "embeds": [
-            {
-                "title": f"🚨 {threat_level} THREAT DETECTED — Log #{log_id}",
-                "description": "An automated threat has been flagged by the **LangGraph AI SOC Pipeline**.",
-                "color": color,
-                "fields": [
-                    {"name": "Log Source", "value": f"`{log_source}`", "inline": True},
-                    {"name": "Target User", "value": f"`{user}`", "inline": True},
-                    {"name": "Source IP", "value": f"`{source_ip}`", "inline": True},
-                    {"name": "MITRE ATT&CK", "value": f"`{mitre}`", "inline": True},
-                    {"name": "Risk Score", "value": f"`{risk_score}/100`", "inline": True},
-                    {"name": "Correlated Events", "value": f"`{correlated}`", "inline": True},
-                    {"name": "AI Analysis", "value": reasoning[:1000]},
-                    {"name": "Remediation Actions", "value": actions[:1000]}
-                ],
-                "footer": {"text": "Autonomous Agentic SOC SIEM • Live Protection"}
-            }
-        ]
-    }
+    if is_slack:
+        payload = {
+            "username": "SIEM Agentic SOC Alert Bot",
+            "icon_emoji": ":rotating_light:",
+            "text": f"{threat_level} THREAT DETECTED — Log #{log_id}",
+            "blocks": [
+                {
+                    "type": "header",
+                    "text": {"type": "plain_text", "text": f"🚨 {threat_level} THREAT DETECTED — Log #{log_id}"[:150]},
+                },
+                {
+                    "type": "section",
+                    "fields": [
+                        {"type": "mrkdwn", "text": f"*Log Source:*\n`{log_source}`"},
+                        {"type": "mrkdwn", "text": f"*Target User:*\n`{user}`"},
+                        {"type": "mrkdwn", "text": f"*Source IP:*\n`{source_ip}`"},
+                        {"type": "mrkdwn", "text": f"*MITRE ATT&CK:*\n`{mitre}`"},
+                        {"type": "mrkdwn", "text": f"*Risk Score:*\n`{risk_score}/100`"},
+                        {"type": "mrkdwn", "text": f"*Correlated Events:*\n`{correlated}`"},
+                    ],
+                },
+                {"type": "section", "text": {"type": "mrkdwn", "text": f"*AI Analysis:*\n{reasoning[:1000]}"}},
+                {"type": "section", "text": {"type": "mrkdwn", "text": f"*Remediation Actions:*\n{actions[:1000]}"}},
+                {
+                    "type": "context",
+                    "elements": [{"type": "mrkdwn", "text": "Autonomous Agentic SOC SIEM • Live Protection"}],
+                },
+            ],
+        }
+    else:
+        color = 16711680 if threat_level == "CRITICAL" else 16747520
+
+        payload = {
+            "username": "SIEM Agentic SOC Alert Bot",
+            "avatar_url": "https://cdn-icons-png.flaticon.com/512/1063/1063376.png",
+            "embeds": [
+                {
+                    "title": f"🚨 {threat_level} THREAT DETECTED — Log #{log_id}",
+                    "description": "An automated threat has been flagged by the **LangGraph AI SOC Pipeline**.",
+                    "color": color,
+                    "fields": [
+                        {"name": "Log Source", "value": f"`{log_source}`", "inline": True},
+                        {"name": "Target User", "value": f"`{user}`", "inline": True},
+                        {"name": "Source IP", "value": f"`{source_ip}`", "inline": True},
+                        {"name": "MITRE ATT&CK", "value": f"`{mitre}`", "inline": True},
+                        {"name": "Risk Score", "value": f"`{risk_score}/100`", "inline": True},
+                        {"name": "Correlated Events", "value": f"`{correlated}`", "inline": True},
+                        {"name": "AI Analysis", "value": reasoning[:1000]},
+                        {"name": "Remediation Actions", "value": actions[:1000]}
+                    ],
+                    "footer": {"text": "Autonomous Agentic SOC SIEM • Live Protection"}
+                }
+            ]
+        }
 
     try:
         requests.post(WEBHOOK_URL, data=json.dumps(payload),
@@ -134,6 +168,7 @@ Raw Log: {state.get('raw_log')}
 Provide your assessment in this exact format:
 SUSPICIOUS: [YES or NO]
 SEVERITY: [LOW, MEDIUM, HIGH, or CRITICAL]
+MITRE: [Best-matching MITRE ATT&CK technique ID and name (e.g. T1110.003 - Password Spraying), or NONE if not applicable]
 REASON: [Brief 1-2 sentence explanation]
 """
     messages = [SystemMessage(content=SOC_SYSTEM_PROMPT), HumanMessage(content=prompt)]
@@ -147,22 +182,47 @@ REASON: [Brief 1-2 sentence explanation]
             threat_level = level
             break
 
+    # Capture the per-event MITRE prediction (validated downstream by the
+    # investigator, which falls back to the static map on malformed output)
+    mitre_technique = ""
+    mitre_match = re.search(r"MITRE:\s*(.+)", content)
+    if mitre_match:
+        candidate = mitre_match.group(1).strip()
+        if re.search(r"T\d{4}(?:\.\d{3})?", candidate) and candidate.upper() not in ("NONE", "N/A"):
+            mitre_technique = candidate[:100]
+
     print(f"\n[Agent 1: Log Analyzer Output]")
     print(content)
 
-    return {"is_suspicious": is_suspicious, "threat_level": threat_level, "analysis_reasoning": content}
+    return {"is_suspicious": is_suspicious, "threat_level": threat_level,
+            "mitre_technique": mitre_technique, "analysis_reasoning": content}
 
 def threat_investigator_node(state: AgentState) -> dict:
     correlated_count = database.get_recent_related_count(
         source_ip=state.get("source_ip"), user=state.get("user"), exclude_log_id=state.get("log_id")
     )
-    mitre = map_mitre_technique(state.get("log_source"), state.get("process_name"))
-    mitre_label = f"{mitre['id']} - {mitre['name']}"
+
+    # Prefer the analyzer's per-event MITRE prediction; validate its shape and
+    # fall back to the static technique map when the LLM output is missing
+    # or malformed. This keeps mapping dynamic while staying auditable.
+    raw_mitre = (state.get("mitre_technique") or "").strip()
+    labeled = re.match(r"(T\d{4}(?:\.\d{3})?)(?:\s*[-–—:]\s*|\s+)(.+)", raw_mitre)
+    if labeled:
+        mitre_label = f"{labeled.group(1)} - {labeled.group(2).strip()[:60]}"
+        mitre_source = "LLM"
+    elif re.fullmatch(r"T\d{4}(?:\.\d{3})?", raw_mitre):
+        mitre_label = raw_mitre
+        mitre_source = "LLM"
+    else:
+        mitre = map_mitre_technique(state.get("log_source"), state.get("process_name"))
+        mitre_label = f"{mitre['id']} - {mitre['name']}"
+        mitre_source = "static map"
+
     risk_score = calculate_risk_score(state.get("threat_level", "LOW"), correlated_count)
 
     print(f"\n[Agent 2: Threat Investigator Output]")
     print(f"Correlated related events (recent window): {correlated_count}")
-    print(f"MITRE ATT&CK Technique: {mitre_label}")
+    print(f"MITRE ATT&CK Technique: {mitre_label} (source: {mitre_source})")
     print(f"Calculated Risk Score: {risk_score}/100")
 
     return {"correlated_event_count": correlated_count, "mitre_technique": mitre_label, "risk_score": risk_score}
@@ -220,7 +280,7 @@ workflow.add_edge("responder", END)
 app = workflow.compile()
 
 def fetch_unanalyzed_logs(db_path: str = "soc_events.db", batch_size: int = 5):
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path, timeout=10)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT id, log_source, user, source_ip, process_name, raw_log

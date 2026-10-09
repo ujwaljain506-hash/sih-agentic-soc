@@ -2,7 +2,7 @@ import sqlite3
 
 def setup_database():
     """Initializes the database table and handles schema migrations."""
-    conn = sqlite3.connect("soc_events.db")
+    conn = sqlite3.connect("soc_events.db", timeout=10)
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS logs (
@@ -24,17 +24,19 @@ def setup_database():
 
 def upgrade_schema():
     """Ensures existing tables have the agent result columns added."""
-    conn = sqlite3.connect("soc_events.db")
+    conn = sqlite3.connect("soc_events.db", timeout=10)
     cursor = conn.cursor()
     
     cursor.execute("PRAGMA table_info(logs)")
     existing_columns = [column[1] for column in cursor.fetchall()]
     
-    new_columns = ["threat_level", "analysis_reasoning", "response_actions",
-                   "mitre_technique", "risk_score", "correlated_event_count"]
-    for col in new_columns:
+    new_columns = {
+        "threat_level": "TEXT", "analysis_reasoning": "TEXT", "response_actions": "TEXT",
+        "mitre_technique": "TEXT", "risk_score": "INTEGER", "correlated_event_count": "INTEGER",
+    }
+    for col, col_type in new_columns.items():
         if col not in existing_columns:
-            cursor.execute(f"ALTER TABLE logs ADD COLUMN {col} TEXT")
+            cursor.execute(f"ALTER TABLE logs ADD COLUMN {col} {col_type}")
             print(f"[DB Migration] Added missing column '{col}' to logs table.")
             
     conn.commit()
@@ -43,7 +45,7 @@ def upgrade_schema():
 
 def setup_ingestion_state_table():
     """Tracks how many lines of each log file have already been ingested."""
-    conn = sqlite3.connect("soc_events.db")
+    conn = sqlite3.connect("soc_events.db", timeout=10)
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS ingestion_state (
@@ -57,7 +59,7 @@ def setup_ingestion_state_table():
 
 def get_last_line_read(filename: str) -> int:
     """Returns how many lines of this file were already processed (0 if never seen)."""
-    conn = sqlite3.connect("soc_events.db")
+    conn = sqlite3.connect("soc_events.db", timeout=10)
     cursor = conn.cursor()
     cursor.execute("SELECT last_line_read FROM ingestion_state WHERE filename = ?", (filename,))
     row = cursor.fetchone()
@@ -67,7 +69,7 @@ def get_last_line_read(filename: str) -> int:
 
 def update_last_line_read(filename: str, line_number: int):
     """Records that we've now processed up to line_number for this file."""
-    conn = sqlite3.connect("soc_events.db")
+    conn = sqlite3.connect("soc_events.db", timeout=10)
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO ingestion_state (filename, last_line_read)
@@ -80,7 +82,7 @@ def update_last_line_read(filename: str, line_number: int):
 
 def insert_log(event):
     """Inserts normalized log dictionary into SQLite using parameterized query."""
-    conn = sqlite3.connect("soc_events.db")
+    conn = sqlite3.connect("soc_events.db", timeout=10)
     cursor = conn.cursor()
     sql = '''
         INSERT INTO logs (
@@ -98,11 +100,48 @@ def insert_log(event):
     )
     cursor.execute(sql, values)
     conn.commit()
+    log_id = cursor.lastrowid
     conn.close()
+    return log_id
+
+
+def get_recent_related_count(source_ip=None, user=None, exclude_log_id=None, window=200):
+    """Counts other events in a recent id-window sharing the same source_ip or user.
+
+    Used by the Threat Investigator to correlate an event with related activity
+    (e.g. repeated brute-force attempts from one IP against one account).
+    """
+    if not source_ip and not user:
+        return 0
+
+    conn = sqlite3.connect("soc_events.db", timeout=10)
+    cursor = conn.cursor()
+
+    where = []
+    params = []
+    if exclude_log_id is not None:
+        where.append("id != ?")
+        params.append(exclude_log_id)
+        where.append("id > ?")
+        params.append(max(exclude_log_id - window, 0))
+
+    related = []
+    if source_ip:
+        related.append("source_ip = ?")
+        params.append(source_ip)
+    if user:
+        related.append("user = ?")
+        params.append(user)
+    where.append("(" + " OR ".join(related) + ")")
+
+    cursor.execute(f"SELECT COUNT(*) FROM logs WHERE {' AND '.join(where)}", params)
+    count = cursor.fetchone()[0]
+    conn.close()
+    return count
 
 def update_agent_results(log_id: int, threat_level: str, analysis_reasoning: str, response_actions: str,
                           mitre_technique: str = None, risk_score: int = None, correlated_event_count: int = None):
-    conn = sqlite3.connect("soc_events.db")
+    conn = sqlite3.connect("soc_events.db", timeout=10)
     cursor = conn.cursor()
     sql = '''
         UPDATE logs 

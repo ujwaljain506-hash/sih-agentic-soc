@@ -1,5 +1,5 @@
 import os
-import parser
+import linux_auth_parser
 import sysmon_parser
 import database
 
@@ -32,7 +32,7 @@ def process_file(filename, file_path):
                 print(f"Saved Sysmon event to DB from host: {event.get('host')}")
 
         elif filename.endswith(".log"):
-            event = parser.parse_linux_auth(line)
+            event = linux_auth_parser.parse_linux_auth(line)
             if event:
                 database.insert_log(event)
                 print(f"Saved Linux event to DB for user: {event.get('user')}")

@@ -2,9 +2,11 @@ import os
 import sqlite3
 from typing import Optional, List
 from fastapi import FastAPI, HTTPException, Query, Header, Depends
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 import database
+import linux_auth_parser
+import sysmon_parser
 from agent import app as langgraph_app, AgentState
 
 load_dotenv()
@@ -19,8 +21,8 @@ def verify_api_key(x_api_key: str = Header(None)):
 # 1. Initialize FastAPI App
 app = FastAPI(
     title="Agentic SOC SIEM REST API",
-    description="REST API interface for querying security logs, threat metrics, and triggering AI re-analysis.",
-    version="1.0.0"
+    description="REST API interface for ingesting security logs, querying threat metrics, and triggering AI re-analysis.",
+    version="1.1.0"
 )
 
 DB_PATH = "soc_events.db"
@@ -67,7 +69,7 @@ def get_logs(
     source: Optional[str] = Query(None, description="Filter by log_source (e.g. linux-auth, windows-sysmon)"),
     severity: Optional[str] = Query(None, description="Filter by threat level (e.g. LOW, MEDIUM, HIGH, CRITICAL)")
 ):
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=10)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -93,7 +95,7 @@ def get_logs(
 # 5. GET /logs/{log_id} — Fetch Single Log Entry
 @app.get("/logs/{log_id}", response_model=LogItem, dependencies=[Depends(verify_api_key)])
 def get_log_by_id(log_id: int):
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=10)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM logs WHERE id = ?", (log_id,))
@@ -108,7 +110,7 @@ def get_log_by_id(log_id: int):
 # 6. GET /stats — SIEM Threat Metrics Summary
 @app.get("/stats", response_model=StatsResponse, dependencies=[Depends(verify_api_key)])
 def get_threat_stats():
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=10)
     cursor = conn.cursor()
 
     # Total log count
@@ -147,7 +149,7 @@ def get_threat_stats():
 # 7. POST /analyze/{log_id} — Trigger Manual AI Re-Analysis
 @app.post("/analyze/{log_id}", dependencies=[Depends(verify_api_key)])
 def reanalyze_log(log_id: int):
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=10)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM logs WHERE id = ?", (log_id,))
@@ -159,6 +161,18 @@ def reanalyze_log(log_id: int):
 
     log_dict = dict(row)
 
+    try:
+        result = _run_agent_analysis(log_id, log_dict)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI Agent evaluation failed: {str(e)}")
+
+    return {"status": "success", "message": f"Log #{log_id} successfully re-analyzed.", **result}
+
+
+# ─── Shared AI + ingestion helpers ──────────────────────────────────────────
+
+def _run_agent_analysis(log_id: int, log_dict: dict) -> dict:
+    """Run the LangGraph SOC pipeline on one normalized log and persist the verdict."""
     initial_state: AgentState = {
         "log_id": log_id,
         "raw_log": log_dict.get("raw_log") or "",
@@ -174,33 +188,102 @@ def reanalyze_log(log_id: int):
         "correlated_event_count": 0,
         "response_actions": ""
     }
+    final_state = langgraph_app.invoke(initial_state)
 
-    try:
-        final_state = langgraph_app.invoke(initial_state)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"AI Agent evaluation failed: {str(e)}")
-
-    threat_level = final_state.get("threat_level", "LOW").upper()
-    reasoning = final_state.get("analysis_reasoning", "")
-    actions = final_state.get("response_actions", "N/A - Event evaluated as non-suspicious.")
-    mitre = final_state.get("mitre_technique")
-    risk_score = final_state.get("risk_score")
-    correlated = final_state.get("correlated_event_count")
-
-    database.update_agent_results(
-        log_id=log_id, threat_level=threat_level, analysis_reasoning=reasoning,
-        response_actions=actions, mitre_technique=mitre, risk_score=risk_score,
-        correlated_event_count=correlated
-    )
-
-    return {
-        "status": "success",
-        "message": f"Log #{log_id} successfully re-analyzed.",
+    result = {
         "log_id": log_id,
-        "threat_level": threat_level,
-        "analysis_reasoning": reasoning,
-        "response_actions": actions,
-        "mitre_technique": mitre,
-        "risk_score": risk_score,
-        "correlated_event_count": correlated
+        "threat_level": final_state.get("threat_level", "LOW").upper(),
+        "analysis_reasoning": final_state.get("analysis_reasoning", ""),
+        "response_actions": final_state.get("response_actions", "N/A - Event evaluated as non-suspicious."),
+        "mitre_technique": final_state.get("mitre_technique"),
+        "risk_score": final_state.get("risk_score"),
+        "correlated_event_count": final_state.get("correlated_event_count"),
     }
+    database.update_agent_results(
+        log_id=log_id, threat_level=result["threat_level"],
+        analysis_reasoning=result["analysis_reasoning"],
+        response_actions=result["response_actions"],
+        mitre_technique=result["mitre_technique"],
+        risk_score=result["risk_score"],
+        correlated_event_count=result["correlated_event_count"],
+    )
+    return result
+
+
+def _normalize_and_insert(raw_log: str, log_source: Optional[str]):
+    """Parse one raw log line server-side and insert it.
+
+    Returns (log_id, parsed_event, error_message).
+    """
+    source = (log_source or "auto").strip().lower()
+    event = None
+
+    if source == "auto":
+        stripped = raw_log.strip()
+        if stripped.startswith("{"):
+            event = sysmon_parser.parse_sysmon(stripped)
+        if event is None:
+            event = linux_auth_parser.parse_linux_auth(stripped)
+    elif source == "windows-sysmon":
+        event = sysmon_parser.parse_sysmon(raw_log.strip())
+    elif source == "linux-auth":
+        event = linux_auth_parser.parse_linux_auth(raw_log.strip())
+    else:
+        return None, None, f"unsupported log_source '{log_source}' — use 'linux-auth', 'windows-sysmon', or 'auto'"
+
+    if event is None:
+        return None, None, "raw_log did not match the expected format for this log_source"
+
+    return database.insert_log(event), event, None
+
+
+class IngestEvent(BaseModel):
+    raw_log: str
+    log_source: Optional[str] = None  # 'linux-auth' | 'windows-sysmon' | 'auto' (default)
+    analyze: bool = False             # run the AI pipeline synchronously before responding
+
+
+class IngestBatch(BaseModel):
+    events: List[IngestEvent] = Field(..., min_length=1, max_length=500)
+
+
+# 8. POST /ingest — Remote single-event log ingestion
+@app.post("/ingest", dependencies=[Depends(verify_api_key)])
+def ingest_event(event: IngestEvent):
+    """Ingest one raw log line. Parsing and normalization happen server-side.
+    Set analyze=true to run the full AI SOC pipeline synchronously."""
+    log_id, parsed, err = _normalize_and_insert(event.raw_log, event.log_source)
+    if err:
+        raise HTTPException(status_code=422, detail=err)
+
+    response = {"status": "ingested", "log_id": log_id}
+    if event.analyze:
+        try:
+            response["analysis"] = _run_agent_analysis(log_id, parsed)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Ingested (log_id={log_id}) but AI analysis failed: {str(e)}")
+    return response
+
+
+# 9. POST /ingest/batch — Bulk remote ingestion (up to 500 events per call)
+@app.post("/ingest/batch", dependencies=[Depends(verify_api_key)])
+def ingest_batch(batch: IngestBatch):
+    """Ingest up to 500 raw log lines in one call. Per-event analyze flags run
+    the AI pipeline synchronously — use sparingly on large batches."""
+    results = []
+    ingested = 0
+    for index, event in enumerate(batch.events):
+        log_id, parsed, err = _normalize_and_insert(event.raw_log, event.log_source)
+        if err:
+            results.append({"index": index, "status": "error", "detail": err})
+            continue
+        ingested += 1
+        entry = {"index": index, "status": "ingested", "log_id": log_id}
+        if event.analyze:
+            try:
+                entry["analysis"] = _run_agent_analysis(log_id, parsed)
+            except Exception as e:
+                entry["analysis_error"] = str(e)
+        results.append(entry)
+
+    return {"ingested": ingested, "failed": len(batch.events) - ingested, "results": results}
