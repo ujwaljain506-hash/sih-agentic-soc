@@ -973,3 +973,881 @@ Oct 09 20:07:46 soc-server sshd[2794]: Failed password for testuser from 194.26.
 Oct 09 20:07:46 soc-server sshd[5031]: Failed password for testuser from 194.26.29.156 port 44443 ssh2
 Oct 09 20:08:06 soc-server sshd[8723]: Invalid user admin1 from 45.9.148.114
 Oct 09 20:08:06 soc-server sshd[6678]: Failed password for invalid user admin1 from 45.9.148.114 port 56133 ssh2
+Oct 09 20:16:29 soc-server sshd[5191]: Invalid user test from 91.240.118.172
+Oct 09 20:16:29 soc-server sshd[2648]: Failed password for invalid user test from 91.240.118.172 port 40078 ssh2
+Oct 09 20:16:49 soc-server sshd[6037]: Failed password for jenkins from 218.92.0.204 port 41463 ssh2
+Oct 09 20:16:49 soc-server sshd[4783]: Failed password for jenkins from 218.92.0.204 port 63176 ssh2
+Oct 09 20:16:49 soc-server sshd[7427]: Failed password for jenkins from 218.92.0.204 port 58540 ssh2
+Oct 09 20:16:49 soc-server sshd[2918]: Failed password for jenkins from 218.92.0.204 port 33282 ssh2
+Oct 09 20:16:49 soc-server sshd[5460]: Failed password for jenkins from 218.92.0.204 port 52661 ssh2
+Oct 09 20:16:49 soc-server sshd[3275]: Failed password for jenkins from 218.92.0.204 port 58412 ssh2
+Oct 09 20:16:49 soc-server sshd[9847]: Failed password for deploy from 45.9.148.114 port 38141 ssh2
+Oct 09 20:16:49 soc-server sshd[5505]: Failed password for deploy from 45.9.148.114 port 34441 ssh2
+Oct 09 20:16:49 soc-server sshd[6690]: Failed password for deploy from 45.9.148.114 port 33688 ssh2
+Oct 09 20:16:49 soc-server sshd[2976]: Failed password for deploy from 45.9.148.114 port 58979 ssh2
+Oct 09 20:16:49 soc-server sshd[5955]: Failed password for deploy from 45.9.148.114 port 34474 ssh2
+Oct 09 20:16:49 soc-server sshd[5876]: Failed password for deploy from 45.9.148.114 port 50497 ssh2
+Oct 09 20:17:09 soc-server sshd[8423]: Invalid user oracle from 45.147.229.11
+Oct 09 20:17:09 soc-server sshd[9726]: Failed password for invalid user oracle from 45.147.229.11 port 44909 ssh2
+Oct 09 20:17:27 soc-server sshd[9968]: Failed password for root from 194.26.29.156 port 35746 ssh2
+Oct 09 20:17:27 soc-server sshd[1470]: Failed password for root from 194.26.29.156 port 39479 ssh2
+Oct 09 20:17:27 soc-server sshd[4821]: Failed password for root from 194.26.29.156 port 59959 ssh2
+Oct 09 20:17:27 soc-server sshd[9000]: Failed password for root from 194.26.29.156 port 55974 ssh2
+Oct 09 20:17:27 soc-server sshd[1947]: Accepted password for root from 194.26.29.156 port 62526 ssh2
+Oct 09 20:17:47 soc-server sudo:     admin : TTY=pts/4 ; PWD=/home/admin ; USER=root ; COMMAND=/usr/bin/tail /var/log/auth.log
+Oct 09 20:18:07 soc-server sshd[5450]: Accepted password for postgres from 10.0.0.5 port 43709 ssh2
+Oct 09 20:18:27 soc-server sshd[8547]: Failed password for ubuntu from 91.240.118.172 port 36440 ssh2
+Oct 09 20:18:27 soc-server sshd[4802]: Failed password for ubuntu from 91.240.118.172 port 42091 ssh2
+Oct 09 20:18:27 soc-server sshd[9294]: Failed password for ubuntu from 91.240.118.172 port 43248 ssh2
+Oct 09 20:18:27 soc-server sshd[6383]: Failed password for ubuntu from 91.240.118.172 port 60047 ssh2
+Oct 09 20:18:27 soc-server sshd[1836]: Failed password for ubuntu from 91.240.118.172 port 51279 ssh2
+Oct 09 20:18:27 soc-server sshd[1311]: Accepted password for ubuntu from 91.240.118.172 port 63285 ssh2
+Oct 09 20:18:45 soc-server sshd[7192]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=218.92.0.204  user=deploy
+Oct 09 20:19:26 soc-server sshd[5580]: Failed password for postgres from 103.149.27.62 port 60242 ssh2
+Oct 09 20:19:26 soc-server sshd[7271]: Failed password for postgres from 103.149.27.62 port 44344 ssh2
+Oct 09 20:19:26 soc-server sshd[3131]: Failed password for postgres from 103.149.27.62 port 32290 ssh2
+Oct 09 20:19:26 soc-server sshd[2336]: Failed password for postgres from 103.149.27.62 port 41844 ssh2
+Oct 09 20:19:26 soc-server sshd[4539]: Failed password for postgres from 103.149.27.62 port 56319 ssh2
+Oct 09 20:19:33 db-primary-01 sshd[9066]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=103.149.27.62  user=root
+Oct 09 20:19:33 db-primary-01 sshd[3940]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=45.147.229.11  user=jenkins
+Oct 09 20:19:53 web-prod-02 sshd[8958]: Failed password for jenkins from 91.240.118.172 port 32647 ssh2
+Oct 09 20:19:53 app-stage-03 sshd[6612]: Failed password for jenkins from 91.240.118.172 port 37665 ssh2
+Oct 09 20:19:53 web-prod-01 sshd[5618]: Failed password for jenkins from 91.240.118.172 port 61132 ssh2
+Oct 09 20:19:53 web-prod-02 sshd[9010]: Failed password for jenkins from 91.240.118.172 port 54489 ssh2
+Oct 09 20:19:53 jump-gateway sshd[3281]: Failed password for jenkins from 91.240.118.172 port 36745 ssh2
+Oct 09 20:20:53 mail-relay-01 sshd[2825]: Accepted password for deploy from 192.168.1.20 port 47457 ssh2
+Oct 09 20:21:13 db-primary-01 sshd[8663]: Accepted password for deploy from 10.0.0.5 port 57552 ssh2
+Oct 09 20:21:33 web-prod-01 sshd[4117]: Accepted password for admin from 172.16.4.11 port 46074 ssh2
+Oct 09 20:21:33 web-prod-01 sshd[1557]: Failed password for testuser from 91.240.118.172 port 63039 ssh2
+Oct 09 20:21:33 web-prod-02 sshd[5095]: Failed password for testuser from 91.240.118.172 port 33223 ssh2
+Oct 09 20:21:33 app-stage-03 sshd[8282]: Failed password for testuser from 91.240.118.172 port 61950 ssh2
+Oct 09 20:21:33 db-primary-01 sshd[8298]: Failed password for testuser from 91.240.118.172 port 49034 ssh2
+Oct 09 20:21:33 jump-gateway sshd[7309]: Accepted password for testuser from 91.240.118.172 port 32900 ssh2
+Oct 09 20:21:53 app-stage-03 sudo:     svc_backup : TTY=pts/9 ; PWD=/home/svc_backup ; USER=root ; COMMAND=/usr/bin/tail /var/log/auth.log
+Oct 09 20:22:33 web-prod-01 sshd[6470]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=185.220.101.5  user=jenkins
+Oct 09 20:22:53 web-prod-02 sshd[1134]: Failed password for testuser from 45.9.148.114 port 40413 ssh2
+Oct 09 20:22:53 db-primary-01 sshd[9249]: Failed password for testuser from 45.9.148.114 port 49998 ssh2
+Oct 09 20:22:53 web-prod-02 sshd[2162]: Failed password for testuser from 45.9.148.114 port 50207 ssh2
+Oct 09 20:23:13 app-stage-03 sshd[4701]: Failed password for root from 194.26.29.156 port 54391 ssh2
+Oct 09 20:23:13 web-prod-02 sshd[5897]: Failed password for root from 194.26.29.156 port 51535 ssh2
+Oct 09 20:23:13 jump-gateway sshd[6837]: Failed password for root from 194.26.29.156 port 50579 ssh2
+Oct 09 20:23:13 app-stage-03 sshd[8485]: Failed password for root from 194.26.29.156 port 54228 ssh2
+Oct 09 20:23:13 web-prod-02 sshd[7687]: Failed password for postgres from 194.26.29.156 port 60682 ssh2
+Oct 09 20:23:13 web-prod-02 sshd[3088]: Failed password for postgres from 194.26.29.156 port 53980 ssh2
+Oct 09 20:23:13 soc-server sshd[2991]: Failed password for postgres from 194.26.29.156 port 58723 ssh2
+Oct 09 20:23:13 soc-server sshd[1861]: Failed password for postgres from 194.26.29.156 port 55359 ssh2
+Oct 09 20:23:13 mail-relay-01 sshd[3433]: Failed password for postgres from 194.26.29.156 port 36869 ssh2
+Oct 09 20:23:13 web-prod-02 sshd[8026]: Accepted password for postgres from 194.26.29.156 port 54499 ssh2
+Oct 09 20:23:33 mail-relay-01 sudo:     svc_backup : TTY=pts/8 ; PWD=/home/svc_backup ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Oct 09 20:23:53 mail-relay-01 sshd[2642]: Failed password for testuser from 45.9.148.114 port 34143 ssh2
+Oct 09 20:23:53 mail-relay-01 sshd[2747]: Failed password for testuser from 45.9.148.114 port 45384 ssh2
+Oct 09 20:23:53 db-primary-01 sshd[4887]: Failed password for testuser from 45.9.148.114 port 51679 ssh2
+Oct 09 20:23:53 app-stage-03 sshd[4746]: Failed password for testuser from 45.9.148.114 port 30915 ssh2
+Oct 09 20:24:13 db-primary-01 sshd[8312]: Failed password for ubuntu from 45.147.229.11 port 36439 ssh2
+Oct 09 20:24:13 soc-server sshd[5026]: Failed password for ubuntu from 45.147.229.11 port 64568 ssh2
+Oct 09 20:24:13 web-prod-02 sshd[7769]: Failed password for ubuntu from 45.147.229.11 port 51881 ssh2
+Oct 09 20:24:13 soc-server sshd[1926]: Failed password for ubuntu from 45.147.229.11 port 30852 ssh2
+Oct 09 20:24:13 web-prod-02 sshd[6473]: Failed password for ubuntu from 45.147.229.11 port 51263 ssh2
+Oct 09 20:24:33 soc-server sshd[6197]: Accepted password for root from 192.168.1.20 port 61104 ssh2
+Oct 09 20:25:13 web-prod-02 sshd[4569]: Invalid user ftpuser from 185.220.101.5
+Oct 09 20:25:13 db-primary-01 sshd[9702]: Failed password for invalid user ftpuser from 185.220.101.5 port 37379 ssh2
+Oct 09 20:25:13 app-stage-03 sshd[2086]: Failed password for ubuntu from 103.149.27.62 port 55251 ssh2
+Oct 09 20:25:13 jump-gateway sshd[5034]: Failed password for ubuntu from 103.149.27.62 port 32835 ssh2
+Oct 09 20:25:13 web-prod-01 sshd[5416]: Failed password for ubuntu from 103.149.27.62 port 40862 ssh2
+Oct 09 20:25:13 jump-gateway sshd[9191]: Accepted password for ubuntu from 103.149.27.62 port 64169 ssh2
+Oct 09 20:25:33 app-stage-03 sshd[8208]: Failed password for admin from 185.220.101.5 port 54973 ssh2
+Oct 09 20:25:33 jump-gateway sshd[1226]: Failed password for admin from 185.220.101.5 port 55183 ssh2
+Oct 09 20:25:33 web-prod-02 sshd[9305]: Failed password for admin from 185.220.101.5 port 64748 ssh2
+Oct 09 20:25:33 web-prod-01 sshd[1418]: Accepted password for admin from 185.220.101.5 port 63683 ssh2
+Oct 09 20:25:33 db-primary-01 sshd[6924]: Failed password for admin from 218.92.0.204 port 37823 ssh2
+Oct 09 20:25:33 jump-gateway sshd[4852]: Failed password for admin from 218.92.0.204 port 45087 ssh2
+Oct 09 20:25:33 web-prod-01 sshd[9492]: Failed password for admin from 218.92.0.204 port 41598 ssh2
+Oct 09 20:25:33 jump-gateway sshd[1032]: Failed password for admin from 218.92.0.204 port 38550 ssh2
+Oct 09 20:25:33 web-prod-01 sshd[4978]: Failed password for admin from 218.92.0.204 port 32792 ssh2
+Oct 09 20:25:33 web-prod-02 sshd[2966]: Accepted password for admin from 218.92.0.204 port 55634 ssh2
+Oct 09 20:25:53 db-primary-01 sudo:     ubuntu : TTY=pts/2 ; PWD=/home/ubuntu ; USER=root ; COMMAND=/bin/bash
+Oct 09 20:26:13 jump-gateway sshd[5081]: Failed password for guest from 45.9.148.114 port 50569 ssh2
+Oct 09 20:26:13 app-stage-03 sshd[8584]: Failed password for guest from 45.9.148.114 port 48216 ssh2
+Oct 09 20:26:13 soc-server sshd[5681]: Failed password for guest from 45.9.148.114 port 60208 ssh2
+Oct 09 20:26:13 web-prod-01 sshd[3720]: Failed password for guest from 45.9.148.114 port 49148 ssh2
+Oct 09 20:26:33 app-stage-03 sshd[2007]: Invalid user oracle from 185.220.101.5
+Oct 09 20:26:33 db-primary-01 sshd[7305]: Failed password for invalid user oracle from 185.220.101.5 port 57891 ssh2
+Oct 09 20:26:33 jump-gateway sudo:     deploy : TTY=pts/3 ; PWD=/home/deploy ; USER=root ; COMMAND=/usr/bin/apt update
+Oct 09 20:26:53 jump-gateway sshd[5253]: Failed password for postgres from 45.9.148.114 port 60194 ssh2
+Oct 09 20:26:53 soc-server sshd[9623]: Failed password for postgres from 45.9.148.114 port 61182 ssh2
+Oct 09 20:26:53 mail-relay-01 sshd[1305]: Failed password for postgres from 45.9.148.114 port 43160 ssh2
+Oct 09 20:26:53 app-stage-03 sshd[6992]: Failed password for postgres from 45.9.148.114 port 61934 ssh2
+Oct 09 20:26:53 web-prod-01 sshd[1134]: Failed password for postgres from 45.9.148.114 port 33691 ssh2
+Oct 09 20:27:13 db-primary-01 sshd[3520]: Failed password for ubuntu from 61.177.173.35 port 44673 ssh2
+Oct 09 20:27:13 web-prod-02 sshd[5296]: Failed password for ubuntu from 61.177.173.35 port 54231 ssh2
+Oct 09 20:27:13 db-primary-01 sshd[1419]: Failed password for ubuntu from 61.177.173.35 port 56436 ssh2
+Oct 09 20:27:13 app-stage-03 sshd[1476]: Failed password for ubuntu from 61.177.173.35 port 30383 ssh2
+Oct 09 20:27:13 db-primary-01 sshd[4054]: Failed password for ubuntu from 61.177.173.35 port 58535 ssh2
+Oct 09 20:27:33 web-prod-02 sshd[9378]: Failed password for root from 45.147.229.11 port 33366 ssh2
+Oct 09 20:27:33 web-prod-01 sshd[2582]: Failed password for root from 45.147.229.11 port 60978 ssh2
+Oct 09 20:27:33 app-stage-03 sshd[4394]: Failed password for root from 45.147.229.11 port 37601 ssh2
+Oct 09 20:27:33 app-stage-03 sshd[8309]: Accepted password for root from 45.147.229.11 port 64444 ssh2
+Oct 09 20:28:13 app-stage-03 sshd[9535]: Failed password for postgres from 91.240.118.172 port 64395 ssh2
+Oct 09 20:28:13 soc-server sshd[1466]: Failed password for postgres from 91.240.118.172 port 30530 ssh2
+Oct 09 20:28:13 app-stage-03 sshd[6731]: Failed password for postgres from 91.240.118.172 port 56600 ssh2
+Oct 09 20:28:13 jump-gateway sshd[9029]: Failed password for postgres from 91.240.118.172 port 63363 ssh2
+Oct 09 20:28:13 web-prod-02 sshd[7344]: Failed password for postgres from 91.240.118.172 port 30025 ssh2
+Oct 09 20:29:13 web-prod-02 sshd[3225]: Invalid user pi from 91.240.118.172
+Oct 09 20:29:13 soc-server sshd[9019]: Failed password for invalid user pi from 91.240.118.172 port 42729 ssh2
+Oct 09 20:29:33 web-prod-01 sshd[5369]: Failed password for jenkins from 91.240.118.172 port 56578 ssh2
+Oct 09 20:29:33 db-primary-01 sshd[9039]: Failed password for jenkins from 91.240.118.172 port 47358 ssh2
+Oct 09 20:29:33 web-prod-02 sshd[7054]: Failed password for jenkins from 91.240.118.172 port 60976 ssh2
+Oct 09 20:29:33 app-stage-03 sshd[7958]: Failed password for jenkins from 91.240.118.172 port 38436 ssh2
+Oct 09 20:29:33 mail-relay-01 sshd[8867]: Failed password for jenkins from 91.240.118.172 port 50573 ssh2
+Oct 09 20:29:33 web-prod-01 sshd[8645]: Accepted password for jenkins from 91.240.118.172 port 35149 ssh2
+Oct 09 20:30:13 app-stage-03 sshd[8684]: Failed password for admin from 185.220.101.5 port 43077 ssh2
+Oct 09 20:30:13 web-prod-02 sshd[8355]: Failed password for admin from 185.220.101.5 port 44946 ssh2
+Oct 09 20:30:13 web-prod-01 sshd[8460]: Failed password for admin from 185.220.101.5 port 41536 ssh2
+Oct 09 20:30:13 jump-gateway sshd[2251]: Failed password for admin from 185.220.101.5 port 36348 ssh2
+Oct 09 20:30:13 web-prod-02 sshd[1194]: Accepted password for admin from 185.220.101.5 port 48882 ssh2
+Oct 09 20:30:33 db-primary-01 sshd[1674]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=194.26.29.156  user=postgres
+Oct 09 20:30:33 web-prod-01 sshd[7807]: Invalid user oracle from 45.147.229.11
+Oct 09 20:30:33 soc-server sshd[4160]: Failed password for invalid user oracle from 45.147.229.11 port 32763 ssh2
+Oct 09 20:30:53 db-primary-01 sshd[2208]: Failed password for root from 91.240.118.172 port 58354 ssh2
+Oct 09 20:30:53 soc-server sshd[4709]: Failed password for root from 91.240.118.172 port 43186 ssh2
+Oct 09 20:30:53 soc-server sshd[7245]: Failed password for root from 91.240.118.172 port 43032 ssh2
+Oct 09 20:30:53 web-prod-02 sshd[8510]: Failed password for root from 91.240.118.172 port 48252 ssh2
+Oct 09 20:30:53 web-prod-01 sshd[7178]: Failed password for root from 91.240.118.172 port 39751 ssh2
+Oct 09 20:30:53 mail-relay-01 sshd[7754]: Failed password for root from 91.240.118.172 port 46332 ssh2
+Oct 09 20:31:13 app-stage-03 sshd[4191]: Invalid user ftpuser from 91.240.118.172
+Oct 09 20:31:13 web-prod-01 sshd[1918]: Failed password for invalid user ftpuser from 91.240.118.172 port 41420 ssh2
+Oct 09 20:31:13 web-prod-01 sudo:     ubuntu : TTY=pts/4 ; PWD=/home/ubuntu ; USER=root ; COMMAND=/usr/bin/apt update
+Oct 09 20:31:33 jump-gateway sshd[4278]: Failed password for jenkins from 194.26.29.156 port 60292 ssh2
+Oct 09 20:31:33 web-prod-01 sshd[7988]: Failed password for jenkins from 194.26.29.156 port 48176 ssh2
+Oct 09 20:31:33 jump-gateway sshd[6277]: Failed password for jenkins from 194.26.29.156 port 61288 ssh2
+Oct 09 20:31:33 web-prod-02 sshd[3907]: Failed password for jenkins from 194.26.29.156 port 54923 ssh2
+Oct 09 20:31:33 web-prod-02 sshd[8099]: Failed password for jenkins from 194.26.29.156 port 38779 ssh2
+Oct 09 20:31:33 web-prod-01 sshd[3659]: Accepted password for jenkins from 194.26.29.156 port 57206 ssh2
+Oct 09 20:31:53 web-prod-01 sshd[1059]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=45.147.229.11  user=deploy
+Oct 09 20:32:13 db-primary-01 sudo:     admin : TTY=pts/7 ; PWD=/home/admin ; USER=root ; COMMAND=/usr/bin/apt update
+Oct 09 20:32:33 web-prod-02 sshd[7166]: Invalid user test from 103.149.27.62
+Oct 09 20:32:33 db-primary-01 sshd[7994]: Failed password for invalid user test from 103.149.27.62 port 56440 ssh2
+Oct 09 20:32:53 soc-server sshd[1413]: Failed password for root from 103.149.27.62 port 54623 ssh2
+Oct 09 20:32:53 app-stage-03 sshd[4655]: Failed password for root from 103.149.27.62 port 39560 ssh2
+Oct 09 20:32:53 db-primary-01 sshd[2052]: Failed password for root from 103.149.27.62 port 50710 ssh2
+Oct 09 20:32:53 mail-relay-01 sshd[5264]: Failed password for root from 103.149.27.62 port 55222 ssh2
+Oct 09 20:32:53 jump-gateway sshd[7138]: Accepted password for root from 103.149.27.62 port 58204 ssh2
+Oct 09 20:33:13 db-primary-01 sshd[2683]: Failed password for jenkins from 61.177.173.35 port 52609 ssh2
+Oct 09 20:33:13 soc-server sshd[2727]: Failed password for jenkins from 61.177.173.35 port 49869 ssh2
+Oct 09 20:33:13 app-stage-03 sshd[9317]: Failed password for jenkins from 61.177.173.35 port 30767 ssh2
+Oct 09 20:33:13 app-stage-03 sshd[1178]: Failed password for jenkins from 61.177.173.35 port 46612 ssh2
+Oct 09 20:33:13 db-primary-01 sshd[6957]: Failed password for jenkins from 61.177.173.35 port 62260 ssh2
+Oct 09 20:33:13 jump-gateway sshd[3543]: Failed password for jenkins from 61.177.173.35 port 31786 ssh2
+Oct 09 20:33:33 web-prod-01 sudo:     deploy : TTY=pts/9 ; PWD=/home/deploy ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Oct 09 20:33:53 soc-server sshd[6372]: Failed password for deploy from 194.26.29.156 port 58861 ssh2
+Oct 09 20:33:53 mail-relay-01 sshd[6032]: Failed password for deploy from 194.26.29.156 port 63154 ssh2
+Oct 09 20:33:53 db-primary-01 sshd[6962]: Failed password for deploy from 194.26.29.156 port 44007 ssh2
+Oct 09 20:33:53 web-prod-01 sshd[7707]: Failed password for deploy from 194.26.29.156 port 54311 ssh2
+Oct 09 20:33:53 jump-gateway sshd[3344]: Failed password for deploy from 194.26.29.156 port 62901 ssh2
+Oct 09 20:33:53 jump-gateway sshd[1321]: Failed password for deploy from 194.26.29.156 port 39865 ssh2
+Oct 09 20:34:13 soc-server sudo:     svc_backup : TTY=pts/5 ; PWD=/home/svc_backup ; USER=root ; COMMAND=/bin/bash
+Oct 09 20:34:33 soc-server sshd[6698]: Accepted password for ubuntu from 192.168.1.20 port 45255 ssh2
+Oct 09 20:34:53 db-primary-01 sshd[7906]: Failed password for admin from 45.9.148.114 port 34425 ssh2
+Oct 09 20:34:53 soc-server sshd[1696]: Failed password for admin from 45.9.148.114 port 48229 ssh2
+Oct 09 20:34:53 web-prod-01 sshd[2340]: Failed password for admin from 45.9.148.114 port 57533 ssh2
+Oct 09 20:34:53 web-prod-02 sshd[9244]: Accepted password for admin from 45.9.148.114 port 33482 ssh2
+Oct 09 20:35:33 app-stage-03 sshd[9230]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=45.9.148.114  user=postgres
+Oct 09 20:35:53 app-stage-03 sshd[5461]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=185.220.101.5  user=postgres
+Oct 09 20:36:13 web-prod-01 sshd[1168]: Failed password for root from 45.147.229.11 port 63457 ssh2
+Oct 09 20:36:13 db-primary-01 sshd[9644]: Failed password for root from 45.147.229.11 port 56699 ssh2
+Oct 09 20:36:13 app-stage-03 sshd[3685]: Failed password for root from 45.147.229.11 port 35151 ssh2
+Oct 09 20:36:13 jump-gateway sshd[9044]: Failed password for root from 45.147.229.11 port 41692 ssh2
+Oct 09 20:36:13 soc-server sshd[5267]: Accepted password for root from 45.147.229.11 port 36827 ssh2
+Oct 09 20:36:33 web-prod-02 sudo:     deploy : TTY=pts/3 ; PWD=/home/deploy ; USER=root ; COMMAND=/bin/bash
+Oct 09 20:36:53 jump-gateway sudo:     admin : TTY=pts/9 ; PWD=/home/admin ; USER=root ; COMMAND=/usr/bin/apt update
+Oct 09 20:37:33 soc-server sshd[1939]: Accepted password for guest from 10.0.0.5 port 42341 ssh2
+Oct 09 20:38:13 web-prod-01 sshd[7433]: Failed password for ubuntu from 218.92.0.204 port 60973 ssh2
+Oct 09 20:38:13 db-primary-01 sshd[5616]: Failed password for ubuntu from 218.92.0.204 port 41397 ssh2
+Oct 09 20:38:13 mail-relay-01 sshd[3485]: Failed password for ubuntu from 218.92.0.204 port 43431 ssh2
+Oct 09 20:38:13 web-prod-01 sshd[7739]: Failed password for ubuntu from 218.92.0.204 port 37704 ssh2
+Oct 09 20:38:53 db-primary-01 sshd[5472]: Failed password for jenkins from 103.149.27.62 port 56506 ssh2
+Oct 09 20:38:53 app-stage-03 sshd[2884]: Failed password for jenkins from 103.149.27.62 port 44246 ssh2
+Oct 09 20:38:53 soc-server sshd[2390]: Failed password for jenkins from 103.149.27.62 port 62277 ssh2
+Oct 09 20:39:13 soc-server sshd[1271]: Failed password for testuser from 194.26.29.156 port 40553 ssh2
+Oct 09 20:39:13 jump-gateway sshd[6449]: Failed password for testuser from 194.26.29.156 port 32488 ssh2
+Oct 09 20:39:13 soc-server sshd[4574]: Failed password for testuser from 194.26.29.156 port 39624 ssh2
+Oct 09 20:39:13 web-prod-01 sshd[9949]: Failed password for testuser from 194.26.29.156 port 48649 ssh2
+Oct 09 20:39:13 db-primary-01 sshd[2582]: Accepted password for testuser from 194.26.29.156 port 33030 ssh2
+Oct 09 20:39:33 web-prod-01 sshd[8674]: Failed password for ubuntu from 103.149.27.62 port 42155 ssh2
+Oct 09 20:39:33 web-prod-01 sshd[7823]: Failed password for ubuntu from 103.149.27.62 port 30171 ssh2
+Oct 09 20:39:33 db-primary-01 sshd[5712]: Failed password for ubuntu from 103.149.27.62 port 39899 ssh2
+Oct 09 20:39:33 web-prod-01 sshd[8433]: Accepted password for ubuntu from 103.149.27.62 port 51957 ssh2
+Oct 09 20:39:53 web-prod-02 sshd[1111]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=91.240.118.172  user=testuser
+Oct 09 20:39:53 web-prod-02 sshd[9925]: Invalid user admin1 from 61.177.173.35
+Oct 09 20:39:53 jump-gateway sshd[2056]: Failed password for invalid user admin1 from 61.177.173.35 port 60420 ssh2
+Oct 09 20:40:13 db-primary-01 sshd[6801]: Failed password for root from 218.92.0.204 port 45116 ssh2
+Oct 09 20:40:13 soc-server sshd[8085]: Failed password for root from 218.92.0.204 port 51121 ssh2
+Oct 09 20:40:13 soc-server sshd[3587]: Failed password for root from 218.92.0.204 port 60969 ssh2
+Oct 09 20:40:13 app-stage-03 sshd[8196]: Accepted password for root from 218.92.0.204 port 50424 ssh2
+Oct 09 20:40:33 mail-relay-01 sudo:     ubuntu : TTY=pts/4 ; PWD=/home/ubuntu ; USER=root ; COMMAND=/usr/bin/apt update
+Oct 09 20:40:53 jump-gateway sshd[7608]: Failed password for deploy from 194.26.29.156 port 62384 ssh2
+Oct 09 20:40:53 jump-gateway sshd[4187]: Failed password for deploy from 194.26.29.156 port 52222 ssh2
+Oct 09 20:40:53 mail-relay-01 sshd[8672]: Failed password for deploy from 194.26.29.156 port 57691 ssh2
+Oct 09 20:40:53 mail-relay-01 sshd[7979]: Failed password for deploy from 194.26.29.156 port 37914 ssh2
+Oct 09 20:40:53 app-stage-03 sshd[3452]: Failed password for deploy from 194.26.29.156 port 56081 ssh2
+Oct 09 20:40:53 jump-gateway sshd[2115]: Failed password for deploy from 194.26.29.156 port 58472 ssh2
+Oct 09 20:41:13 mail-relay-01 sshd[2341]: Invalid user test from 61.177.173.35
+Oct 09 20:41:13 soc-server sshd[9639]: Failed password for invalid user test from 61.177.173.35 port 41376 ssh2
+Oct 09 20:41:33 db-primary-01 sshd[3674]: Failed password for ubuntu from 185.220.101.5 port 56521 ssh2
+Oct 09 20:41:33 db-primary-01 sshd[7279]: Failed password for ubuntu from 185.220.101.5 port 34266 ssh2
+Oct 09 20:41:33 web-prod-02 sshd[7680]: Failed password for ubuntu from 185.220.101.5 port 35544 ssh2
+Oct 09 20:41:33 web-prod-01 sshd[6723]: Failed password for ubuntu from 185.220.101.5 port 38648 ssh2
+Oct 09 20:41:33 web-prod-02 sshd[6563]: Failed password for ubuntu from 185.220.101.5 port 45045 ssh2
+Oct 09 20:41:33 jump-gateway sshd[3003]: Failed password for ubuntu from 185.220.101.5 port 46054 ssh2
+Oct 09 20:41:53 jump-gateway sshd[7232]: Invalid user admin1 from 91.240.118.172
+Oct 09 20:41:53 web-prod-01 sshd[3491]: Failed password for invalid user admin1 from 91.240.118.172 port 36090 ssh2
+Oct 09 20:42:13 db-primary-01 sshd[6552]: Invalid user ftpuser from 185.220.101.5
+Oct 09 20:42:13 web-prod-02 sshd[3390]: Failed password for invalid user ftpuser from 185.220.101.5 port 51559 ssh2
+Oct 09 20:42:33 db-primary-01 sshd[2686]: Failed password for deploy from 45.147.229.11 port 46577 ssh2
+Oct 09 20:42:33 app-stage-03 sshd[3329]: Failed password for deploy from 45.147.229.11 port 39654 ssh2
+Oct 09 20:42:33 db-primary-01 sshd[7036]: Failed password for deploy from 45.147.229.11 port 59828 ssh2
+Oct 09 20:42:33 web-prod-02 sshd[2317]: Failed password for deploy from 45.147.229.11 port 33640 ssh2
+Oct 09 20:42:33 mail-relay-01 sshd[9857]: Failed password for ubuntu from 218.92.0.204 port 38568 ssh2
+Oct 09 20:42:33 db-primary-01 sshd[4209]: Failed password for ubuntu from 218.92.0.204 port 35202 ssh2
+Oct 09 20:42:33 app-stage-03 sshd[2432]: Failed password for ubuntu from 218.92.0.204 port 42574 ssh2
+Oct 09 20:42:33 app-stage-03 sshd[1792]: Failed password for ubuntu from 218.92.0.204 port 52197 ssh2
+Oct 09 20:42:53 web-prod-01 sshd[5610]: Invalid user user from 218.92.0.204
+Oct 09 20:42:53 jump-gateway sshd[1014]: Failed password for invalid user user from 218.92.0.204 port 52653 ssh2
+Oct 09 20:43:13 soc-server sshd[2407]: Failed password for jenkins from 218.92.0.204 port 44752 ssh2
+Oct 09 20:43:13 soc-server sshd[7276]: Failed password for jenkins from 218.92.0.204 port 46719 ssh2
+Oct 09 20:43:13 web-prod-02 sshd[8729]: Failed password for jenkins from 218.92.0.204 port 56317 ssh2
+Oct 09 20:43:13 soc-server sshd[2944]: Failed password for jenkins from 218.92.0.204 port 33357 ssh2
+Oct 09 20:43:13 mail-relay-01 sshd[7269]: Failed password for jenkins from 218.92.0.204 port 64544 ssh2
+Oct 09 20:43:13 jump-gateway sshd[6038]: Accepted password for jenkins from 218.92.0.204 port 47913 ssh2
+Oct 09 20:43:33 web-prod-01 sshd[7270]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=45.9.148.114  user=deploy
+Oct 09 20:44:13 app-stage-03 sshd[7107]: Failed password for postgres from 103.149.27.62 port 32525 ssh2
+Oct 09 20:44:13 db-primary-01 sshd[1439]: Failed password for postgres from 103.149.27.62 port 60828 ssh2
+Oct 09 20:44:13 jump-gateway sshd[1846]: Failed password for postgres from 103.149.27.62 port 36046 ssh2
+Oct 09 20:44:13 jump-gateway sshd[7024]: Failed password for postgres from 103.149.27.62 port 54486 ssh2
+Oct 09 20:44:13 web-prod-02 sshd[5547]: Failed password for postgres from 103.149.27.62 port 30852 ssh2
+Oct 09 20:45:53 soc-server sshd[4186]: Failed password for postgres from 45.147.229.11 port 39932 ssh2
+Oct 09 20:45:53 web-prod-02 sshd[9003]: Failed password for postgres from 45.147.229.11 port 56626 ssh2
+Oct 09 20:45:53 web-prod-02 sshd[1534]: Failed password for postgres from 45.147.229.11 port 34926 ssh2
+Oct 09 20:45:53 db-primary-01 sshd[9455]: Failed password for postgres from 45.147.229.11 port 58766 ssh2
+Oct 09 20:45:53 soc-server sshd[5396]: Failed password for postgres from 45.147.229.11 port 47357 ssh2
+Oct 09 20:45:53 web-prod-02 sshd[5849]: Accepted password for postgres from 45.147.229.11 port 36693 ssh2
+Oct 09 20:46:13 mail-relay-01 sshd[5630]: Failed password for guest from 61.177.173.35 port 61174 ssh2
+Oct 09 20:46:13 mail-relay-01 sshd[8285]: Failed password for guest from 61.177.173.35 port 58872 ssh2
+Oct 09 20:46:13 web-prod-01 sshd[6105]: Failed password for guest from 61.177.173.35 port 63415 ssh2
+Oct 09 20:46:33 soc-server sshd[7912]: Invalid user user from 194.26.29.156
+Oct 09 20:46:33 db-primary-01 sshd[2111]: Failed password for invalid user user from 194.26.29.156 port 62049 ssh2
+Oct 09 20:46:53 db-primary-01 sshd[3020]: Failed password for guest from 103.149.27.62 port 41572 ssh2
+Oct 09 20:46:53 web-prod-02 sshd[8950]: Failed password for guest from 103.149.27.62 port 39024 ssh2
+Oct 09 20:46:53 db-primary-01 sshd[4123]: Failed password for guest from 103.149.27.62 port 62698 ssh2
+Oct 09 20:46:53 app-stage-03 sshd[6775]: Failed password for guest from 103.149.27.62 port 55348 ssh2
+Oct 09 20:46:53 web-prod-01 sshd[7835]: Failed password for guest from 103.149.27.62 port 33299 ssh2
+Oct 09 20:46:53 soc-server sshd[8126]: Accepted password for guest from 103.149.27.62 port 41466 ssh2
+Oct 09 20:47:13 web-prod-01 sshd[3381]: Failed password for guest from 218.92.0.204 port 60093 ssh2
+Oct 09 20:47:13 web-prod-02 sshd[7805]: Failed password for guest from 218.92.0.204 port 64055 ssh2
+Oct 09 20:47:13 db-primary-01 sshd[2105]: Failed password for guest from 218.92.0.204 port 54401 ssh2
+Oct 09 20:47:13 soc-server sshd[5309]: Failed password for guest from 218.92.0.204 port 38167 ssh2
+Oct 09 20:47:33 soc-server sshd[7684]: Failed password for guest from 103.149.27.62 port 57251 ssh2
+Oct 09 20:47:33 web-prod-01 sshd[4776]: Failed password for guest from 103.149.27.62 port 34046 ssh2
+Oct 09 20:47:33 app-stage-03 sshd[6573]: Failed password for guest from 103.149.27.62 port 63536 ssh2
+Oct 09 20:47:33 web-prod-02 sshd[2018]: Failed password for guest from 103.149.27.62 port 60130 ssh2
+Oct 09 20:47:33 soc-server sshd[5199]: Failed password for guest from 103.149.27.62 port 63287 ssh2
+Oct 09 20:47:33 app-stage-03 sshd[4748]: Failed password for guest from 103.149.27.62 port 45789 ssh2
+Oct 09 20:47:53 jump-gateway sshd[1355]: Invalid user pi from 103.149.27.62
+Oct 09 20:47:53 web-prod-02 sshd[7298]: Failed password for invalid user pi from 103.149.27.62 port 36719 ssh2
+Oct 09 20:48:13 web-prod-01 sshd[7529]: Failed password for testuser from 45.147.229.11 port 30076 ssh2
+Oct 09 20:48:13 web-prod-02 sshd[6474]: Failed password for testuser from 45.147.229.11 port 60200 ssh2
+Oct 09 20:48:13 mail-relay-01 sshd[3449]: Failed password for testuser from 45.147.229.11 port 55399 ssh2
+Oct 09 20:48:13 mail-relay-01 sshd[1134]: Accepted password for testuser from 45.147.229.11 port 33916 ssh2
+Oct 09 20:48:33 web-prod-02 sshd[5869]: Failed password for root from 91.240.118.172 port 49823 ssh2
+Oct 09 20:48:33 soc-server sshd[3683]: Failed password for root from 91.240.118.172 port 54914 ssh2
+Oct 09 20:48:33 jump-gateway sshd[5962]: Failed password for root from 91.240.118.172 port 32076 ssh2
+Oct 09 20:48:33 soc-server sshd[5740]: Failed password for root from 91.240.118.172 port 49726 ssh2
+Oct 09 20:48:33 soc-server sshd[5469]: Failed password for root from 91.240.118.172 port 57094 ssh2
+Oct 09 20:48:53 mail-relay-01 sshd[5693]: Failed password for deploy from 194.26.29.156 port 38901 ssh2
+Oct 09 20:48:53 soc-server sshd[1280]: Failed password for deploy from 194.26.29.156 port 32270 ssh2
+Oct 09 20:48:53 mail-relay-01 sshd[6169]: Failed password for deploy from 194.26.29.156 port 61030 ssh2
+Oct 09 20:48:53 web-prod-02 sshd[8011]: Failed password for deploy from 194.26.29.156 port 42199 ssh2
+Oct 09 20:48:53 jump-gateway sshd[5248]: Accepted password for deploy from 194.26.29.156 port 35605 ssh2
+Oct 09 20:48:53 web-prod-01 sshd[3573]: Failed password for testuser from 218.92.0.204 port 42309 ssh2
+Oct 09 20:48:53 db-primary-01 sshd[7939]: Failed password for testuser from 218.92.0.204 port 30413 ssh2
+Oct 09 20:48:53 mail-relay-01 sshd[8039]: Failed password for testuser from 218.92.0.204 port 56730 ssh2
+Oct 09 20:48:53 web-prod-02 sshd[3465]: Failed password for testuser from 218.92.0.204 port 48101 ssh2
+Oct 09 20:48:53 web-prod-02 sshd[3112]: Accepted password for testuser from 218.92.0.204 port 44456 ssh2
+Oct 09 20:49:13 db-primary-01 sshd[9594]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=91.240.118.172  user=admin
+Oct 09 20:49:13 db-primary-01 sshd[7267]: Accepted password for deploy from 192.168.1.20 port 60442 ssh2
+Oct 09 20:49:33 jump-gateway sshd[8524]: Invalid user ftpuser from 185.220.101.5
+Oct 09 20:49:33 db-primary-01 sshd[3408]: Failed password for invalid user ftpuser from 185.220.101.5 port 30963 ssh2
+Oct 09 20:49:33 soc-server sshd[8029]: Invalid user ftpuser from 61.177.173.35
+Oct 09 20:49:33 web-prod-02 sshd[2169]: Failed password for invalid user ftpuser from 61.177.173.35 port 35391 ssh2
+Oct 09 20:49:53 mail-relay-01 sshd[1773]: Failed password for ubuntu from 194.26.29.156 port 51578 ssh2
+Oct 09 20:49:53 jump-gateway sshd[3322]: Failed password for ubuntu from 194.26.29.156 port 55112 ssh2
+Oct 09 20:49:53 web-prod-02 sshd[2521]: Failed password for ubuntu from 194.26.29.156 port 48033 ssh2
+Oct 09 20:50:13 db-primary-01 sudo:     deploy : TTY=pts/0 ; PWD=/home/deploy ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Oct 09 20:50:33 web-prod-01 sshd[2538]: Invalid user pi from 218.92.0.204
+Oct 09 20:50:33 db-primary-01 sshd[5098]: Failed password for invalid user pi from 218.92.0.204 port 53094 ssh2
+Oct 09 20:50:53 app-stage-03 sshd[1398]: Failed password for deploy from 185.220.101.5 port 52491 ssh2
+Oct 09 20:50:53 db-primary-01 sshd[9667]: Failed password for deploy from 185.220.101.5 port 44745 ssh2
+Oct 09 20:50:53 web-prod-02 sshd[2675]: Failed password for deploy from 185.220.101.5 port 38108 ssh2
+Oct 09 20:50:53 mail-relay-01 sshd[2722]: Failed password for deploy from 185.220.101.5 port 56103 ssh2
+Oct 09 20:50:53 mail-relay-01 sshd[4720]: Accepted password for deploy from 185.220.101.5 port 62581 ssh2
+Oct 09 20:51:13 soc-server sshd[2944]: Accepted password for ubuntu from 172.16.4.11 port 62543 ssh2
+Oct 09 20:51:13 app-stage-03 sshd[3882]: Failed password for root from 45.147.229.11 port 41786 ssh2
+Oct 09 20:51:13 web-prod-02 sshd[8643]: Failed password for root from 45.147.229.11 port 35661 ssh2
+Oct 09 20:51:13 app-stage-03 sshd[1646]: Failed password for root from 45.147.229.11 port 51971 ssh2
+Oct 09 20:51:13 jump-gateway sshd[2132]: Failed password for root from 45.147.229.11 port 63139 ssh2
+Oct 09 20:51:33 app-stage-03 sshd[7986]: Failed password for testuser from 103.149.27.62 port 51267 ssh2
+Oct 09 20:51:33 soc-server sshd[9677]: Failed password for testuser from 103.149.27.62 port 42704 ssh2
+Oct 09 20:51:33 db-primary-01 sshd[1087]: Failed password for testuser from 103.149.27.62 port 59749 ssh2
+Oct 09 20:51:33 mail-relay-01 sshd[2417]: Failed password for testuser from 103.149.27.62 port 55701 ssh2
+Oct 09 20:51:33 web-prod-02 sshd[2025]: Accepted password for testuser from 103.149.27.62 port 61337 ssh2
+Oct 09 20:51:33 web-prod-01 sshd[7602]: Failed password for jenkins from 45.147.229.11 port 64963 ssh2
+Oct 09 20:51:33 mail-relay-01 sshd[4242]: Failed password for jenkins from 45.147.229.11 port 57544 ssh2
+Oct 09 20:51:33 mail-relay-01 sshd[6179]: Failed password for jenkins from 45.147.229.11 port 64930 ssh2
+Oct 09 20:51:53 web-prod-02 sshd[7276]: Failed password for root from 91.240.118.172 port 51836 ssh2
+Oct 09 20:51:53 web-prod-02 sshd[1313]: Failed password for root from 91.240.118.172 port 45118 ssh2
+Oct 09 20:51:53 soc-server sshd[5451]: Failed password for root from 91.240.118.172 port 31831 ssh2
+Oct 09 20:51:53 soc-server sshd[2266]: Failed password for root from 91.240.118.172 port 42390 ssh2
+Oct 09 20:51:53 mail-relay-01 sshd[3509]: Failed password for root from 91.240.118.172 port 41243 ssh2
+Oct 09 20:52:33 web-prod-01 sshd[7058]: Invalid user admin1 from 185.220.101.5
+Oct 09 20:52:33 mail-relay-01 sshd[2888]: Failed password for invalid user admin1 from 185.220.101.5 port 42767 ssh2
+Oct 09 20:52:53 soc-server sshd[1970]: Failed password for testuser from 45.147.229.11 port 58798 ssh2
+Oct 09 20:52:53 soc-server sshd[9379]: Failed password for testuser from 45.147.229.11 port 53552 ssh2
+Oct 09 20:52:53 web-prod-01 sshd[6576]: Failed password for testuser from 45.147.229.11 port 39692 ssh2
+Oct 09 20:52:53 mail-relay-01 sshd[5838]: Failed password for testuser from 45.147.229.11 port 36485 ssh2
+Oct 09 20:52:53 web-prod-02 sshd[4563]: Failed password for testuser from 45.147.229.11 port 47083 ssh2
+Oct 09 20:53:13 web-prod-01 sshd[7656]: Failed password for deploy from 91.240.118.172 port 40443 ssh2
+Oct 09 20:53:13 web-prod-02 sshd[9864]: Failed password for deploy from 91.240.118.172 port 64607 ssh2
+Oct 09 20:53:13 soc-server sshd[5289]: Failed password for deploy from 91.240.118.172 port 35337 ssh2
+Oct 09 20:53:13 soc-server sshd[4622]: Failed password for deploy from 91.240.118.172 port 63276 ssh2
+Oct 09 20:53:33 jump-gateway sshd[5516]: Failed password for deploy from 45.147.229.11 port 51937 ssh2
+Oct 09 20:53:33 web-prod-01 sshd[1846]: Failed password for deploy from 45.147.229.11 port 58478 ssh2
+Oct 09 20:53:33 mail-relay-01 sshd[5131]: Failed password for deploy from 45.147.229.11 port 38942 ssh2
+Oct 09 20:53:33 web-prod-02 sshd[2567]: Failed password for deploy from 45.147.229.11 port 34814 ssh2
+Oct 09 20:53:53 app-stage-03 sshd[3641]: Failed password for root from 185.220.101.5 port 58428 ssh2
+Oct 09 20:53:53 mail-relay-01 sshd[5377]: Failed password for root from 185.220.101.5 port 44842 ssh2
+Oct 09 20:53:53 db-primary-01 sshd[5621]: Failed password for root from 185.220.101.5 port 48682 ssh2
+Oct 09 20:53:53 app-stage-03 sshd[5009]: Failed password for root from 185.220.101.5 port 50535 ssh2
+Oct 09 20:53:53 jump-gateway sshd[8358]: Failed password for root from 185.220.101.5 port 60458 ssh2
+Oct 09 20:53:53 soc-server sshd[9847]: Failed password for root from 185.220.101.5 port 34694 ssh2
+Oct 09 20:54:13 db-primary-01 sshd[2483]: Failed password for ubuntu from 61.177.173.35 port 36399 ssh2
+Oct 09 20:54:13 jump-gateway sshd[3566]: Failed password for ubuntu from 61.177.173.35 port 56059 ssh2
+Oct 09 20:54:13 app-stage-03 sshd[8433]: Failed password for ubuntu from 61.177.173.35 port 63866 ssh2
+Oct 09 20:54:13 web-prod-01 sshd[9586]: Failed password for ubuntu from 61.177.173.35 port 62983 ssh2
+Oct 09 20:54:13 app-stage-03 sshd[4083]: Failed password for ubuntu from 61.177.173.35 port 35353 ssh2
+Oct 09 20:54:13 jump-gateway sshd[2319]: Accepted password for ubuntu from 61.177.173.35 port 62271 ssh2
+Oct 09 20:54:33 db-primary-01 sshd[9699]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=91.240.118.172  user=postgres
+Oct 09 20:55:13 soc-server sshd[8529]: Failed password for postgres from 194.26.29.156 port 48929 ssh2
+Oct 09 20:55:13 db-primary-01 sshd[5001]: Failed password for postgres from 194.26.29.156 port 35220 ssh2
+Oct 09 20:55:13 app-stage-03 sshd[5207]: Failed password for postgres from 194.26.29.156 port 55645 ssh2
+Oct 09 20:55:13 soc-server sshd[1076]: Accepted password for postgres from 194.26.29.156 port 61601 ssh2
+Oct 09 20:55:13 soc-server sudo:     admin : TTY=pts/0 ; PWD=/home/admin ; USER=root ; COMMAND=/bin/bash
+Oct 09 20:55:33 web-prod-01 sshd[3887]: Failed password for deploy from 61.177.173.35 port 30280 ssh2
+Oct 09 20:55:33 soc-server sshd[2632]: Failed password for deploy from 61.177.173.35 port 59837 ssh2
+Oct 09 20:55:33 web-prod-02 sshd[2557]: Failed password for deploy from 61.177.173.35 port 51178 ssh2
+Oct 09 20:55:33 soc-server sshd[9787]: Failed password for deploy from 61.177.173.35 port 47591 ssh2
+Oct 09 20:55:33 app-stage-03 sshd[9782]: Failed password for deploy from 61.177.173.35 port 58003 ssh2
+Oct 09 20:55:33 db-primary-01 sshd[8496]: Failed password for deploy from 61.177.173.35 port 57382 ssh2
+Oct 09 20:55:53 db-primary-01 sshd[9739]: Invalid user oracle from 103.149.27.62
+Oct 09 20:55:53 soc-server sshd[7878]: Failed password for invalid user oracle from 103.149.27.62 port 32654 ssh2
+Oct 09 20:56:13 web-prod-02 sshd[9447]: Failed password for deploy from 61.177.173.35 port 62435 ssh2
+Oct 09 20:56:13 web-prod-01 sshd[1666]: Failed password for deploy from 61.177.173.35 port 38639 ssh2
+Oct 09 20:56:13 app-stage-03 sshd[5901]: Failed password for deploy from 61.177.173.35 port 49796 ssh2
+Oct 09 20:56:33 jump-gateway sshd[2153]: Accepted password for root from 10.0.0.5 port 43658 ssh2
+Oct 09 20:57:13 app-stage-03 sshd[8396]: Failed password for testuser from 103.149.27.62 port 62124 ssh2
+Oct 09 20:57:13 web-prod-02 sshd[3177]: Failed password for testuser from 103.149.27.62 port 43486 ssh2
+Oct 09 20:57:13 mail-relay-01 sshd[6418]: Failed password for testuser from 103.149.27.62 port 33018 ssh2
+Oct 09 20:57:13 web-prod-01 sshd[1309]: Failed password for testuser from 103.149.27.62 port 53015 ssh2
+Oct 09 20:57:13 web-prod-02 sshd[6840]: Accepted password for testuser from 103.149.27.62 port 64533 ssh2
+Oct 09 20:57:13 soc-server sudo:     admin : TTY=pts/8 ; PWD=/home/admin ; USER=root ; COMMAND=/usr/bin/apt update
+Oct 09 20:57:33 soc-server sshd[5858]: Failed password for admin from 103.149.27.62 port 53518 ssh2
+Oct 09 20:57:33 app-stage-03 sshd[4163]: Failed password for admin from 103.149.27.62 port 41369 ssh2
+Oct 09 20:57:33 app-stage-03 sshd[7324]: Failed password for admin from 103.149.27.62 port 55665 ssh2
+Oct 09 20:57:33 app-stage-03 sshd[4132]: Failed password for admin from 103.149.27.62 port 52813 ssh2
+Oct 09 20:57:33 web-prod-02 sshd[5631]: Failed password for testuser from 45.9.148.114 port 61094 ssh2
+Oct 09 20:57:33 mail-relay-01 sshd[2726]: Failed password for testuser from 45.9.148.114 port 34289 ssh2
+Oct 09 20:57:33 web-prod-01 sshd[6097]: Failed password for testuser from 45.9.148.114 port 30949 ssh2
+Oct 09 20:57:33 db-primary-01 sshd[1930]: Failed password for testuser from 45.9.148.114 port 32018 ssh2
+Oct 09 20:57:33 web-prod-02 sshd[5511]: Failed password for testuser from 45.9.148.114 port 44538 ssh2
+Oct 09 20:57:33 web-prod-01 sshd[1138]: Failed password for testuser from 45.9.148.114 port 53300 ssh2
+Oct 09 20:57:53 soc-server sshd[7915]: Invalid user test from 45.9.148.114
+Oct 09 20:57:53 db-primary-01 sshd[5700]: Failed password for invalid user test from 45.9.148.114 port 43222 ssh2
+Oct 09 20:58:00 jump-gateway sshd[1214]: Failed password for deploy from 61.177.173.35 port 47071 ssh2
+Oct 09 20:58:00 web-prod-01 sshd[6602]: Failed password for deploy from 61.177.173.35 port 63190 ssh2
+Oct 09 20:58:00 jump-gateway sshd[9863]: Failed password for deploy from 61.177.173.35 port 53592 ssh2
+Oct 09 20:58:00 web-prod-02 sshd[4417]: Accepted password for deploy from 61.177.173.35 port 52514 ssh2
+Oct 09 20:58:20 mail-relay-01 sudo:     svc_backup : TTY=pts/1 ; PWD=/home/svc_backup ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Oct 09 20:58:40 web-prod-01 sshd[8120]: Failed password for root from 91.240.118.172 port 51451 ssh2
+Oct 09 20:58:40 db-primary-01 sshd[2284]: Failed password for root from 91.240.118.172 port 44169 ssh2
+Oct 09 20:58:40 soc-server sshd[8985]: Failed password for root from 91.240.118.172 port 60896 ssh2
+Oct 09 20:59:00 app-stage-03 sshd[5141]: Failed password for root from 218.92.0.204 port 36874 ssh2
+Oct 09 20:59:00 soc-server sshd[7920]: Failed password for root from 218.92.0.204 port 49471 ssh2
+Oct 09 20:59:00 app-stage-03 sshd[7252]: Failed password for root from 218.92.0.204 port 36300 ssh2
+Oct 09 20:59:00 web-prod-01 sshd[7916]: Failed password for root from 218.92.0.204 port 53236 ssh2
+Oct 09 20:59:00 app-stage-03 sshd[5909]: Failed password for root from 218.92.0.204 port 30385 ssh2
+Oct 09 20:59:40 web-prod-02 sudo:     deploy : TTY=pts/5 ; PWD=/home/deploy ; USER=root ; COMMAND=/bin/bash
+Oct 09 20:59:40 db-primary-01 sshd[3409]: Failed password for root from 185.220.101.5 port 40313 ssh2
+Oct 09 20:59:40 app-stage-03 sshd[4466]: Failed password for root from 185.220.101.5 port 33801 ssh2
+Oct 09 20:59:40 soc-server sshd[2154]: Failed password for root from 185.220.101.5 port 36648 ssh2
+Oct 09 20:59:40 app-stage-03 sshd[6910]: Failed password for root from 185.220.101.5 port 34153 ssh2
+Oct 09 20:59:40 web-prod-01 sshd[8693]: Failed password for root from 185.220.101.5 port 43017 ssh2
+Oct 09 21:00:20 mail-relay-01 sshd[3654]: Invalid user test from 61.177.173.35
+Oct 09 21:00:20 app-stage-03 sshd[3559]: Failed password for invalid user test from 61.177.173.35 port 36465 ssh2
+Oct 09 21:01:00 web-prod-02 sshd[8805]: Invalid user ftpuser from 61.177.173.35
+Oct 09 21:01:00 web-prod-01 sshd[9458]: Failed password for invalid user ftpuser from 61.177.173.35 port 50857 ssh2
+Oct 09 21:01:20 jump-gateway sshd[9090]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=61.177.173.35  user=testuser
+Oct 09 21:01:40 mail-relay-01 sshd[5169]: Failed password for postgres from 185.220.101.5 port 43128 ssh2
+Oct 09 21:01:40 web-prod-01 sshd[6239]: Failed password for postgres from 185.220.101.5 port 52376 ssh2
+Oct 09 21:01:40 db-primary-01 sshd[7299]: Failed password for postgres from 185.220.101.5 port 55837 ssh2
+Oct 09 21:01:40 soc-server sshd[8830]: Failed password for postgres from 185.220.101.5 port 61700 ssh2
+Oct 09 21:01:40 web-prod-02 sshd[7587]: Failed password for postgres from 185.220.101.5 port 63312 ssh2
+Oct 09 21:01:40 soc-server sshd[2249]: Accepted password for postgres from 185.220.101.5 port 59866 ssh2
+Oct 09 21:02:20 app-stage-03 sshd[7721]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=194.26.29.156  user=ubuntu
+Oct 09 21:03:00 web-prod-02 sshd[2721]: Failed password for root from 45.9.148.114 port 51177 ssh2
+Oct 09 21:03:00 app-stage-03 sshd[8331]: Failed password for root from 45.9.148.114 port 58582 ssh2
+Oct 09 21:03:00 soc-server sshd[9305]: Failed password for root from 45.9.148.114 port 48180 ssh2
+Oct 09 21:03:00 jump-gateway sshd[9972]: Failed password for root from 45.9.148.114 port 38144 ssh2
+Oct 09 21:03:00 db-primary-01 sshd[6141]: Failed password for root from 45.9.148.114 port 48841 ssh2
+Oct 09 21:03:00 jump-gateway sshd[4663]: Failed password for root from 45.9.148.114 port 64763 ssh2
+Oct 09 21:03:00 web-prod-02 sshd[4015]: Failed password for admin from 185.220.101.5 port 44198 ssh2
+Oct 09 21:03:00 jump-gateway sshd[1291]: Failed password for admin from 185.220.101.5 port 34999 ssh2
+Oct 09 21:03:00 mail-relay-01 sshd[5514]: Failed password for admin from 185.220.101.5 port 43601 ssh2
+Oct 09 21:03:00 app-stage-03 sshd[7923]: Failed password for admin from 185.220.101.5 port 54419 ssh2
+Oct 09 21:03:20 app-stage-03 sshd[3056]: Failed password for deploy from 194.26.29.156 port 41494 ssh2
+Oct 09 21:03:20 web-prod-01 sshd[1817]: Failed password for deploy from 194.26.29.156 port 49707 ssh2
+Oct 09 21:03:20 web-prod-01 sshd[9446]: Failed password for deploy from 194.26.29.156 port 46128 ssh2
+Oct 09 21:03:20 web-prod-02 sshd[7504]: Accepted password for deploy from 194.26.29.156 port 64673 ssh2
+Oct 09 21:03:40 web-prod-02 sshd[2981]: Failed password for deploy from 61.177.173.35 port 58619 ssh2
+Oct 09 21:03:40 mail-relay-01 sshd[8992]: Failed password for deploy from 61.177.173.35 port 60033 ssh2
+Oct 09 21:03:40 soc-server sshd[6879]: Failed password for deploy from 61.177.173.35 port 62753 ssh2
+Oct 09 21:04:00 jump-gateway sshd[7053]: Failed password for guest from 45.147.229.11 port 48819 ssh2
+Oct 09 21:04:00 jump-gateway sshd[1691]: Failed password for guest from 45.147.229.11 port 53576 ssh2
+Oct 09 21:04:00 mail-relay-01 sshd[8621]: Failed password for guest from 45.147.229.11 port 63069 ssh2
+Oct 09 21:04:00 mail-relay-01 sshd[9766]: Failed password for guest from 45.147.229.11 port 34285 ssh2
+Oct 09 21:04:20 web-prod-01 sshd[1935]: Failed password for postgres from 61.177.173.35 port 37423 ssh2
+Oct 09 21:04:20 mail-relay-01 sshd[5001]: Failed password for postgres from 61.177.173.35 port 58509 ssh2
+Oct 09 21:04:20 web-prod-01 sshd[7901]: Failed password for postgres from 61.177.173.35 port 30807 ssh2
+Oct 09 21:04:20 db-primary-01 sshd[9001]: Failed password for postgres from 61.177.173.35 port 55508 ssh2
+Oct 09 21:04:20 app-stage-03 sshd[5233]: Failed password for postgres from 61.177.173.35 port 32158 ssh2
+Oct 09 21:04:20 soc-server sshd[1859]: Failed password for postgres from 61.177.173.35 port 45123 ssh2
+Oct 09 21:04:20 app-stage-03 sshd[9722]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=45.147.229.11  user=root
+Oct 09 21:04:40 mail-relay-01 sshd[2738]: Invalid user admin1 from 185.220.101.5
+Oct 09 21:04:40 soc-server sshd[7942]: Failed password for invalid user admin1 from 185.220.101.5 port 55703 ssh2
+Oct 09 21:04:40 web-prod-02 sudo:     deploy : TTY=pts/0 ; PWD=/home/deploy ; USER=root ; COMMAND=/usr/bin/tail /var/log/auth.log
+Oct 09 21:05:00 web-prod-02 sshd[5957]: Failed password for ubuntu from 185.220.101.5 port 30787 ssh2
+Oct 09 21:05:00 jump-gateway sshd[7823]: Failed password for ubuntu from 185.220.101.5 port 62454 ssh2
+Oct 09 21:05:00 soc-server sshd[4186]: Failed password for ubuntu from 185.220.101.5 port 58888 ssh2
+Oct 09 21:05:00 db-primary-01 sshd[6397]: Accepted password for ubuntu from 185.220.101.5 port 58965 ssh2
+Oct 09 21:05:20 mail-relay-01 sudo:     deploy : TTY=pts/3 ; PWD=/home/deploy ; USER=root ; COMMAND=/bin/bash
+Oct 09 21:05:40 web-prod-02 sshd[3751]: Failed password for ubuntu from 194.26.29.156 port 32658 ssh2
+Oct 09 21:05:40 mail-relay-01 sshd[2536]: Failed password for ubuntu from 194.26.29.156 port 41744 ssh2
+Oct 09 21:05:40 mail-relay-01 sshd[7526]: Failed password for ubuntu from 194.26.29.156 port 49527 ssh2
+Oct 09 21:05:40 db-primary-01 sshd[5963]: Failed password for admin from 61.177.173.35 port 40839 ssh2
+Oct 09 21:05:40 db-primary-01 sshd[5095]: Failed password for admin from 61.177.173.35 port 64255 ssh2
+Oct 09 21:05:40 mail-relay-01 sshd[7256]: Failed password for admin from 61.177.173.35 port 57941 ssh2
+Oct 09 21:05:40 mail-relay-01 sshd[2288]: Failed password for admin from 61.177.173.35 port 61528 ssh2
+Oct 09 21:05:40 db-primary-01 sshd[6456]: Failed password for admin from 61.177.173.35 port 40204 ssh2
+Oct 09 21:05:40 jump-gateway sshd[3634]: Accepted password for admin from 61.177.173.35 port 54225 ssh2
+Oct 09 21:06:00 web-prod-02 sshd[8051]: Invalid user pi from 45.147.229.11
+Oct 09 21:06:00 db-primary-01 sshd[3644]: Failed password for invalid user pi from 45.147.229.11 port 60948 ssh2
+Oct 09 21:06:40 db-primary-01 sshd[4215]: Failed password for testuser from 45.147.229.11 port 64252 ssh2
+Oct 09 21:06:40 jump-gateway sshd[5111]: Failed password for testuser from 45.147.229.11 port 58307 ssh2
+Oct 09 21:06:40 web-prod-01 sshd[1252]: Failed password for testuser from 45.147.229.11 port 37164 ssh2
+Oct 09 21:06:40 web-prod-01 sshd[1988]: Failed password for testuser from 45.147.229.11 port 64602 ssh2
+Oct 09 21:06:40 mail-relay-01 sshd[6481]: Accepted password for testuser from 45.147.229.11 port 45102 ssh2
+Oct 09 21:07:20 app-stage-03 sshd[5732]: Failed password for testuser from 194.26.29.156 port 54550 ssh2
+Oct 09 21:07:20 soc-server sshd[9730]: Failed password for testuser from 194.26.29.156 port 43000 ssh2
+Oct 09 21:07:20 web-prod-01 sshd[2360]: Failed password for testuser from 194.26.29.156 port 45691 ssh2
+Oct 09 21:07:20 db-primary-01 sshd[5505]: Accepted password for testuser from 194.26.29.156 port 40842 ssh2
+Oct 09 21:07:40 soc-server sshd[2614]: Failed password for jenkins from 61.177.173.35 port 44518 ssh2
+Oct 09 21:07:40 app-stage-03 sshd[5976]: Failed password for jenkins from 61.177.173.35 port 60367 ssh2
+Oct 09 21:07:40 soc-server sshd[7620]: Failed password for jenkins from 61.177.173.35 port 34813 ssh2
+Oct 09 21:07:40 app-stage-03 sshd[8427]: Accepted password for jenkins from 61.177.173.35 port 48578 ssh2
+Oct 09 21:08:00 web-prod-01 sshd[9156]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=91.240.118.172  user=testuser
+Oct 09 21:08:20 db-primary-01 sshd[1867]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=45.9.148.114  user=jenkins
+Oct 09 21:08:29 web-prod-01 sshd[6553]: Failed password for postgres from 103.149.27.62 port 37450 ssh2
+Oct 09 21:08:29 web-prod-01 sshd[1094]: Failed password for postgres from 103.149.27.62 port 45997 ssh2
+Oct 09 21:08:29 jump-gateway sshd[9865]: Failed password for postgres from 103.149.27.62 port 57377 ssh2
+Oct 09 21:08:29 app-stage-03 sshd[2933]: Failed password for postgres from 103.149.27.62 port 45022 ssh2
+Oct 09 21:08:29 soc-server sshd[9872]: Accepted password for postgres from 103.149.27.62 port 48251 ssh2
+Oct 09 21:08:49 app-stage-03 sshd[1506]: Failed password for postgres from 91.240.118.172 port 32812 ssh2
+Oct 09 21:08:49 soc-server sshd[9713]: Failed password for postgres from 91.240.118.172 port 61456 ssh2
+Oct 09 21:08:49 app-stage-03 sshd[1146]: Failed password for postgres from 91.240.118.172 port 44387 ssh2
+Oct 09 21:08:49 db-primary-01 sshd[8514]: Failed password for postgres from 91.240.118.172 port 53772 ssh2
+Oct 09 21:08:49 jump-gateway sshd[7851]: Failed password for postgres from 91.240.118.172 port 62594 ssh2
+Oct 09 21:08:49 jump-gateway sshd[7753]: Failed password for postgres from 91.240.118.172 port 37400 ssh2
+Oct 09 21:09:29 web-prod-01 sshd[3681]: Invalid user ftpuser from 194.26.29.156
+Oct 09 21:09:29 db-primary-01 sshd[1254]: Failed password for invalid user ftpuser from 194.26.29.156 port 46408 ssh2
+Oct 09 21:09:49 db-primary-01 sshd[5331]: Invalid user ftpuser from 185.220.101.5
+Oct 09 21:09:49 jump-gateway sshd[3929]: Failed password for invalid user ftpuser from 185.220.101.5 port 48683 ssh2
+Oct 09 21:10:09 web-prod-02 sshd[2657]: Failed password for jenkins from 91.240.118.172 port 51605 ssh2
+Oct 09 21:10:09 app-stage-03 sshd[3894]: Failed password for jenkins from 91.240.118.172 port 50586 ssh2
+Oct 09 21:10:09 web-prod-01 sshd[5820]: Failed password for jenkins from 91.240.118.172 port 53458 ssh2
+Oct 09 21:10:29 db-primary-01 sudo:     deploy : TTY=pts/8 ; PWD=/home/deploy ; USER=root ; COMMAND=/bin/bash
+Oct 09 21:10:49 mail-relay-01 sshd[2519]: Failed password for testuser from 91.240.118.172 port 42734 ssh2
+Oct 09 21:10:49 db-primary-01 sshd[6618]: Failed password for testuser from 91.240.118.172 port 63149 ssh2
+Oct 09 21:10:49 app-stage-03 sshd[9097]: Failed password for testuser from 91.240.118.172 port 45295 ssh2
+Oct 09 21:10:49 soc-server sshd[3660]: Failed password for testuser from 91.240.118.172 port 51076 ssh2
+Oct 09 21:10:49 app-stage-03 sshd[9133]: Invalid user ftpuser from 103.149.27.62
+Oct 09 21:10:49 mail-relay-01 sshd[2471]: Failed password for invalid user ftpuser from 103.149.27.62 port 31137 ssh2
+Oct 09 21:11:09 web-prod-01 sshd[4640]: Failed password for guest from 45.147.229.11 port 36795 ssh2
+Oct 09 21:11:09 jump-gateway sshd[9818]: Failed password for guest from 45.147.229.11 port 41852 ssh2
+Oct 09 21:11:09 web-prod-02 sshd[8300]: Failed password for guest from 45.147.229.11 port 48974 ssh2
+Oct 09 21:11:09 web-prod-02 sshd[2026]: Failed password for guest from 45.147.229.11 port 50308 ssh2
+Oct 09 21:11:09 jump-gateway sshd[7195]: Failed password for guest from 45.147.229.11 port 34238 ssh2
+Oct 09 21:11:09 mail-relay-01 sshd[4137]: Accepted password for guest from 45.147.229.11 port 58485 ssh2
+Oct 09 21:11:09 web-prod-02 sshd[6903]: Failed password for ubuntu from 45.147.229.11 port 43709 ssh2
+Oct 09 21:11:09 db-primary-01 sshd[8299]: Failed password for ubuntu from 45.147.229.11 port 40768 ssh2
+Oct 09 21:11:09 jump-gateway sshd[3983]: Failed password for ubuntu from 45.147.229.11 port 57154 ssh2
+Oct 09 21:11:09 db-primary-01 sshd[7694]: Failed password for ubuntu from 45.147.229.11 port 32992 ssh2
+Oct 09 21:11:09 app-stage-03 sshd[9968]: Failed password for ubuntu from 45.147.229.11 port 56930 ssh2
+Oct 09 21:11:09 mail-relay-01 sshd[2766]: Failed password for ubuntu from 45.147.229.11 port 50978 ssh2
+Oct 10 14:38:02 soc-server sshd[4749]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=103.149.27.62  user=admin
+Oct 10 14:38:22 web-prod-02 sshd[2067]: Failed password for guest from 45.147.229.11 port 42486 ssh2
+Oct 10 14:38:22 web-prod-01 sshd[3168]: Failed password for guest from 45.147.229.11 port 57102 ssh2
+Oct 10 14:38:22 soc-server sshd[2877]: Failed password for guest from 45.147.229.11 port 33078 ssh2
+Oct 10 14:38:22 mail-relay-01 sshd[2651]: Failed password for guest from 45.147.229.11 port 43212 ssh2
+Oct 10 14:38:42 mail-relay-01 sshd[2171]: Invalid user pi from 185.220.101.5
+Oct 10 14:38:42 app-stage-03 sshd[8031]: Failed password for invalid user pi from 185.220.101.5 port 48536 ssh2
+Oct 10 14:39:02 db-primary-01 sshd[7408]: Failed password for postgres from 194.26.29.156 port 32351 ssh2
+Oct 10 14:39:02 app-stage-03 sshd[8656]: Failed password for postgres from 194.26.29.156 port 38859 ssh2
+Oct 10 14:39:02 jump-gateway sshd[6330]: Failed password for postgres from 194.26.29.156 port 42917 ssh2
+Oct 10 14:39:02 db-primary-01 sshd[5076]: Accepted password for postgres from 194.26.29.156 port 35610 ssh2
+Oct 10 14:39:02 web-prod-02 sshd[2509]: Failed password for testuser from 45.9.148.114 port 33390 ssh2
+Oct 10 14:39:02 jump-gateway sshd[6603]: Failed password for testuser from 45.9.148.114 port 35239 ssh2
+Oct 10 14:39:02 db-primary-01 sshd[7220]: Failed password for testuser from 45.9.148.114 port 37350 ssh2
+Oct 10 14:39:02 web-prod-02 sshd[3745]: Failed password for testuser from 45.9.148.114 port 35122 ssh2
+Oct 10 14:39:02 web-prod-02 sshd[3956]: Failed password for testuser from 45.9.148.114 port 62843 ssh2
+Oct 10 14:39:22 db-primary-01 sshd[3528]: Failed password for deploy from 61.177.173.35 port 38289 ssh2
+Oct 10 14:39:22 app-stage-03 sshd[1274]: Failed password for deploy from 61.177.173.35 port 35413 ssh2
+Oct 10 14:39:22 app-stage-03 sshd[5368]: Failed password for deploy from 61.177.173.35 port 58128 ssh2
+Oct 10 14:39:22 app-stage-03 sshd[7723]: Failed password for deploy from 61.177.173.35 port 33359 ssh2
+Oct 10 14:39:22 app-stage-03 sshd[3544]: Accepted password for deploy from 61.177.173.35 port 57204 ssh2
+Oct 10 14:41:16 soc-server sshd[6469]: Invalid user ftpuser from 185.220.101.5
+Oct 10 14:41:16 mail-relay-01 sshd[8061]: Failed password for invalid user ftpuser from 185.220.101.5 port 32948 ssh2
+Oct 10 14:41:16 web-prod-01 sshd[5731]: Invalid user ftpuser from 103.149.27.62
+Oct 10 14:41:16 app-stage-03 sshd[3040]: Failed password for invalid user ftpuser from 103.149.27.62 port 34451 ssh2
+Oct 10 14:41:36 app-stage-03 sshd[3241]: Accepted password for postgres from 10.0.0.5 port 32777 ssh2
+Oct 10 14:42:16 app-stage-03 sshd[3066]: Failed password for jenkins from 103.149.27.62 port 54428 ssh2
+Oct 10 14:42:16 mail-relay-01 sshd[3844]: Failed password for jenkins from 103.149.27.62 port 60981 ssh2
+Oct 10 14:42:16 soc-server sshd[6483]: Failed password for jenkins from 103.149.27.62 port 62406 ssh2
+Oct 10 14:42:36 db-primary-01 sudo:     svc_backup : TTY=pts/0 ; PWD=/home/svc_backup ; USER=root ; COMMAND=/usr/bin/apt update
+Oct 10 14:42:56 web-prod-01 sshd[5135]: Failed password for deploy from 194.26.29.156 port 57335 ssh2
+Oct 10 14:42:56 db-primary-01 sshd[7263]: Failed password for deploy from 194.26.29.156 port 54081 ssh2
+Oct 10 14:42:56 mail-relay-01 sshd[2591]: Failed password for deploy from 194.26.29.156 port 50110 ssh2
+Oct 10 14:42:56 jump-gateway sshd[6834]: Failed password for deploy from 194.26.29.156 port 38083 ssh2
+Oct 10 14:43:16 db-primary-01 sshd[2652]: Failed password for testuser from 194.26.29.156 port 30672 ssh2
+Oct 10 14:43:16 mail-relay-01 sshd[9831]: Failed password for testuser from 194.26.29.156 port 56086 ssh2
+Oct 10 14:43:16 app-stage-03 sshd[4938]: Failed password for testuser from 194.26.29.156 port 53563 ssh2
+Oct 10 14:43:16 soc-server sshd[8730]: Failed password for testuser from 194.26.29.156 port 52903 ssh2
+Oct 10 14:43:16 db-primary-01 sshd[1695]: Failed password for testuser from 194.26.29.156 port 55836 ssh2
+Oct 10 14:43:16 db-primary-01 sshd[9735]: Failed password for testuser from 194.26.29.156 port 38212 ssh2
+Oct 10 14:43:36 app-stage-03 sshd[7568]: Failed password for jenkins from 61.177.173.35 port 49297 ssh2
+Oct 10 14:43:36 soc-server sshd[4048]: Failed password for jenkins from 61.177.173.35 port 56971 ssh2
+Oct 10 14:43:36 web-prod-01 sshd[5609]: Failed password for jenkins from 61.177.173.35 port 53381 ssh2
+Oct 10 14:43:36 mail-relay-01 sshd[1404]: Failed password for jenkins from 61.177.173.35 port 38793 ssh2
+Oct 10 14:43:36 db-primary-01 sshd[2091]: Accepted password for jenkins from 61.177.173.35 port 38754 ssh2
+Oct 10 14:44:16 web-prod-01 sshd[7659]: Failed password for root from 91.240.118.172 port 35434 ssh2
+Oct 10 14:44:16 web-prod-02 sshd[8374]: Failed password for root from 91.240.118.172 port 59634 ssh2
+Oct 10 14:44:16 jump-gateway sshd[8857]: Failed password for root from 91.240.118.172 port 37067 ssh2
+Oct 10 14:44:16 web-prod-02 sshd[4800]: Failed password for root from 91.240.118.172 port 49005 ssh2
+Oct 10 14:44:16 jump-gateway sshd[5739]: Failed password for root from 91.240.118.172 port 39594 ssh2
+Oct 10 14:44:36 app-stage-03 sshd[5828]: Invalid user ftpuser from 103.149.27.62
+Oct 10 14:44:36 soc-server sshd[2527]: Failed password for invalid user ftpuser from 103.149.27.62 port 32922 ssh2
+Oct 10 14:44:36 db-primary-01 sshd[9035]: Invalid user user from 61.177.173.35
+Oct 10 14:44:36 web-prod-02 sshd[6345]: Failed password for invalid user user from 61.177.173.35 port 47265 ssh2
+Oct 10 14:44:56 mail-relay-01 sudo:     deploy : TTY=pts/5 ; PWD=/home/deploy ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Oct 10 14:45:16 soc-server sshd[3319]: Accepted password for jenkins from 10.0.0.5 port 63734 ssh2
+Oct 10 14:45:36 web-prod-01 sshd[3577]: Failed password for guest from 194.26.29.156 port 34472 ssh2
+Oct 10 14:45:36 web-prod-01 sshd[5667]: Failed password for guest from 194.26.29.156 port 51102 ssh2
+Oct 10 14:45:36 mail-relay-01 sshd[2330]: Failed password for guest from 194.26.29.156 port 45001 ssh2
+Oct 10 14:45:36 db-primary-01 sshd[9379]: Failed password for guest from 194.26.29.156 port 40535 ssh2
+Oct 10 14:45:36 mail-relay-01 sshd[9116]: Failed password for guest from 194.26.29.156 port 63083 ssh2
+Oct 10 14:45:36 mail-relay-01 sshd[6924]: Failed password for guest from 194.26.29.156 port 51735 ssh2
+Oct 10 14:45:56 jump-gateway sshd[9433]: Failed password for deploy from 185.220.101.5 port 47723 ssh2
+Oct 10 14:45:56 app-stage-03 sshd[1064]: Failed password for deploy from 185.220.101.5 port 41888 ssh2
+Oct 10 14:45:56 mail-relay-01 sshd[5020]: Failed password for deploy from 185.220.101.5 port 35259 ssh2
+Oct 10 14:45:56 jump-gateway sshd[5139]: Failed password for deploy from 185.220.101.5 port 44350 ssh2
+Oct 10 14:45:56 mail-relay-01 sshd[7943]: Failed password for deploy from 185.220.101.5 port 49699 ssh2
+Oct 10 14:46:36 app-stage-03 sshd[1346]: Failed password for ubuntu from 103.149.27.62 port 51261 ssh2
+Oct 10 14:46:36 soc-server sshd[7655]: Failed password for ubuntu from 103.149.27.62 port 35255 ssh2
+Oct 10 14:46:36 soc-server sshd[9464]: Failed password for ubuntu from 103.149.27.62 port 31088 ssh2
+Oct 10 14:46:56 web-prod-02 sshd[2722]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=218.92.0.204  user=admin
+Oct 10 14:47:16 app-stage-03 sshd[3303]: Failed password for guest from 45.147.229.11 port 53496 ssh2
+Oct 10 14:47:16 web-prod-01 sshd[8539]: Failed password for guest from 45.147.229.11 port 62733 ssh2
+Oct 10 14:47:16 mail-relay-01 sshd[7379]: Failed password for guest from 45.147.229.11 port 64496 ssh2
+Oct 10 14:47:36 db-primary-01 sshd[3122]: Failed password for deploy from 103.149.27.62 port 60780 ssh2
+Oct 10 14:47:36 app-stage-03 sshd[1174]: Failed password for deploy from 103.149.27.62 port 35774 ssh2
+Oct 10 14:47:36 app-stage-03 sshd[1163]: Failed password for deploy from 103.149.27.62 port 43543 ssh2
+Oct 10 14:47:36 web-prod-01 sshd[1157]: Failed password for deploy from 103.149.27.62 port 34638 ssh2
+Oct 10 14:47:36 soc-server sshd[5715]: Accepted password for deploy from 103.149.27.62 port 57074 ssh2
+Oct 10 14:47:56 soc-server sshd[7130]: Failed password for testuser from 194.26.29.156 port 46287 ssh2
+Oct 10 14:47:56 mail-relay-01 sshd[6160]: Failed password for testuser from 194.26.29.156 port 37442 ssh2
+Oct 10 14:47:56 db-primary-01 sshd[9055]: Failed password for testuser from 194.26.29.156 port 36633 ssh2
+Oct 10 14:48:16 mail-relay-01 sshd[2176]: Failed password for testuser from 185.220.101.5 port 36218 ssh2
+Oct 10 14:48:16 web-prod-01 sshd[8774]: Failed password for testuser from 185.220.101.5 port 63460 ssh2
+Oct 10 14:48:16 jump-gateway sshd[1475]: Failed password for testuser from 185.220.101.5 port 34873 ssh2
+Oct 10 14:48:16 web-prod-01 sshd[8242]: Accepted password for testuser from 185.220.101.5 port 39518 ssh2
+Oct 10 14:48:20 db-primary-01 sudo:     deploy : TTY=pts/8 ; PWD=/home/deploy ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Oct 10 14:48:40 app-stage-03 sshd[4796]: Failed password for testuser from 91.240.118.172 port 55953 ssh2
+Oct 10 14:48:40 db-primary-01 sshd[8160]: Failed password for testuser from 91.240.118.172 port 60315 ssh2
+Oct 10 14:48:40 web-prod-02 sshd[1536]: Failed password for testuser from 91.240.118.172 port 55267 ssh2
+Oct 10 14:48:40 web-prod-02 sshd[3096]: Failed password for testuser from 91.240.118.172 port 38593 ssh2
+Oct 10 14:48:40 soc-server sshd[3602]: Accepted password for testuser from 91.240.118.172 port 37242 ssh2
+Oct 10 14:49:00 web-prod-01 sudo:     deploy : TTY=pts/0 ; PWD=/home/deploy ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Oct 10 14:49:20 mail-relay-01 sshd[2690]: Invalid user pi from 103.149.27.62
+Oct 10 14:49:20 web-prod-02 sshd[6284]: Failed password for invalid user pi from 103.149.27.62 port 32155 ssh2
+Oct 10 14:49:40 web-prod-02 sshd[3141]: Invalid user admin1 from 103.149.27.62
+Oct 10 14:49:40 soc-server sshd[3587]: Failed password for invalid user admin1 from 103.149.27.62 port 45567 ssh2
+Oct 10 14:50:00 app-stage-03 sudo:     deploy : TTY=pts/4 ; PWD=/home/deploy ; USER=root ; COMMAND=/bin/bash
+Oct 10 14:50:40 web-prod-02 sshd[5421]: Failed password for jenkins from 185.220.101.5 port 38095 ssh2
+Oct 10 14:50:40 web-prod-01 sshd[8953]: Failed password for jenkins from 185.220.101.5 port 54079 ssh2
+Oct 10 14:50:40 web-prod-01 sshd[9038]: Failed password for jenkins from 185.220.101.5 port 63085 ssh2
+Oct 10 14:50:40 mail-relay-01 sshd[4919]: Accepted password for jenkins from 185.220.101.5 port 58582 ssh2
+Oct 10 14:51:00 web-prod-02 sudo:     admin : TTY=pts/1 ; PWD=/home/admin ; USER=root ; COMMAND=/bin/bash
+Oct 10 14:51:55 jump-gateway sudo:     ubuntu : TTY=pts/9 ; PWD=/home/ubuntu ; USER=root ; COMMAND=/usr/bin/tail /var/log/auth.log
+Oct 10 14:52:15 web-prod-01 sshd[4272]: Failed password for postgres from 103.149.27.62 port 46300 ssh2
+Oct 10 14:52:15 web-prod-02 sshd[1987]: Failed password for postgres from 103.149.27.62 port 45119 ssh2
+Oct 10 14:52:15 app-stage-03 sshd[8856]: Failed password for postgres from 103.149.27.62 port 33508 ssh2
+Oct 10 14:52:15 web-prod-01 sshd[3721]: Failed password for postgres from 103.149.27.62 port 63518 ssh2
+Oct 10 14:52:15 jump-gateway sshd[6488]: Failed password for postgres from 103.149.27.62 port 54690 ssh2
+Oct 10 14:52:15 db-primary-01 sshd[6240]: Failed password for postgres from 103.149.27.62 port 40306 ssh2
+Oct 10 14:52:15 db-primary-01 sudo:     ubuntu : TTY=pts/2 ; PWD=/home/ubuntu ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Oct 10 14:59:12 soc-server sshd[6266]: Failed password for admin from 61.177.173.35 port 38352 ssh2
+Oct 10 14:59:12 app-stage-03 sshd[7832]: Failed password for admin from 61.177.173.35 port 30662 ssh2
+Oct 10 14:59:12 web-prod-02 sshd[8926]: Failed password for admin from 61.177.173.35 port 44136 ssh2
+Oct 10 14:59:12 jump-gateway sshd[5557]: Failed password for admin from 61.177.173.35 port 50932 ssh2
+Oct 10 14:59:12 web-prod-01 sshd[6498]: Failed password for admin from 61.177.173.35 port 51343 ssh2
+Oct 10 14:59:32 soc-server sudo:     svc_backup : TTY=pts/6 ; PWD=/home/svc_backup ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Oct 10 14:59:32 web-prod-01 sshd[8063]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=61.177.173.35  user=admin
+Oct 10 14:59:52 web-prod-02 sshd[6375]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=91.240.118.172  user=guest
+Oct 10 15:00:12 soc-server sshd[2798]: Failed password for guest from 103.149.27.62 port 58437 ssh2
+Oct 10 15:00:12 app-stage-03 sshd[9477]: Failed password for guest from 103.149.27.62 port 38816 ssh2
+Oct 10 15:00:12 app-stage-03 sshd[2832]: Failed password for guest from 103.149.27.62 port 36540 ssh2
+Oct 10 15:00:12 web-prod-02 sshd[1905]: Failed password for guest from 103.149.27.62 port 61372 ssh2
+Oct 10 15:00:12 jump-gateway sshd[6553]: Failed password for guest from 103.149.27.62 port 43678 ssh2
+Oct 10 15:00:12 db-primary-01 sshd[4172]: Failed password for ubuntu from 218.92.0.204 port 46333 ssh2
+Oct 10 15:00:12 db-primary-01 sshd[4348]: Failed password for ubuntu from 218.92.0.204 port 60756 ssh2
+Oct 10 15:00:12 soc-server sshd[7261]: Failed password for ubuntu from 218.92.0.204 port 34283 ssh2
+Oct 10 15:00:12 jump-gateway sshd[2611]: Failed password for ubuntu from 218.92.0.204 port 35955 ssh2
+Oct 10 15:00:12 jump-gateway sshd[2894]: Failed password for ubuntu from 218.92.0.204 port 33035 ssh2
+Oct 10 15:00:32 soc-server sudo:     svc_backup : TTY=pts/8 ; PWD=/home/svc_backup ; USER=root ; COMMAND=/usr/bin/apt update
+Oct 10 15:01:41 soc-server sshd[9147]: Failed password for deploy from 185.220.101.5 port 41813 ssh2
+Oct 10 15:01:41 web-prod-02 sshd[5293]: Failed password for deploy from 185.220.101.5 port 37994 ssh2
+Oct 10 15:01:41 soc-server sshd[3866]: Failed password for deploy from 185.220.101.5 port 37490 ssh2
+Oct 10 15:01:41 web-prod-02 sshd[8228]: Failed password for deploy from 185.220.101.5 port 54828 ssh2
+Oct 10 15:01:41 soc-server sshd[2777]: Failed password for deploy from 185.220.101.5 port 50363 ssh2
+Oct 10 15:01:41 db-primary-01 sshd[1612]: Failed password for deploy from 185.220.101.5 port 50811 ssh2
+Oct 10 15:02:01 jump-gateway sshd[5534]: Invalid user test from 91.240.118.172
+Oct 10 15:02:01 soc-server sshd[6127]: Failed password for invalid user test from 91.240.118.172 port 63904 ssh2
+Oct 10 15:02:21 web-prod-02 sshd[2424]: Invalid user oracle from 103.149.27.62
+Oct 10 15:02:21 web-prod-01 sshd[1726]: Failed password for invalid user oracle from 103.149.27.62 port 37840 ssh2
+Oct 10 15:02:41 db-primary-01 sshd[8803]: Invalid user ftpuser from 194.26.29.156
+Oct 10 15:02:41 web-prod-01 sshd[9219]: Failed password for invalid user ftpuser from 194.26.29.156 port 38215 ssh2
+Oct 10 15:03:01 jump-gateway sshd[6838]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=218.92.0.204  user=testuser
+Oct 10 15:03:01 db-primary-01 sshd[7698]: Invalid user test from 45.147.229.11
+Oct 10 15:03:01 web-prod-02 sshd[8781]: Failed password for invalid user test from 45.147.229.11 port 51214 ssh2
+Oct 10 15:03:21 mail-relay-01 sshd[6298]: Failed password for deploy from 45.147.229.11 port 47019 ssh2
+Oct 10 15:03:21 jump-gateway sshd[5929]: Failed password for deploy from 45.147.229.11 port 58882 ssh2
+Oct 10 15:03:21 db-primary-01 sshd[7994]: Failed password for deploy from 45.147.229.11 port 38546 ssh2
+Oct 10 15:03:21 soc-server sshd[4457]: Failed password for deploy from 45.147.229.11 port 43870 ssh2
+Oct 10 15:03:21 soc-server sshd[6503]: Failed password for deploy from 45.147.229.11 port 36727 ssh2
+Oct 10 15:03:21 app-stage-03 sshd[3985]: Accepted password for deploy from 45.147.229.11 port 39471 ssh2
+Oct 10 15:03:21 app-stage-03 sshd[5602]: Failed password for admin from 103.149.27.62 port 63064 ssh2
+Oct 10 15:03:21 db-primary-01 sshd[9180]: Failed password for admin from 103.149.27.62 port 57161 ssh2
+Oct 10 15:03:21 jump-gateway sshd[2418]: Failed password for admin from 103.149.27.62 port 42593 ssh2
+Oct 10 15:04:25 db-primary-01 sshd[5170]: Invalid user oracle from 218.92.0.204
+Oct 10 15:04:25 mail-relay-01 sshd[5860]: Failed password for invalid user oracle from 218.92.0.204 port 56998 ssh2
+Oct 10 15:04:45 web-prod-02 sshd[8989]: Invalid user ftpuser from 45.147.229.11
+Oct 10 15:04:45 soc-server sshd[8603]: Failed password for invalid user ftpuser from 45.147.229.11 port 47756 ssh2
+Oct 10 15:05:05 jump-gateway sshd[1907]: Failed password for jenkins from 91.240.118.172 port 43241 ssh2
+Oct 10 15:05:05 mail-relay-01 sshd[6904]: Failed password for jenkins from 91.240.118.172 port 61462 ssh2
+Oct 10 15:05:05 app-stage-03 sshd[4015]: Failed password for jenkins from 91.240.118.172 port 44588 ssh2
+Oct 10 15:05:05 web-prod-02 sshd[3712]: Failed password for jenkins from 91.240.118.172 port 51956 ssh2
+Oct 10 15:05:25 web-prod-02 sshd[3100]: Accepted password for testuser from 172.16.4.11 port 41018 ssh2
+Oct 10 15:05:45 web-prod-01 sshd[8939]: Invalid user admin1 from 91.240.118.172
+Oct 10 15:05:45 app-stage-03 sshd[5033]: Failed password for invalid user admin1 from 91.240.118.172 port 38869 ssh2
+Oct 10 15:05:45 mail-relay-01 sshd[4379]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=91.240.118.172  user=deploy
+Oct 10 15:06:05 app-stage-03 sudo:     deploy : TTY=pts/1 ; PWD=/home/deploy ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Oct 10 15:06:25 soc-server sshd[8033]: Failed password for admin from 194.26.29.156 port 35658 ssh2
+Oct 10 15:06:25 web-prod-01 sshd[9837]: Failed password for admin from 194.26.29.156 port 50164 ssh2
+Oct 10 15:06:25 db-primary-01 sshd[9638]: Failed password for admin from 194.26.29.156 port 61003 ssh2
+Oct 10 15:06:25 web-prod-02 sshd[4692]: Failed password for admin from 194.26.29.156 port 34476 ssh2
+Oct 10 15:06:25 db-primary-01 sshd[5567]: Failed password for admin from 194.26.29.156 port 59225 ssh2
+Oct 10 15:06:25 web-prod-01 sshd[4153]: Failed password for admin from 194.26.29.156 port 54513 ssh2
+Oct 10 15:07:56 web-prod-01 sshd[1914]: Failed password for postgres from 91.240.118.172 port 40093 ssh2
+Oct 10 15:07:56 soc-server sshd[4071]: Failed password for postgres from 91.240.118.172 port 59447 ssh2
+Oct 10 15:07:56 db-primary-01 sshd[4542]: Failed password for postgres from 91.240.118.172 port 34533 ssh2
+Oct 10 15:07:56 soc-server sshd[7109]: Failed password for postgres from 91.240.118.172 port 59718 ssh2
+Oct 10 15:07:56 web-prod-02 sshd[4717]: Failed password for guest from 218.92.0.204 port 30120 ssh2
+Oct 10 15:07:56 soc-server sshd[1617]: Failed password for guest from 218.92.0.204 port 33430 ssh2
+Oct 10 15:07:56 jump-gateway sshd[4088]: Failed password for guest from 218.92.0.204 port 41762 ssh2
+Oct 10 15:07:56 soc-server sshd[5010]: Failed password for guest from 218.92.0.204 port 41674 ssh2
+Oct 10 15:07:56 app-stage-03 sshd[1017]: Failed password for guest from 218.92.0.204 port 31356 ssh2
+Oct 10 15:07:56 soc-server sshd[8425]: Accepted password for guest from 218.92.0.204 port 30328 ssh2
+Oct 10 15:08:16 web-prod-01 sshd[9406]: Accepted password for testuser from 172.16.4.11 port 60672 ssh2
+Oct 10 15:08:36 mail-relay-01 sshd[7223]: Failed password for root from 218.92.0.204 port 60998 ssh2
+Oct 10 15:08:36 web-prod-01 sshd[4491]: Failed password for root from 218.92.0.204 port 33606 ssh2
+Oct 10 15:08:36 jump-gateway sshd[3334]: Failed password for root from 218.92.0.204 port 41087 ssh2
+Oct 10 15:08:56 web-prod-01 sshd[7971]: Failed password for guest from 45.9.148.114 port 48844 ssh2
+Oct 10 15:08:56 soc-server sshd[3721]: Failed password for guest from 45.9.148.114 port 51732 ssh2
+Oct 10 15:08:56 web-prod-02 sshd[7859]: Failed password for guest from 45.9.148.114 port 40749 ssh2
+Oct 10 15:08:56 jump-gateway sshd[3788]: Failed password for guest from 45.9.148.114 port 46576 ssh2
+Oct 10 15:08:56 mail-relay-01 sshd[7174]: Failed password for guest from 45.9.148.114 port 54270 ssh2
+Oct 10 15:16:26 soc-server sshd[5391]: Failed password for guest from 91.240.118.172 port 37775 ssh2
+Oct 10 15:16:26 web-prod-01 sshd[7219]: Failed password for guest from 91.240.118.172 port 62616 ssh2
+Oct 10 15:16:26 app-stage-03 sshd[6122]: Failed password for guest from 91.240.118.172 port 39584 ssh2
+Oct 10 15:16:26 web-prod-01 sshd[3770]: Failed password for guest from 91.240.118.172 port 58328 ssh2
+Oct 10 15:16:26 app-stage-03 sshd[6407]: Failed password for guest from 91.240.118.172 port 63487 ssh2
+Oct 10 15:16:26 jump-gateway sshd[9999]: Accepted password for ubuntu from 192.168.1.20 port 49769 ssh2
+Oct 10 15:16:46 app-stage-03 sshd[7902]: Failed password for ubuntu from 185.220.101.5 port 54747 ssh2
+Oct 10 15:16:46 db-primary-01 sshd[8400]: Failed password for ubuntu from 185.220.101.5 port 53384 ssh2
+Oct 10 15:16:46 soc-server sshd[7700]: Failed password for ubuntu from 185.220.101.5 port 34835 ssh2
+Oct 10 15:16:46 mail-relay-01 sshd[1191]: Failed password for ubuntu from 185.220.101.5 port 49855 ssh2
+Oct 10 15:16:46 soc-server sshd[2728]: Failed password for root from 103.149.27.62 port 31207 ssh2
+Oct 10 15:16:46 jump-gateway sshd[6323]: Failed password for root from 103.149.27.62 port 57336 ssh2
+Oct 10 15:16:46 jump-gateway sshd[9851]: Failed password for root from 103.149.27.62 port 55258 ssh2
+Oct 10 15:16:46 app-stage-03 sshd[5575]: Failed password for root from 103.149.27.62 port 36543 ssh2
+Oct 10 15:17:06 soc-server sshd[1648]: Failed password for admin from 185.220.101.5 port 38818 ssh2
+Oct 10 15:17:06 mail-relay-01 sshd[4285]: Failed password for admin from 185.220.101.5 port 59983 ssh2
+Oct 10 15:17:06 web-prod-01 sshd[8751]: Failed password for admin from 185.220.101.5 port 31817 ssh2
+Oct 10 15:17:06 web-prod-02 sshd[6688]: Failed password for admin from 185.220.101.5 port 44780 ssh2
+Oct 10 15:17:06 mail-relay-01 sshd[4207]: Failed password for admin from 185.220.101.5 port 56032 ssh2
+Oct 10 15:17:46 web-prod-01 sshd[7619]: Failed password for admin from 185.220.101.5 port 39044 ssh2
+Oct 10 15:17:46 mail-relay-01 sshd[8172]: Failed password for admin from 185.220.101.5 port 37932 ssh2
+Oct 10 15:17:46 jump-gateway sshd[2907]: Failed password for admin from 185.220.101.5 port 38793 ssh2
+Oct 10 15:17:46 soc-server sshd[9762]: Failed password for admin from 185.220.101.5 port 52012 ssh2
+Oct 10 15:17:46 jump-gateway sshd[1108]: Accepted password for admin from 185.220.101.5 port 35876 ssh2
+Oct 10 15:18:06 soc-server sshd[8282]: Failed password for admin from 103.149.27.62 port 56082 ssh2
+Oct 10 15:18:06 soc-server sshd[1986]: Failed password for admin from 103.149.27.62 port 45916 ssh2
+Oct 10 15:18:06 jump-gateway sshd[4521]: Failed password for admin from 103.149.27.62 port 47785 ssh2
+Oct 10 15:18:06 mail-relay-01 sshd[8045]: Accepted password for admin from 103.149.27.62 port 39326 ssh2
+Oct 10 15:18:26 web-prod-01 sshd[7267]: Failed password for testuser from 103.149.27.62 port 54856 ssh2
+Oct 10 15:18:26 soc-server sshd[7339]: Failed password for testuser from 103.149.27.62 port 54654 ssh2
+Oct 10 15:18:26 jump-gateway sshd[3873]: Failed password for testuser from 103.149.27.62 port 30451 ssh2
+Oct 10 15:18:26 jump-gateway sshd[1535]: Failed password for testuser from 103.149.27.62 port 52547 ssh2
+Oct 10 15:18:26 web-prod-01 sshd[1108]: Failed password for testuser from 103.149.27.62 port 50459 ssh2
+Oct 10 15:18:26 web-prod-02 sshd[9109]: Accepted password for testuser from 103.149.27.62 port 42268 ssh2
+Oct 10 15:18:46 web-prod-01 sshd[3075]: Failed password for ubuntu from 103.149.27.62 port 35261 ssh2
+Oct 10 15:18:46 soc-server sshd[3173]: Failed password for ubuntu from 103.149.27.62 port 50138 ssh2
+Oct 10 15:18:46 db-primary-01 sshd[9543]: Failed password for ubuntu from 103.149.27.62 port 35055 ssh2
+Oct 10 15:18:46 soc-server sshd[9860]: Accepted password for ubuntu from 10.0.0.5 port 50218 ssh2
+Oct 10 15:19:06 soc-server sshd[7708]: Accepted password for admin from 172.16.4.11 port 48312 ssh2
+Oct 10 15:19:46 soc-server sshd[5113]: Failed password for testuser from 45.9.148.114 port 51817 ssh2
+Oct 10 15:19:46 app-stage-03 sshd[3033]: Failed password for testuser from 45.9.148.114 port 39926 ssh2
+Oct 10 15:19:46 web-prod-01 sshd[4816]: Failed password for testuser from 45.9.148.114 port 35187 ssh2
+Oct 10 15:19:46 db-primary-01 sshd[5980]: Failed password for testuser from 45.9.148.114 port 52694 ssh2
+Oct 10 15:19:46 jump-gateway sshd[7105]: Accepted password for testuser from 45.9.148.114 port 44792 ssh2
+Oct 10 15:20:06 soc-server sshd[5966]: Invalid user test from 103.149.27.62
+Oct 10 15:20:06 mail-relay-01 sshd[7010]: Failed password for invalid user test from 103.149.27.62 port 54366 ssh2
+Oct 10 15:20:26 web-prod-02 sshd[9038]: Accepted password for postgres from 172.16.4.11 port 38083 ssh2
+Oct 10 15:21:06 app-stage-03 sshd[7245]: Failed password for guest from 194.26.29.156 port 39596 ssh2
+Oct 10 15:21:06 db-primary-01 sshd[5417]: Failed password for guest from 194.26.29.156 port 44448 ssh2
+Oct 10 15:21:06 soc-server sshd[9871]: Failed password for guest from 194.26.29.156 port 35674 ssh2
+Oct 10 15:21:06 app-stage-03 sshd[5443]: Failed password for guest from 194.26.29.156 port 51382 ssh2
+Oct 10 15:21:06 db-primary-01 sshd[6819]: Failed password for guest from 194.26.29.156 port 30191 ssh2
+Oct 10 15:21:06 jump-gateway sshd[4354]: Failed password for guest from 194.26.29.156 port 54335 ssh2
+Oct 10 15:21:06 mail-relay-01 sshd[8684]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=45.147.229.11  user=ubuntu
+Oct 10 15:21:26 soc-server sshd[8534]: Failed password for ubuntu from 185.220.101.5 port 47630 ssh2
+Oct 10 15:21:26 soc-server sshd[7110]: Failed password for ubuntu from 185.220.101.5 port 62530 ssh2
+Oct 10 15:21:26 db-primary-01 sshd[8992]: Failed password for ubuntu from 185.220.101.5 port 60115 ssh2
+Oct 10 15:21:26 db-primary-01 sshd[9775]: Failed password for ubuntu from 185.220.101.5 port 64761 ssh2
+Oct 10 15:21:46 app-stage-03 sshd[5782]: Failed password for ubuntu from 103.149.27.62 port 45066 ssh2
+Oct 10 15:21:46 web-prod-02 sshd[7804]: Failed password for ubuntu from 103.149.27.62 port 48807 ssh2
+Oct 10 15:21:46 web-prod-01 sshd[7459]: Failed password for ubuntu from 103.149.27.62 port 54247 ssh2
+Oct 10 15:21:46 soc-server sshd[5712]: Accepted password for ubuntu from 103.149.27.62 port 58470 ssh2
+Oct 10 15:22:06 app-stage-03 sshd[4272]: Failed password for guest from 194.26.29.156 port 47664 ssh2
+Oct 10 15:22:06 app-stage-03 sshd[5100]: Failed password for guest from 194.26.29.156 port 60589 ssh2
+Oct 10 15:22:06 mail-relay-01 sshd[4712]: Failed password for guest from 194.26.29.156 port 32308 ssh2
+Oct 10 15:22:06 web-prod-01 sshd[4888]: Failed password for guest from 194.26.29.156 port 62505 ssh2
+Oct 10 15:22:06 app-stage-03 sshd[9511]: Failed password for guest from 194.26.29.156 port 48557 ssh2
+Oct 10 15:22:26 mail-relay-01 sshd[7197]: Failed password for ubuntu from 61.177.173.35 port 34027 ssh2
+Oct 10 15:22:26 app-stage-03 sshd[1363]: Failed password for ubuntu from 61.177.173.35 port 48863 ssh2
+Oct 10 15:22:26 web-prod-01 sshd[3718]: Failed password for ubuntu from 61.177.173.35 port 40104 ssh2
+Oct 10 15:22:26 db-primary-01 sshd[2981]: Failed password for deploy from 218.92.0.204 port 59503 ssh2
+Oct 10 15:22:26 web-prod-02 sshd[5906]: Failed password for deploy from 218.92.0.204 port 37906 ssh2
+Oct 10 15:22:26 soc-server sshd[5920]: Failed password for deploy from 218.92.0.204 port 33134 ssh2
+Oct 10 15:23:06 soc-server sudo:     deploy : TTY=pts/5 ; PWD=/home/deploy ; USER=root ; COMMAND=/usr/bin/tail /var/log/auth.log
+Oct 10 15:23:26 web-prod-01 sshd[9066]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=185.220.101.5  user=deploy
+Oct 10 15:23:46 web-prod-02 sshd[7284]: Failed password for admin from 103.149.27.62 port 62539 ssh2
+Oct 10 15:23:46 web-prod-01 sshd[9351]: Failed password for admin from 103.149.27.62 port 31874 ssh2
+Oct 10 15:23:46 mail-relay-01 sshd[9329]: Failed password for admin from 103.149.27.62 port 35993 ssh2
+Oct 10 15:23:46 db-primary-01 sshd[4145]: Failed password for admin from 103.149.27.62 port 34066 ssh2
+Oct 10 15:23:46 db-primary-01 sshd[2659]: Failed password for admin from 103.149.27.62 port 40163 ssh2
+Oct 10 15:23:46 soc-server sshd[1723]: Accepted password for admin from 103.149.27.62 port 43172 ssh2
+Oct 10 15:24:06 app-stage-03 sshd[3568]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=91.240.118.172  user=jenkins
+Oct 10 15:24:26 app-stage-03 sshd[3511]: Invalid user pi from 45.147.229.11
+Oct 10 15:24:26 db-primary-01 sshd[7884]: Failed password for invalid user pi from 45.147.229.11 port 45298 ssh2
+Oct 10 15:24:46 mail-relay-01 sshd[3349]: Failed password for guest from 91.240.118.172 port 62204 ssh2
+Oct 10 15:24:46 app-stage-03 sshd[3938]: Failed password for guest from 91.240.118.172 port 34371 ssh2
+Oct 10 15:24:46 web-prod-02 sshd[5620]: Failed password for guest from 91.240.118.172 port 62614 ssh2
+Oct 10 15:25:26 jump-gateway sudo:     admin : TTY=pts/4 ; PWD=/home/admin ; USER=root ; COMMAND=/usr/bin/tail /var/log/auth.log
+Oct 10 15:26:06 jump-gateway sudo:     admin : TTY=pts/9 ; PWD=/home/admin ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Oct 10 15:26:06 db-primary-01 sshd[6297]: Failed password for ubuntu from 103.149.27.62 port 36502 ssh2
+Oct 10 15:26:06 app-stage-03 sshd[4684]: Failed password for ubuntu from 103.149.27.62 port 33230 ssh2
+Oct 10 15:26:06 soc-server sshd[4963]: Failed password for ubuntu from 103.149.27.62 port 60148 ssh2
+Oct 10 15:26:26 web-prod-01 sshd[2323]: Failed password for postgres from 61.177.173.35 port 34165 ssh2
+Oct 10 15:26:26 mail-relay-01 sshd[5610]: Failed password for postgres from 61.177.173.35 port 44446 ssh2
+Oct 10 15:26:26 jump-gateway sshd[7706]: Failed password for postgres from 61.177.173.35 port 50697 ssh2
+Oct 10 15:26:26 db-primary-01 sshd[6360]: Failed password for postgres from 61.177.173.35 port 46927 ssh2
+Oct 10 15:26:26 db-primary-01 sshd[1386]: Failed password for postgres from 61.177.173.35 port 32596 ssh2
+Oct 10 15:27:06 db-primary-01 sshd[9102]: Invalid user test from 103.149.27.62
+Oct 10 15:27:06 mail-relay-01 sshd[8559]: Failed password for invalid user test from 103.149.27.62 port 54812 ssh2
+Oct 10 15:27:26 web-prod-02 sshd[7815]: Invalid user user from 61.177.173.35
+Oct 10 15:27:26 web-prod-01 sshd[4877]: Failed password for invalid user user from 61.177.173.35 port 40086 ssh2
+Oct 10 15:27:26 app-stage-03 sshd[3872]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=91.240.118.172  user=testuser
+Oct 10 15:27:46 app-stage-03 sshd[3301]: Failed password for guest from 185.220.101.5 port 45940 ssh2
+Oct 10 15:27:46 soc-server sshd[7867]: Failed password for guest from 185.220.101.5 port 31313 ssh2
+Oct 10 15:27:46 app-stage-03 sshd[2259]: Failed password for guest from 185.220.101.5 port 55616 ssh2
+Oct 10 15:27:46 mail-relay-01 sshd[7275]: Failed password for guest from 185.220.101.5 port 38724 ssh2
+Oct 10 15:28:06 web-prod-02 sshd[4858]: Failed password for testuser from 45.147.229.11 port 34888 ssh2
+Oct 10 15:28:06 web-prod-02 sshd[8365]: Failed password for testuser from 45.147.229.11 port 46030 ssh2
+Oct 10 15:28:06 web-prod-02 sshd[2764]: Failed password for testuser from 45.147.229.11 port 33986 ssh2
+Oct 10 15:28:06 mail-relay-01 sshd[3913]: Failed password for testuser from 45.147.229.11 port 51847 ssh2
+Oct 10 15:28:06 jump-gateway sshd[4456]: Failed password for testuser from 45.147.229.11 port 39907 ssh2
+Oct 10 15:28:06 soc-server sshd[5484]: Failed password for postgres from 61.177.173.35 port 34489 ssh2
+Oct 10 15:28:06 jump-gateway sshd[1773]: Failed password for postgres from 61.177.173.35 port 42550 ssh2
+Oct 10 15:28:06 soc-server sshd[1822]: Failed password for postgres from 61.177.173.35 port 41099 ssh2
+Oct 10 15:28:06 web-prod-01 sshd[8578]: Accepted password for postgres from 61.177.173.35 port 48235 ssh2
+Oct 10 15:28:26 jump-gateway sshd[1948]: Failed password for postgres from 103.149.27.62 port 35474 ssh2
+Oct 10 15:28:26 jump-gateway sshd[4365]: Failed password for postgres from 103.149.27.62 port 44034 ssh2
+Oct 10 15:28:26 mail-relay-01 sshd[1380]: Failed password for postgres from 103.149.27.62 port 49562 ssh2
+Oct 10 15:28:26 web-prod-02 sshd[5110]: Accepted password for postgres from 103.149.27.62 port 31627 ssh2
+Oct 10 15:28:46 app-stage-03 sshd[2280]: Accepted password for admin from 172.16.4.11 port 37719 ssh2
+Oct 10 15:29:06 mail-relay-01 sshd[6872]: Failed password for ubuntu from 45.147.229.11 port 37166 ssh2
+Oct 10 15:29:06 soc-server sshd[2576]: Failed password for ubuntu from 45.147.229.11 port 34660 ssh2
+Oct 10 15:29:06 web-prod-01 sshd[9968]: Failed password for ubuntu from 45.147.229.11 port 53833 ssh2
+Oct 10 15:29:06 app-stage-03 sshd[6915]: Failed password for ubuntu from 45.147.229.11 port 43947 ssh2
+Oct 10 15:29:06 web-prod-01 sshd[5049]: Failed password for ubuntu from 45.147.229.11 port 44535 ssh2
+Oct 10 15:29:06 db-primary-01 sshd[8830]: Accepted password for ubuntu from 45.147.229.11 port 60041 ssh2
+Oct 10 15:29:26 web-prod-02 sshd[4819]: Failed password for postgres from 218.92.0.204 port 44800 ssh2
+Oct 10 15:29:26 mail-relay-01 sshd[5946]: Failed password for postgres from 218.92.0.204 port 31260 ssh2
+Oct 10 15:29:26 app-stage-03 sshd[5849]: Failed password for postgres from 218.92.0.204 port 38335 ssh2
+Oct 10 15:29:26 jump-gateway sshd[4216]: Failed password for postgres from 218.92.0.204 port 50238 ssh2
+Oct 10 15:29:46 app-stage-03 sshd[2864]: Invalid user admin1 from 103.149.27.62
+Oct 10 15:29:46 web-prod-02 sshd[1081]: Failed password for invalid user admin1 from 103.149.27.62 port 36129 ssh2
+Oct 10 15:29:46 web-prod-02 sshd[4000]: Failed password for postgres from 103.149.27.62 port 62151 ssh2
+Oct 10 15:29:46 soc-server sshd[4168]: Failed password for postgres from 103.149.27.62 port 64652 ssh2
+Oct 10 15:29:46 db-primary-01 sshd[4362]: Failed password for postgres from 103.149.27.62 port 46612 ssh2
+Oct 10 15:29:46 jump-gateway sshd[3537]: Failed password for postgres from 103.149.27.62 port 35174 ssh2
+Oct 10 15:29:46 jump-gateway sshd[7096]: Accepted password for postgres from 103.149.27.62 port 30622 ssh2
+Oct 10 15:30:26 soc-server sshd[4756]: Failed password for testuser from 185.220.101.5 port 60219 ssh2
+Oct 10 15:30:26 web-prod-01 sshd[1397]: Failed password for testuser from 185.220.101.5 port 39249 ssh2
+Oct 10 15:30:26 web-prod-02 sshd[2928]: Failed password for testuser from 185.220.101.5 port 47365 ssh2
+Oct 10 15:30:26 soc-server sshd[9607]: Failed password for testuser from 185.220.101.5 port 50190 ssh2
+Oct 10 15:30:26 jump-gateway sshd[1571]: Accepted password for testuser from 185.220.101.5 port 60137 ssh2
+Oct 10 15:30:29 soc-server sudo:     admin : TTY=pts/1 ; PWD=/home/admin ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Oct 10 15:31:09 web-prod-02 sshd[8703]: Failed password for jenkins from 61.177.173.35 port 46521 ssh2
+Oct 10 15:31:09 soc-server sshd[5715]: Failed password for jenkins from 61.177.173.35 port 47321 ssh2
+Oct 10 15:31:09 app-stage-03 sshd[5945]: Failed password for jenkins from 61.177.173.35 port 31185 ssh2
+Oct 10 15:31:09 web-prod-02 sshd[2873]: Accepted password for jenkins from 61.177.173.35 port 37225 ssh2
+Oct 10 15:31:09 jump-gateway sshd[6326]: Invalid user ftpuser from 45.147.229.11
+Oct 10 15:31:09 web-prod-02 sshd[2739]: Failed password for invalid user ftpuser from 45.147.229.11 port 45291 ssh2
+Oct 10 15:31:29 soc-server sshd[4926]: Failed password for postgres from 45.9.148.114 port 38382 ssh2
+Oct 10 15:31:29 mail-relay-01 sshd[3691]: Failed password for postgres from 45.9.148.114 port 58039 ssh2
+Oct 10 15:31:29 db-primary-01 sshd[2690]: Failed password for postgres from 45.9.148.114 port 55689 ssh2
+Oct 10 15:31:29 db-primary-01 sshd[9272]: Accepted password for postgres from 45.9.148.114 port 57800 ssh2
+Oct 10 15:31:49 db-primary-01 sudo:     ubuntu : TTY=pts/5 ; PWD=/home/ubuntu ; USER=root ; COMMAND=/usr/bin/apt update
+Oct 10 15:31:49 mail-relay-01 sshd[2519]: Failed password for guest from 61.177.173.35 port 49261 ssh2
+Oct 10 15:31:49 db-primary-01 sshd[3584]: Failed password for guest from 61.177.173.35 port 48425 ssh2
+Oct 10 15:31:49 app-stage-03 sshd[4885]: Failed password for guest from 61.177.173.35 port 57474 ssh2
+Oct 10 15:31:49 db-primary-01 sshd[7304]: Failed password for guest from 61.177.173.35 port 60350 ssh2

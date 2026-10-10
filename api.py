@@ -2,6 +2,7 @@ import os
 import sqlite3
 from typing import Optional, List
 from fastapi import FastAPI, HTTPException, Query, Header, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 import database
@@ -25,6 +26,15 @@ app = FastAPI(
     version="1.1.0"
 )
 
+# Allow browser frontends (e.g. a Lovable-built dashboard) to call this API.
+# Demo-friendly wildcard — restrict allow_origins in production.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 DB_PATH = "soc_events.db"
 
 # Ensure database schema is ready on startup
@@ -40,11 +50,16 @@ class LogItem(BaseModel):
     event_type: Optional[str] = None
     source_ip: Optional[str] = None
     user: Optional[str] = None
+    host: Optional[str] = None
+    action: Optional[str] = None
     severity: Optional[str] = None
     raw_log: Optional[str] = None
     threat_level: Optional[str] = None
     analysis_reasoning: Optional[str] = None
     response_actions: Optional[str] = None
+    mitre_technique: Optional[str] = None
+    risk_score: Optional[int] = None
+    correlated_event_count: Optional[int] = None
 
 class StatsResponse(BaseModel):
     total_logs: int

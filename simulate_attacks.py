@@ -23,6 +23,10 @@ TRUSTED_IPS = ["10.0.0.5", "192.168.1.20", "172.16.4.11"]
 TARGET_USERS = ["root", "admin", "ubuntu", "postgres", "deploy", "jenkins", "testuser", "guest"]
 FAKE_USERS = ["oracle", "ftpuser", "admin1", "test", "pi", "user"]
 PRIV_USERS = ["deploy", "ubuntu", "admin", "svc_backup"]
+LINUX_HOSTS = [
+    "web-prod-01", "web-prod-02", "db-primary-01", "jump-gateway",
+    "mail-relay-01", "app-stage-03", "soc-server",
+]
 COMPUTERS = ["DESKTOP-SOC-01", "SERVER-PROD-02", "WORKSTATION-HR", "DC-CORP-01", "LAPTOP-CEO"]
 WINDOWS_USERS = ["NT AUTHORITY\\SYSTEM", "CORP\\admin_user", "DESKTOP\\local_admin", "CORP\\hr_user"]
 
@@ -51,6 +55,11 @@ SUDO_COMMANDS = [
 # ─────────────────────────────────────────────────────────────────────────────
 def _ts():
     return datetime.now().strftime("%b %d %H:%M:%S")
+
+
+def _host():
+    """Picks a realistic Linux machine name for the event."""
+    return random.choice(LINUX_HOSTS)
 
 
 def _utc():
@@ -92,7 +101,7 @@ def scenario_ssh_bruteforce():
     lines = []
     for _ in range(count):
         lines.append(
-            f"{_ts()} soc-server sshd[{random.randint(1000, 9999)}]: "
+            f"{_ts()} {_host()} sshd[{random.randint(1000, 9999)}]: "
             f"Failed password for {user} from {ip} port {random.randint(30000, 65000)} ssh2"
         )
     write_auth(lines)
@@ -104,8 +113,8 @@ def scenario_ssh_spray():
     fake = random.choice(FAKE_USERS)
     print(f"[+] 🕵️ Password spray: fake username '{fake}' from {ip}")
     lines = [
-        f"{_ts()} soc-server sshd[{random.randint(1000, 9999)}]: Invalid user {fake} from {ip}",
-        f"{_ts()} soc-server sshd[{random.randint(1000, 9999)}]: "
+        f"{_ts()} {_host()} sshd[{random.randint(1000, 9999)}]: Invalid user {fake} from {ip}",
+        f"{_ts()} {_host()} sshd[{random.randint(1000, 9999)}]: "
         f"Failed password for invalid user {fake} from {ip} port {random.randint(30000, 65000)} ssh2",
     ]
     write_auth(lines)
@@ -120,11 +129,11 @@ def scenario_compromise():
     lines = []
     for _ in range(attempts):
         lines.append(
-            f"{_ts()} soc-server sshd[{random.randint(1000, 9999)}]: "
+            f"{_ts()} {_host()} sshd[{random.randint(1000, 9999)}]: "
             f"Failed password for {user} from {ip} port {random.randint(30000, 65000)} ssh2"
         )
     lines.append(
-        f"{_ts()} soc-server sshd[{random.randint(1000, 9999)}]: "
+        f"{_ts()} {_host()} sshd[{random.randint(1000, 9999)}]: "
         f"Accepted password for {user} from {ip} port {random.randint(30000, 65000)} ssh2"
     )
     write_auth(lines)
@@ -136,7 +145,7 @@ def scenario_pam_failure():
     user = random.choice(TARGET_USERS)
     print(f"[+] 🔐 pam authentication failure for '{user}' from {ip}")
     write_auth([
-        f"{_ts()} soc-server sshd[{random.randint(1000, 9999)}]: pam_unix(sshd:auth): "
+        f"{_ts()} {_host()} sshd[{random.randint(1000, 9999)}]: pam_unix(sshd:auth): "
         f"authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost={ip}  user={user}"
     ])
 
@@ -147,7 +156,7 @@ def scenario_sudo_escalation():
     cmd = random.choice(SUDO_COMMANDS)
     print(f"[+] 🔑 Privilege escalation: '{user}' ran sudo {cmd}")
     write_auth([
-        f"{_ts()} soc-server sudo:     {user} : TTY=pts/{random.randint(0, 9)} ; "
+        f"{_ts()} {_host()} sudo:     {user} : TTY=pts/{random.randint(0, 9)} ; "
         f"PWD=/home/{user} ; USER=root ; COMMAND={cmd}"
     ])
 
@@ -167,7 +176,7 @@ def scenario_benign_noise():
         ip = random.choice(TRUSTED_IPS)
         print(f"[+] 😌 Normal login: '{user}' from trusted {ip}")
         write_auth([
-            f"{_ts()} soc-server sshd[{random.randint(1000, 9999)}]: "
+            f"{_ts()} {_host()} sshd[{random.randint(1000, 9999)}]: "
             f"Accepted password for {user} from {ip} port {random.randint(30000, 65000)} ssh2"
         ])
     else:

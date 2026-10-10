@@ -54,6 +54,11 @@ def parse_linux_auth(raw_log):
     # TRICK: syslog timestamps ("Oct  2 01:36:38") live in the first 15 chars
     extracted_time = raw_log[:15]
 
+    # The hostname (the actual machine) is the first token after the timestamp
+    rest = raw_log[15:].strip()
+    host_token = rest.split(" ", 1)[0] if rest else ""
+    host = host_token if host_token and ":" not in host_token else None
+
     for pattern in PATTERNS:
         match = re.search(pattern["regex"], raw_log)
         if not match:
@@ -66,6 +71,7 @@ def parse_linux_auth(raw_log):
             "event_type": pattern["event_type"],
             "source_ip": groups.get("source_ip"),
             "user": groups.get("user"),
+            "host": host,
             "action": pattern["action"],
             "severity": pattern["severity"],
             "raw_log": raw_log.strip(),
