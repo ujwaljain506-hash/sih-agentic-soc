@@ -1851,3 +1851,42 @@ Oct 10 15:31:49 mail-relay-01 sshd[2519]: Failed password for guest from 61.177.
 Oct 10 15:31:49 db-primary-01 sshd[3584]: Failed password for guest from 61.177.173.35 port 48425 ssh2
 Oct 10 15:31:49 app-stage-03 sshd[4885]: Failed password for guest from 61.177.173.35 port 57474 ssh2
 Oct 10 15:31:49 db-primary-01 sshd[7304]: Failed password for guest from 61.177.173.35 port 60350 ssh2
+Oct 10 15:39:35 jump-gateway sshd[2665]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=45.9.148.114  user=root
+Oct 10 15:40:15 web-prod-01 sshd[9049]: Failed password for deploy from 218.92.0.204 port 44871 ssh2
+Oct 10 15:40:15 web-prod-01 sshd[1707]: Failed password for deploy from 218.92.0.204 port 53072 ssh2
+Oct 10 15:40:15 jump-gateway sshd[8281]: Failed password for deploy from 218.92.0.204 port 31517 ssh2
+Oct 10 15:40:15 web-prod-01 sshd[8882]: Failed password for deploy from 218.92.0.204 port 64868 ssh2
+Oct 10 15:40:15 web-prod-02 sshd[8485]: Failed password for deploy from 218.92.0.204 port 42060 ssh2
+Oct 10 15:40:15 web-prod-01 sshd[9970]: Failed password for deploy from 218.92.0.204 port 63364 ssh2
+Oct 10 15:40:35 soc-server sshd[7351]: Invalid user admin1 from 45.9.148.114
+Oct 10 15:40:35 soc-server sshd[4806]: Failed password for invalid user admin1 from 45.9.148.114 port 40139 ssh2
+Oct 10 15:41:15 web-prod-02 sshd[7540]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=91.240.118.172  user=admin
+Oct 10 15:41:15 mail-relay-01 sshd[8566]: Failed password for root from 45.9.148.114 port 56592 ssh2
+Oct 10 15:41:15 app-stage-03 sshd[7144]: Failed password for root from 45.9.148.114 port 37750 ssh2
+Oct 10 15:41:15 jump-gateway sshd[8500]: Failed password for root from 45.9.148.114 port 41401 ssh2
+Oct 10 15:41:35 web-prod-01 sshd[7153]: Invalid user user from 185.220.101.5
+Oct 10 15:41:35 soc-server sshd[1644]: Failed password for invalid user user from 185.220.101.5 port 61479 ssh2
+Oct 10 15:41:35 web-prod-01 sshd[9822]: Accepted password for postgres from 192.168.1.20 port 31547 ssh2
+Oct 10 15:41:55 mail-relay-01 sshd[8555]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=194.26.29.156  user=postgres
+Oct 10 15:41:55 app-stage-03 sshd[3361]: Accepted password for testuser from 192.168.1.20 port 41695 ssh2
+Oct 10 15:42:15 web-prod-02 sudo:     admin : TTY=pts/6 ; PWD=/home/admin ; USER=root ; COMMAND=/usr/bin/apt update
+Oct 10 15:46:52 db-primary-01 sudo:     admin : TTY=pts/0 ; PWD=/home/admin ; USER=root ; COMMAND=/usr/bin/apt update
+Oct 10 15:47:12 jump-gateway sshd[1343]: Failed password for deploy from 185.220.101.5 port 40809 ssh2
+Oct 10 15:47:12 app-stage-03 sshd[9406]: Failed password for deploy from 185.220.101.5 port 52757 ssh2
+Oct 10 15:47:12 app-stage-03 sshd[4476]: Failed password for deploy from 185.220.101.5 port 59592 ssh2
+Oct 10 15:47:12 db-primary-01 sshd[2079]: Failed password for deploy from 185.220.101.5 port 49480 ssh2
+Oct 10 15:47:12 web-prod-01 sshd[6563]: Failed password for deploy from 185.220.101.5 port 41771 ssh2
+Oct 10 15:47:12 db-primary-01 sshd[3066]: Failed password for deploy from 185.220.101.5 port 64875 ssh2
+Oct 10 15:47:52 app-stage-03 sshd[6890]: Failed password for guest from 45.147.229.11 port 42941 ssh2
+Oct 10 15:47:52 mail-relay-01 sshd[6272]: Failed password for guest from 45.147.229.11 port 47728 ssh2
+Oct 10 15:47:52 db-primary-01 sshd[9275]: Failed password for guest from 45.147.229.11 port 56857 ssh2
+Oct 10 15:47:52 soc-server sshd[2575]: Failed password for guest from 45.147.229.11 port 58847 ssh2
+Oct 10 15:47:52 soc-server sshd[3695]: Failed password for guest from 45.147.229.11 port 49600 ssh2
+Oct 10 15:47:52 mail-relay-01 sshd[8763]: Failed password for guest from 45.147.229.11 port 37059 ssh2
+Oct 10 15:48:12 jump-gateway sudo:     admin : TTY=pts/6 ; PWD=/home/admin ; USER=root ; COMMAND=/usr/bin/apt update
+Oct 10 15:48:32 mail-relay-01 sshd[2567]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=45.147.229.11  user=postgres
+Oct 10 15:48:32 jump-gateway sshd[4097]: Failed password for guest from 194.26.29.156 port 64016 ssh2
+Oct 10 15:48:32 web-prod-01 sshd[8133]: Failed password for guest from 194.26.29.156 port 32058 ssh2
+Oct 10 15:48:32 soc-server sshd[8187]: Failed password for guest from 194.26.29.156 port 62160 ssh2
+Oct 10 15:48:32 jump-gateway sshd[6348]: Failed password for guest from 194.26.29.156 port 35570 ssh2
+Oct 10 15:48:32 jump-gateway sshd[3601]: Failed password for guest from 194.26.29.156 port 52267 ssh2

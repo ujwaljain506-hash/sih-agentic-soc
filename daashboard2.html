@@ -80,12 +80,6 @@
   .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
 
   /* ── Demo banner ────────────────────────────────── */
-  #demoBanner {
-    margin: 12px 36px 0; padding: 10px 18px; border-radius: 11px;
-    background: rgba(255,164,33,0.08); border: 1px solid rgba(255,164,33,0.3);
-    color: var(--high); font-size: 0.83rem;
-  }
-
   /* ── Tabs ───────────────────────────────────────── */
   nav {
     display: flex; gap: 8px; padding: 22px 36px 6px; flex-wrap: wrap;
@@ -287,8 +281,6 @@
   <button class="btn" onclick="connectApi()">🔌 Connect live data</button>
   <button class="btn btn-ghost" onclick="useDemo()">Use demo data</button>
 </div>
-
-<div id="demoBanner">🎭 <b>Demo data mode</b> — showing built-in sample events. Open ⚙️ Settings to connect your live API.</div>
 
 <nav>
   <button class="tab-btn active" data-tab="overview" onclick="switchTab('overview')">📊 Overview</button>
@@ -833,7 +825,6 @@ async function tryLive() {
     state.events = DEMO_EVENTS;
     state.live = false;
   }
-  $("#demoBanner").style.display = state.live ? "none" : "block";
   renderAll();
 }
 
@@ -845,7 +836,6 @@ function connectApi() {
 
 function useDemo() {
   state.events = DEMO_EVENTS; state.live = false;
-  $("#demoBanner").style.display = "block";
   renderAll();
 }
 

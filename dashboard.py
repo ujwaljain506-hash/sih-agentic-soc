@@ -59,9 +59,6 @@ def main():
             st.cache_data.clear()
             st.rerun()
         st.caption("The dashboard re-reads the database every 5 seconds.")
-        st.caption("Built for Smart India Hackathon · "
-                   "“LLM for judgment, rules for accountability.”")
-
     component_html(build_page(load_events()), height=1650, scrolling=True)
 
 
@@ -396,11 +393,6 @@ PAGE_HTML = r"""<!DOCTYPE html>
     </div>
   </section>
 </main>
-
-<footer>
-  🛡️ <span class="col-accent">Autonomous Agentic SOC SIEM</span> · built for Smart India Hackathon<br>
-  "LLM for judgment, rules for accountability."
-</footer>
 
 <script>
 /* ════════════════════════════════════════════════════════════
